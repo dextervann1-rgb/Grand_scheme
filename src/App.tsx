@@ -39,11 +39,15 @@ import {
 } from './components/CharacterPortraits';
 import { DodgeBar } from './components/DodgeBar';
 import { QuickTimeVerse } from './components/QuickTimeVerse';
+import { ComboMultiplierBadge } from './components/ComboMultiplierBadge';
 import { SoundTestModal } from './components/SoundTestModal';
 import { LeaderboardModal } from './components/LeaderboardModal';
 import { DailyStreakModal } from './components/DailyStreakModal';
 import { MissionsModal } from './components/MissionsModal';
 import { SettingsModal } from './components/SettingsModal';
+import { VoiceSettingsModal } from './components/VoiceSettingsModal';
+import { AIDevotionalCard } from './components/AIDevotionalCard';
+import { voiceNarrator } from './sound/voiceNarrator';
 import { Footer } from './components/Footer';
 import { 
   Volume2, 
@@ -60,7 +64,8 @@ import {
   ShoppingBag, 
   Compass, 
   RotateCcw,
-  Play
+  Play,
+  Mic
 } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'christfire_omega_v9_save';
@@ -155,6 +160,8 @@ export default function App() {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [settingsInitialTab, setSettingsInitialTab] = useState<'settings' | 'privacy'>('settings');
   const [showArtModal, setShowArtModal] = useState<'icon' | 'samantha' | null>(null);
+  const [showVoiceModal, setShowVoiceModal] = useState<boolean>(false);
+  const [narrateVerses, setNarrateVerses] = useState<boolean>(true);
 
   // Sync state to local storage
   useEffect(() => {
@@ -165,10 +172,12 @@ export default function App() {
     }
   }, [state]);
 
-  // Sync sound engine options
+  // Sync sound engine and voice narrator options
   useEffect(() => {
     soundEngine.setSoundEnabled(state.sound);
     soundEngine.setVolume(state.vol);
+    voiceNarrator.setEnabled(state.sound);
+    voiceNarrator.setVolume(state.vol);
   }, [state.sound, state.vol]);
 
   const triggerScreenShake = () => {
@@ -337,6 +346,9 @@ export default function App() {
         triggerHeroAnimation('crown', '👑 CROWN BURST!', 850);
         triggerBossAnimation('damage', `-${baseDmg} DMG!`, 750);
         triggerScreenFlash();
+        if (narrateVerses) {
+          voiceNarrator.speak("May Jesus Reign! VannDiamond Crown of Light shatters all gloom!");
+        }
       } else if (card.id === 'phil') {
         const multiplier = isQteCritical ? 3.5 : (card.shieldShatterMultiplier || 2.5);
         if (bossShield > 0) {
@@ -348,16 +360,25 @@ export default function App() {
           log = `💥 PHILIPPIANS 4:13 ${isQteCritical ? 'HOLY CRITICAL!' : 'SMITE!'} GLOOM SHIELD SHATTERED! (-${shatterDmg} DMG)`;
           triggerHeroAnimation('attack', isQteCritical ? '💥 3.5x SHIELD CRITICAL!' : '✨ PHIL 4:13 SMITE!', 600);
           triggerBossAnimation('damage', `💥 -${shatterDmg} SHATTER!`, 650);
+          if (narrateVerses) {
+            voiceNarrator.speak("Philippians 4:13! I can do all things through Christ who strengthens me!");
+          }
         } else {
           bossHp = Math.max(0, bossHp - baseDmg);
           soundEngine.verse(verses);
           log = `✨ PHILIPPIANS 4:13 SMITE! -${baseDmg} DMG!`;
           triggerHeroAnimation('attack', '✨ PHILIPPIANS 4:13!', 550);
           triggerBossAnimation('damage', `-${baseDmg} DMG!`, 550);
+          if (narrateVerses) {
+            voiceNarrator.speak("Philippians 4:13! Holy smite!");
+          }
         }
       } else {
         triggerHeroAnimation('attack', `⚔️ ${card.name.toUpperCase()}!`, 550);
         triggerBossAnimation('damage', `-${baseDmg} DMG!`, 550);
+        if (narrateVerses) {
+          voiceNarrator.speak(`${card.name}! ${card.txt}`);
+        }
         // Standard card resolution
         if (card.sound === 'thunder') soundEngine.thunder();
         else if (card.sound === 'shield') soundEngine.shield();
@@ -401,6 +422,9 @@ export default function App() {
       // Check victory
       if (bossHp <= 0) {
         soundEngine.victory();
+        if (narrateVerses) {
+          voiceNarrator.speak("Victory achieved! In Lumine Veritas! May Jesus Reign!");
+        }
         const score = Math.min(
           999999999,
           Math.round((prev.valuation * prev.momentum) + (prev.security * 25) + (verses * 500))
@@ -513,15 +537,16 @@ export default function App() {
       const newEnergy = Math.min(prev.maxEnergy, prev.energy + energyBonus + 1);
       const newTurn = prev.turn + 1;
       const perfectCount = prev.perfectDodgesCount + (result === 'PERFECT' ? 1 : 0);
+      const newCombo = result === 'MISS' ? 0 : prev.combo;
 
       let log = '';
       if (result === 'PERFECT') {
-        log = `✨ PERFECT DODGE! Zero damage taken and gained +1 Energy! (Boss missed)`;
+        log = `✨ PERFECT DODGE! Zero damage taken, +1⚡ Energy, and COMBO x${prev.combo} preserved!`;
       } else if (result === 'GOOD') {
-        log = `🛡️ GOOD DODGE! Glanced blow for -${finalDamage} DMG!`;
+        log = `🛡️ GOOD DODGE! Glanced blow for -${finalDamage} DMG! Combo x${prev.combo} held.`;
       } else {
         soundEngine.hurt();
-        log = `💥 MISS! Boss hit for full -${finalDamage} DMG!`;
+        log = `💥 MISS! Boss hit for full -${finalDamage} DMG!${prev.combo > 1 ? ` (Combo x${prev.combo} broken!)` : ''}`;
       }
 
       // Mission update
@@ -557,6 +582,7 @@ export default function App() {
         hp: newHp,
         energy: newEnergy,
         turn: newTurn,
+        combo: newCombo,
         perfectDodgesCount: perfectCount,
         missions: updatedMissions,
         achievements: updatedAch,
@@ -750,6 +776,15 @@ export default function App() {
               title="Procedural Sound Tester"
             >
               <span className="text-xs">🎧</span>
+            </button>
+
+            <button
+              onClick={() => setShowVoiceModal(true)}
+              className="bg-amber-950/60 hover:bg-amber-900/70 border border-amber-500/50 px-2 py-1 rounded-lg text-xs font-mono font-bold text-amber-300 flex items-center gap-1 cursor-pointer transition shadow-sm"
+              title="Voice Narration & Sound Persona Changer"
+            >
+              <Mic size={13} className="text-amber-400" />
+              <span className="hidden sm:inline">VOICE</span>
             </button>
 
             <button
@@ -1285,13 +1320,6 @@ export default function App() {
                 <span className="text-xs font-mono text-slate-300">
                   TURN {state.turn}
                 </span>
-                <span className={`text-xs font-mono font-black px-2 py-0.5 rounded ${
-                  state.combo > 1 
-                    ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-400 animate-pulse' 
-                    : 'text-slate-500'
-                }`}>
-                  COMBO x{state.combo} {state.combo > 1 && `(${((1 + (state.combo - 1) * 0.25)).toFixed(2)}x DMG)`}
-                </span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -1299,6 +1327,16 @@ export default function App() {
                   ⚡ ENERGY {state.energy}/{state.maxEnergy}
                 </span>
               </div>
+            </div>
+
+            {/* Visual Combo Multiplier Indicator */}
+            <div className="mb-3.5">
+              <ComboMultiplierBadge 
+                combo={state.combo}
+                multiplier={1.0 + Math.min(2.0, Math.max(0, state.combo - 1) * 0.25)}
+                selectedCardDamage={BATTLE_CARDS.find(c => c.id === selectedCardId)?.dmg || null}
+                selectedCardName={BATTLE_CARDS.find(c => c.id === selectedCardId)?.name || null}
+              />
             </div>
 
             {/* Responsive Grid: 2 columns on desktop (max 1100px), single column on mobile */}
@@ -1414,7 +1452,15 @@ export default function App() {
                     onClick={() => goToScreen('pray')}
                     className="flex-1 py-2 bg-[#10183b] hover:bg-[#16214f] border border-slate-800 text-cyan-300 font-bold text-xs rounded-xl transition cursor-pointer"
                   >
-                    🙏 PRAY FOR PREY
+                    🙏 PRAY & AI
+                  </button>
+                  <button
+                    onClick={() => setShowVoiceModal(true)}
+                    className="flex-1 py-2 bg-[#121c45] hover:bg-[#19275e] border border-amber-500/40 text-amber-300 font-bold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-1 shadow-sm"
+                    title="Voice Persona & Sound Changer"
+                  >
+                    <Mic size={12} className="text-amber-400" />
+                    <span>VOICE</span>
                   </button>
                   <button
                     onClick={() => goToScreen('shop')}
@@ -1426,7 +1472,7 @@ export default function App() {
                     onClick={() => goToScreen('map')}
                     className="flex-1 py-2 bg-[#10183b] hover:bg-[#16214f] border border-slate-800 text-slate-300 font-bold text-xs rounded-xl transition cursor-pointer"
                   >
-                    🗺️ CAMPAIGN MAP
+                    🗺️ MAP
                   </button>
                 </div>
               </div>
@@ -1585,9 +1631,16 @@ export default function App() {
                           </div>
 
                           <div className="mt-2 pt-1.5 border-t border-slate-300/40 flex items-center justify-between text-[10px] font-mono">
-                            <span className={`font-bold ${c.isLegendary ? 'text-cyan-300' : 'text-cyan-700'}`}>
-                              {c.dmg} DMG
-                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className={`font-bold ${c.isLegendary ? 'text-cyan-300' : 'text-cyan-700'}`}>
+                                {c.dmg} DMG
+                              </span>
+                              {state.combo > 1 && (
+                                <span className="text-[9px] font-black text-amber-300 bg-amber-950/90 px-1 py-0.2 rounded border border-amber-500/50 shadow-sm animate-pulse">
+                                  ➔ {Math.round(c.dmg * (1.0 + Math.min(2.0, (state.combo - 1) * 0.25)))}
+                                </span>
+                              )}
+                            </div>
                             <span className={c.isLegendary ? 'text-amber-200' : 'text-slate-500'}>
                               {c.sound.toUpperCase()} FX
                             </span>
@@ -1605,7 +1658,14 @@ export default function App() {
                       className="py-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-300 disabled:opacity-40 text-black font-black text-xs sm:text-sm rounded-xl shadow-[0_0_15px_rgba(255,215,0,0.4)] transition cursor-pointer flex items-center justify-center gap-1.5"
                     >
                       <Zap size={16} />
-                      <span>PLAY SELECTED</span>
+                      <span>
+                        PLAY SELECTED
+                        {selectedCardId && (
+                          <span className="ml-1 opacity-90 font-mono text-[11px]">
+                            ({Math.round((BATTLE_CARDS.find(c => c.id === selectedCardId)?.dmg || 0) * (1.0 + Math.min(2.0, Math.max(0, state.combo - 1) * 0.25)))} DMG)
+                          </span>
+                        )}
+                      </span>
                     </button>
 
                     <button
@@ -1633,6 +1693,14 @@ export default function App() {
             <p className="text-xs text-cyan-300 font-mono mb-4">
               Consecrate the fellowship • Reveal the shadows • Hunt for Faith Fragments
             </p>
+
+            {/* AI Prophetic Devotional & Voice Narrator Card */}
+            <div className="mb-4">
+              <AIDevotionalCard 
+                chapter={state.chapter} 
+                onOpenVoiceSettings={() => setShowVoiceModal(true)}
+              />
+            </div>
 
             <div className="bg-[#0f1738] border-2 border-purple-500/70 rounded-3xl p-5 shadow-lg space-y-4 mb-4 text-center">
               {/* Real Gloom Trooper Photo Prey Card */}
@@ -1923,6 +1991,14 @@ export default function App() {
         />
       )}
 
+      {/* Voice Narration & Persona Changer Modal */}
+      <VoiceSettingsModal
+        isOpen={showVoiceModal}
+        onClose={() => setShowVoiceModal(false)}
+        narrateVerses={narrateVerses}
+        onToggleNarrateVerses={setNarrateVerses}
+      />
+
       {/* Leaderboard Modal */}
       {showLeaderboard && (
         <LeaderboardModal
@@ -1960,6 +2036,7 @@ export default function App() {
           onDeleteAllData={handleDeleteAllData}
           onClose={() => setShowSettings(false)}
           initialTab={settingsInitialTab}
+          onOpenVoiceSettings={() => setShowVoiceModal(true)}
         />
       )}
 

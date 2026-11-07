@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GameState } from '../types';
-import { Settings, Download, Upload, Trash2, Volume2, ShieldCheck, Check, AlertTriangle, X } from 'lucide-react';
+import { Settings, Download, Upload, Trash2, Volume2, ShieldCheck, Check, AlertTriangle, X, Mic } from 'lucide-react';
 import { soundEngine } from '../sound/audio';
 
 interface SettingsModalProps {
@@ -9,6 +9,7 @@ interface SettingsModalProps {
   onDeleteAllData: () => void;
   onClose: () => void;
   initialTab?: 'settings' | 'privacy';
+  onOpenVoiceSettings?: () => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -17,6 +18,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onDeleteAllData,
   onClose,
   initialTab = 'settings',
+  onOpenVoiceSettings,
 }) => {
   const [activeTab, setActiveTab] = useState<'settings' | 'privacy'>(initialTab);
   const [copied, setCopied] = useState<boolean>(false);
@@ -162,6 +164,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <Upload size={14} />
                 <span>RESTORE SAVE FROM JSON</span>
               </button>
+            </div>
+
+            {/* Voice Narration & Sound Changer */}
+            <div className="bg-[#121c45] border border-amber-500/40 rounded-xl p-3.5">
+              <h4 className="text-xs font-bold text-amber-300 font-serif mb-1 flex items-center gap-2">
+                <Mic size={14} className="text-amber-400" />
+                VOICE NARRATION & SOUND PERSONAS
+              </h4>
+              <p className="text-[11px] text-slate-300 mb-2.5">
+                Configure voice personas (Samantha Crowned, Big Beastie, Vann Herald, Synth Oracle) and pitch/cadence sound warping.
+              </p>
+              {onOpenVoiceSettings && (
+                <button
+                  onClick={() => { onClose(); onOpenVoiceSettings(); }}
+                  className="w-full py-2 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 text-black font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer shadow"
+                >
+                  <Mic size={14} />
+                  <span>OPEN VOICE CHANGER & SOUND SETTINGS</span>
+                </button>
+              )}
             </div>
 
             {/* Delete All Data (GDPR Compliant) */}
