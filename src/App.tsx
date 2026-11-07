@@ -49,6 +49,10 @@ import { VoiceSettingsModal } from './components/VoiceSettingsModal';
 import { AIDevotionalCard } from './components/AIDevotionalCard';
 import { voiceNarrator } from './sound/voiceNarrator';
 import { Footer } from './components/Footer';
+import { HomeView } from './components/HomeView';
+import { NodesView } from './components/NodesView';
+import { UpgradesView } from './components/UpgradesView';
+import { BoardView } from './components/BoardView';
 import { 
   Volume2, 
   VolumeX, 
@@ -71,7 +75,7 @@ import {
 const LOCAL_STORAGE_KEY = 'christfire_omega_v9_save';
 
 const DEFAULT_STATE: GameState = {
-  screen: 'title',
+  screen: 'home',
   sound: true,
   vol: 0.7,
   valuation: 1000,
@@ -91,7 +95,7 @@ const DEFAULT_STATE: GameState = {
   turn: 1,
   combo: 0,
   log: '',
-  strategy: '',
+  strategy: 'ARCHITECT',
   crownUsed: false,
   chapter: 1,
   dailyStreak: 1,
@@ -103,8 +107,10 @@ const DEFAULT_STATE: GameState = {
   shieldsShatteredCount: 0,
   crownsUsedCount: 0,
   protocolAlloc: 40,
-  productAlloc: 40,
-  liquidityAlloc: 20,
+  productAlloc: 30,
+  liquidityAlloc: 30,
+  upgrades: {},
+  unlockedNodes: [1, 2],
 };
 
 export default function App() {
@@ -113,7 +119,12 @@ export default function App() {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        return { ...DEFAULT_STATE, ...parsed };
+        return { 
+          ...DEFAULT_STATE, 
+          ...parsed,
+          upgrades: parsed.upgrades || {},
+          unlockedNodes: parsed.unlockedNodes || [1, 2],
+        };
       }
     } catch {
       // fallback to default
@@ -332,7 +343,18 @@ export default function App() {
       let shieldsShattered = prev.shieldsShatteredCount;
       let crownsCount = prev.crownsUsedCount;
 
-      let baseDmg = Math.round(card.dmg * comboMultiplier);
+      const activeUpgrades = prev.upgrades || {};
+      const beastie1Bonus = (activeUpgrades['beastie1'] || 0) * 50;
+      const beastie2Bonus = (activeUpgrades['beastie2'] || 0) * 25;
+      const sam2Bonus = (activeUpgrades['sam2'] || 0) > 0 ? 1.5 : 1.0;
+      const verse1Heal = (activeUpgrades['verse1'] || 0) * 50;
+
+      let cardDamage = card.dmg;
+      if (card.id === 'phil') cardDamage += beastie1Bonus;
+      if (card.id === 'burn' || card.name.includes('Aura')) cardDamage += beastie2Bonus;
+      if (card.id === 'crown') cardDamage = Math.round((cardDamage + 600) * sam2Bonus);
+
+      let baseDmg = Math.round(cardDamage * comboMultiplier);
 
       if (card.id === 'crown') {
         crownUsed = true;
@@ -386,7 +408,7 @@ export default function App() {
         else soundEngine.strike();
 
         if (card.heals) {
-          partyHp = Math.min(1000, partyHp + card.heals);
+          partyHp = Math.min(1000, partyHp + card.heals + verse1Heal);
         }
 
         if (bossShield > 0) {
@@ -451,15 +473,20 @@ export default function App() {
           return a;
         });
 
+        // Unlock next campaign node
+        const nextChapter = prev.chapter + 1;
+        const updatedUnlockedNodes = Array.from(new Set([...(prev.unlockedNodes || [1, 2]), nextChapter]));
+
         return {
           ...prev,
           bossHp: 0,
           bossShield: 0,
           valuation: prev.valuation + 500,
-          fragments: prev.fragments + 150,
+          fragments: prev.fragments + 500,
+          unlockedNodes: updatedUnlockedNodes,
           verses,
           combo,
-          log: `🏆 CHAPTER ${prev.chapter} BOSS SLAIN! In Lumine Veritas!`,
+          log: `🏆 CHAPTER ${prev.chapter} BOSS SLAIN! +500 💎 Fragments Awarded! In Lumine Veritas!`,
           missions: updatedMissions,
           achievements: achWithBoss,
           leaderboard: newLeaderboard,
@@ -810,10 +837,224 @@ export default function App() {
         </div>
       </header>
 
+      {/* User Prototype Title Lockup */}
+      <div className="max-w-6xl w-full mx-auto px-3 pt-3 pb-1 text-center">
+        <h1 className="text-2xl sm:text-3xl font-serif font-black text-amber-400 tracking-wider m-0">
+          ✝️ CHRISTFIRE
+        </h1>
+        <h2 className="text-sm sm:text-base font-mono font-bold text-cyan-400 tracking-widest mt-0.5 mb-1">
+          OMEGA GRAND SCHEME - BEASTIE
+        </h2>
+        <p className="text-xs text-slate-400">
+          Pray For Prey - Card Battle • IN LUMINE VERITAS • May Jesus Reign
+        </p>
+
+        {/* Top Status Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 my-2.5">
+          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
+            💎 FRAGMENTS: <b className="text-amber-400 font-black">{state.fragments}</b>
+          </div>
+          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
+            💰 VAL: <b className="text-amber-400 font-black">{state.valuation}</b>
+          </div>
+          <div className="bg-[#11182E] border border-cyan-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
+            🛡️ SEC: <span className="text-cyan-400 font-black">{state.security}</span>
+          </div>
+          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
+            🔥 STREAK: <span className="text-amber-300 font-bold">Day {state.dailyStreak}</span>
+          </div>
+          <div className="bg-[#11182E] border border-cyan-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
+            ⚡ ENERGY: <span className="text-cyan-400 font-bold">{state.energy} / {state.maxEnergy}</span>
+          </div>
+          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
+            📖 VERSES: <span className="text-amber-400 font-bold">{state.verses}</span>
+          </div>
+        </div>
+
+        {/* 7 Prototype Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-3">
+          {[
+            { id: 'home', label: '🏠 HOME' },
+            { id: 'nodes', label: '🗺️ NODES' },
+            { id: 'upgrades', label: '⬆️ UPGRADES' },
+            { id: 'battle', label: '⚔️ BATTLE' },
+            { id: 'pray', label: '🙏 PRAY FOR PREY' },
+            { id: 'shop', label: '🛒 SHOP' },
+            { id: 'board', label: '🏆 BOARD' },
+          ].map((tab) => {
+            const isActive = 
+              state.screen === tab.id ||
+              (tab.id === 'home' && (state.screen === 'title' || state.screen === 'prologue' || state.screen === 'strategy' || state.screen === 'treasury')) ||
+              (tab.id === 'nodes' && state.screen === 'map');
+
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  soundEngine.click();
+                  if (tab.id === 'battle' && state.bossHp <= 0) {
+                    startBattle(state.chapter || 1);
+                  } else {
+                    goToScreen(tab.id as ScreenType);
+                  }
+                }}
+                className={`px-3.5 py-2 rounded-full font-extrabold text-xs tracking-wider transition-all cursor-pointer shadow-md active:scale-95 ${
+                  isActive
+                    ? 'bg-amber-400 text-slate-950 border border-amber-300 shadow-[0_0_12px_rgba(255,215,0,0.4)] scale-105'
+                    : 'bg-[#11182E] text-slate-200 border border-slate-700 hover:border-amber-400/50 hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Main Viewport Container */}
       <main className="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col justify-center">
         {/* ========================================================
-            SCREEN: TITLE
+            SCREEN: HOME
+        ======================================================== */}
+        {state.screen === 'home' && (
+          <HomeView
+            state={state}
+            onSelectScreen={(scr) => goToScreen(scr)}
+            onUpdateStrategy={(strat) => pickStrategy(strat)}
+            onUpdateTreasury={(pr, pd, lq) => {
+              const newSec = 60 + Math.round(pr * 0.8);
+              const newVal = 800 + Math.round(pd * 15);
+              const newFaith = 40 + Math.round(lq * 1.5);
+              setState(prev => ({
+                ...prev,
+                protocolAlloc: pr,
+                productAlloc: pd,
+                liquidityAlloc: lq,
+                security: newSec,
+                valuation: newVal,
+                faith: newFaith,
+              }));
+            }}
+            onLogMessage={(msg) => setState(prev => ({ ...prev, log: msg }))}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: NODES
+        ======================================================== */}
+        {state.screen === 'nodes' && (
+          <NodesView
+            state={state}
+            onStartNodeBattle={(ch) => startBattle(ch)}
+            onClaimMiracleReward={() => {
+              soundEngine.powerUp();
+              setState(prev => ({
+                ...prev,
+                fragments: prev.fragments + 120,
+                faith: prev.faith + 40,
+                log: '✨ Miracle Fountain Restored! +120 Fragments and +40 Faith!',
+              }));
+            }}
+            onStartPreyHunt={() => startBattle(0)}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: UPGRADES
+        ======================================================== */}
+        {state.screen === 'upgrades' && (
+          <UpgradesView
+            state={state}
+            onUpgrade={(upgradeId, cost) => {
+              if (state.fragments < cost) {
+                soundEngine.hurt();
+                return;
+              }
+              soundEngine.powerUp();
+              setState(prev => {
+                const currentLevel = (prev.upgrades || {})[upgradeId] || 0;
+                const newUpgrades = { ...(prev.upgrades || {}), [upgradeId]: currentLevel + 1 };
+                let newSec = prev.security;
+                let newVal = prev.valuation;
+                if (upgradeId === 'verse1') {
+                  newSec += 40;
+                  newVal += 250;
+                }
+                return {
+                  ...prev,
+                  fragments: prev.fragments - cost,
+                  security: newSec,
+                  valuation: newVal,
+                  upgrades: newUpgrades,
+                  log: `⬆️ Upgraded ${upgradeId} to Level ${currentLevel + 1}!`,
+                };
+              });
+            }}
+            onClaimDailyFragments={() => {
+              soundEngine.powerUp();
+              setState(prev => ({
+                ...prev,
+                fragments: prev.fragments + 50,
+                dailyStreak: prev.dailyStreak + 1,
+                log: '🎁 Claimed Daily Prayer Reward: +50 Fragments!',
+              }));
+            }}
+            onReturnToNodes={() => goToScreen('nodes')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: BOARD
+        ======================================================== */}
+        {state.screen === 'board' && (
+          <BoardView
+            state={state}
+            onSaveScore={(playerName) => {
+              const curScore = Math.min(
+                999999999,
+                Math.floor((state.valuation * state.momentum) + (state.security * 25) + (state.verses * 500))
+              );
+              const newEntry = {
+                id: `entry_${Date.now()}`,
+                playerName,
+                score: curScore,
+                chapter: state.chapter,
+                valuation: state.valuation,
+                momentum: state.momentum,
+                verses: state.verses,
+                date: new Date().toLocaleDateString(),
+              };
+              setState(prev => ({
+                ...prev,
+                leaderboard: [newEntry, ...(prev.leaderboard || [])].sort((a, b) => b.score - a.score),
+              }));
+            }}
+            onExportSave={() => {
+              const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+              const downloadAnchor = document.createElement('a');
+              downloadAnchor.setAttribute("href", dataStr);
+              downloadAnchor.setAttribute("download", `christfire_save_${Date.now()}.json`);
+              document.body.appendChild(downloadAnchor);
+              downloadAnchor.click();
+              downloadAnchor.remove();
+            }}
+            onImportSave={(jsonStr) => {
+              try {
+                const parsed = JSON.parse(jsonStr);
+                setState(prev => ({ ...prev, ...parsed }));
+              } catch {
+                alert('Invalid JSON save string!');
+              }
+            }}
+            onResetGame={() => {
+              localStorage.removeItem(LOCAL_STORAGE_KEY);
+              setState(DEFAULT_STATE);
+            }}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: TITLE (ALTERNATE VIEW)
         ======================================================== */}
         {state.screen === 'title' && (
           <div className="max-w-2xl mx-auto w-full animate-fadeIn">
@@ -1932,26 +2173,27 @@ export default function App() {
 
             <div className="space-y-2.5">
               <button
-                onClick={handleNewRun}
+                onClick={() => goToScreen('upgrades')}
                 className="w-full py-3.5 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 text-black font-black text-sm rounded-2xl shadow-lg transition cursor-pointer flex items-center justify-center gap-2"
               >
-                <RotateCcw size={16} />
-                <span>START NEW RUN</span>
+                <span>⬆️</span>
+                <span>SPEND FRAGMENTS IN UPGRADES</span>
               </button>
 
               <button
-                onClick={() => setShowLeaderboard(true)}
+                onClick={() => goToScreen('nodes')}
                 className="w-full py-3 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 text-black font-black text-xs rounded-2xl shadow transition cursor-pointer flex items-center justify-center gap-2"
               >
-                <Trophy size={16} />
-                <span>VIEW LEADERBOARD TOP 10</span>
+                <span>🗺️</span>
+                <span>RETURN TO CAMPAIGN NODES</span>
               </button>
 
               <button
-                onClick={() => goToScreen('title')}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl transition cursor-pointer"
+                onClick={() => goToScreen('board')}
+                className="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-2"
               >
-                RETURN TO TITLE
+                <Trophy size={14} />
+                <span>GLOBAL BOARD & RECORDS</span>
               </button>
             </div>
           </div>

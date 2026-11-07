@@ -168,6 +168,13 @@ class SoundEngine {
     this.tone(1046.5, 0.9, 'sine', 0.35, 0.55);
   }
 
+  public powerUp() {
+    const notes = [440, 554.37, 659.25, 880];
+    notes.forEach((f, i) => {
+      this.tone(f, 0.35, 'triangle', 0.22, i * 0.07);
+    });
+  }
+
   public dodgePerfect() {
     this.tone(1046.5, 0.15, 'sine', 0.3);
     this.tone(1318.5, 0.25, 'sine', 0.35, 0.08);

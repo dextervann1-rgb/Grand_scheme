@@ -11,11 +11,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenSettings })
       <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
         <span className="font-semibold text-amber-400">© 2026 Vann Family Ventures LLC. All Rights Reserved.</span>
         <span className="text-slate-600">|</span>
-        <span className="text-cyan-400 font-bold tracking-wider">ChristFire: Omega Protocol</span>
+        <span className="text-cyan-400 font-bold tracking-wider">ChristFire: OMEGA Grand Scheme - Beastie</span>
         <span className="text-slate-600">|</span>
         <span className="text-amber-300 font-serif italic">IN LUMINE VERITAS</span>
         <span className="text-slate-600">|</span>
         <span className="text-amber-400 font-bold">May Jesus Reign</span>
+        <span className="text-slate-600">|</span>
+        <span className="text-slate-400 font-mono text-[9px]">No Godot • No Unity • No Royalties</span>
         <span className="text-slate-600">|</span>
         <button 
           onClick={onOpenPrivacy}

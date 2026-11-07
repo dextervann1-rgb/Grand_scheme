@@ -1,12 +1,16 @@
 export type ScreenType = 
+  | 'home'
+  | 'nodes'
+  | 'upgrades'
+  | 'battle'
+  | 'pray'
+  | 'shop'
+  | 'board'
   | 'title' 
   | 'prologue' 
   | 'strategy' 
   | 'treasury' 
   | 'map' 
-  | 'battle' 
-  | 'pray' 
-  | 'shop' 
   | 'victory';
 
 export type StrategyType = 'ARCHITECT' | 'VELOCITY' | 'GUARDIAN' | '';
@@ -108,4 +112,7 @@ export interface GameState {
   protocolAlloc: number;
   productAlloc: number;
   liquidityAlloc: number;
+  // Upgrades & Nodes progression
+  upgrades: Record<string, number>;
+  unlockedNodes: number[];
 }
