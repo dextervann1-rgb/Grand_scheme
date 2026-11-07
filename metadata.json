@@ -1,0 +1,6 @@
+{
+  "name": "ChristFire: Omega Protocol",
+  "description": "Cyber-cathedral strategic card battler with real-time dodge mechanics, VannDiamond Crown power, faith progression, and procedural WebAudio soundscape.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

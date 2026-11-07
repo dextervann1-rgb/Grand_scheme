@@ -1,0 +1,306 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #05070f;
+    color: #ffffff;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'Cinzel', serif;
+  }
+
+  .font-mono {
+    font-family: 'Orbitron', monospace;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px) rotate(-0.5deg); }
+  40% { transform: translateX(8px) rotate(0.5deg); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+@keyframes holyFlash {
+  0% { background-color: rgba(255, 215, 0, 0.45); }
+  100% { background-color: transparent; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.shake {
+  animation: shake 0.38s ease-in-out;
+}
+
+.flash {
+  animation: holyFlash 0.35s ease-out;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.28s ease-out;
+}
+
+/* ============================================================
+   SPRITE ANIMATION SYSTEM: KEYFRAME CSS FOR HERO & BOSS COMBAT
+   ============================================================ */
+
+/* Hero Attack Lunge: Anticipation -> Kinetic Dash -> Holy Burst -> Return */
+@keyframes heroAttackLunge {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  20% {
+    transform: translate(-14px, 4px) scale(0.96) rotate(-3deg);
+    filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
+  }
+  45% {
+    transform: translate(32px, -8px) scale(1.14) rotate(4deg);
+    filter: brightness(1.6) drop-shadow(0 0 35px #FFD700) drop-shadow(0 0 15px #00E5FF);
+  }
+  70% {
+    transform: translate(16px, -2px) scale(1.06) rotate(1deg);
+    filter: brightness(1.3) drop-shadow(0 0 20px #FFD700);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+/* Hero Damage Stagger: Recoil -> Crimson Flash -> Glitch Vibrate -> Recovery */
+@keyframes heroDamageStagger {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    filter: brightness(1);
+  }
+  15% {
+    transform: translate(-26px, 6px) scale(0.92) rotate(-6deg);
+    filter: brightness(2.2) drop-shadow(0 0 30px #ef4444) saturate(1.8) hue-rotate(-20deg);
+  }
+  35% {
+    transform: translate(14px, -4px) scale(0.98) rotate(3deg);
+    filter: brightness(1.4) drop-shadow(0 0 20px #a855f7);
+  }
+  60% {
+    transform: translate(-8px, 2px) scale(1) rotate(-1deg);
+    filter: brightness(1.1);
+  }
+  80% {
+    transform: translate(4px, 0) scale(1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+/* Hero Dodge Phase: Quantum Speed Shift -> Cyan Afterimage Blur -> Emerge */
+@keyframes heroDodgePhase {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  25% {
+    transform: translate(-22px, -18px) scale(0.9) skewX(-14deg);
+    opacity: 0.3;
+    filter: drop-shadow(0 0 30px #00E5FF) brightness(1.8);
+  }
+  60% {
+    transform: translate(18px, 10px) scale(1.06) skewX(8deg);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 20px #00E5FF);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) skewX(0deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.4));
+  }
+}
+
+/* Hero VannDiamond Crown Super Burst: Divine Ascendance & Golden Radiance */
+@keyframes heroCrownBurst {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  25% {
+    transform: scale(0.92) translateY(6px);
+    filter: brightness(1.3) drop-shadow(0 0 15px #FFD700);
+  }
+  50% {
+    transform: scale(1.22) translateY(-14px);
+    filter: brightness(2.2) drop-shadow(0 0 50px #FFD700) drop-shadow(0 0 30px #FFFFFF);
+  }
+  75% {
+    transform: scale(1.1) translateY(-6px);
+    filter: brightness(1.5) drop-shadow(0 0 35px #FFD700);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    filter: brightness(1);
+  }
+}
+
+/* Hero Idle Breathing Float */
+@keyframes heroIdleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Boss Damage Stagger: Violent Recoil & Dark Core Destabilization */
+@keyframes bossDamageShake {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    filter: brightness(1);
+  }
+  15% {
+    transform: translate(18px, -6px) scale(0.95) rotate(4deg);
+    filter: brightness(2.2) drop-shadow(0 0 35px #FF3B3B) hue-rotate(25deg);
+  }
+  35% {
+    transform: translate(-14px, 4px) scale(1.02) rotate(-3deg);
+    filter: brightness(1.5) drop-shadow(0 0 20px #9333ea);
+  }
+  60% {
+    transform: translate(8px, -2px) rotate(1deg);
+  }
+  80% {
+    transform: translate(-4px, 1px);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+}
+
+/* Boss Attack Strike: Menacing Downward Surge */
+@keyframes bossAttackLunge {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(12px, -8px) scale(1.04);
+    filter: drop-shadow(0 0 20px #a855f7);
+  }
+  50% {
+    transform: translate(-28px, 14px) scale(1.16);
+    filter: brightness(1.7) drop-shadow(0 0 40px #a855f7) drop-shadow(0 0 15px #ef4444);
+  }
+  75% {
+    transform: translate(-12px, 6px) scale(1.05);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/* Slash Energy FX Overlay */
+@keyframes slashSwipe {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3) rotate(-45deg);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.3) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.6) rotate(35deg);
+  }
+}
+
+/* Floating Combat Numbers */
+@keyframes floatCombatNumber {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.7);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -22px) scale(1.35);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -46px) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -64px) scale(0.9);
+  }
+}
+
+/* Sprite Animation Utility Classes */
+.sprite-hero-attack {
+  animation: heroAttackLunge 0.55s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+  will-change: transform, filter;
+}
+
+.sprite-hero-damage {
+  animation: heroDamageStagger 0.5s ease-in-out forwards;
+  will-change: transform, filter;
+}
+
+.sprite-hero-dodge {
+  animation: heroDodgePhase 0.45s ease-out forwards;
+  will-change: transform, opacity, filter;
+}
+
+.sprite-hero-crown {
+  animation: heroCrownBurst 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, filter;
+}
+
+.sprite-hero-idle {
+  animation: heroIdleFloat 3.2s ease-in-out infinite;
+}
+
+.sprite-boss-damage {
+  animation: bossDamageShake 0.52s ease-in-out forwards;
+  will-change: transform, filter;
+}
+
+.sprite-boss-attack {
+  animation: bossAttackLunge 0.55s ease-out forwards;
+  will-change: transform, filter;
+}
+
+.fx-slash-swipe {
+  animation: slashSwipe 0.45s ease-out forwards;
+}
+
+.fx-combat-number {
+  animation: floatCombatNumber 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom slick dark scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090e22;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #23315d;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffd700;
+}
