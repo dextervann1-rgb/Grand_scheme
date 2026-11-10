@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "ChristFire: OMEGA Grand Scheme - Beastie",
+  "short_name": "ChristFire",
+  "description": "Pray For Prey - Card Battle • IN LUMINE VERITAS • May Jesus Reign.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#05070F",
+  "background_color": "#05070F",
+  "categories": ["games", "role-playing", "strategy"],
+  "icons": [
+    {
+      "src": "/assets/aistudio/893429077_2176797186264668_3990998231257042896_n_5b1de633.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/aistudio/893429077_2176797186264668_3990998231257042896_n_5b1de633.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ]
+}
