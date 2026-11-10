@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- © 2026 Vann Family Ventures LLC | Dexter Vann / dextervann1-rgb | IN LUMINE VERITAS • May Jesus Reign -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.vannfamilyventures.christfire">
+    package="com.vannfamilyventures.christfire.omega.grandscheme.beastie">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -8,9 +9,10 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="ChristFire: Omega Protocol"
+        android:label="ChristFire: OMEGA Grand Scheme - Beastie"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
         <activity

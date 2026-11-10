@@ -1,0 +1,18 @@
+// © 2026 Vann Family Ventures LLC | Dexter Vann / dextervann1-rgb
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "ChristFire-OMEGA"
+include ':app'

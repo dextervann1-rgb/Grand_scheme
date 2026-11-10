@@ -64,6 +64,7 @@ import { AscensionRosterView } from './components/AscensionRosterView';
 import { MarketplaceView } from './components/MarketplaceView';
 import { BFFDexAIView } from './components/BFFDexAIView';
 import { WorkflowView } from './components/WorkflowView';
+import { AabIconView } from './components/AabIconView';
 import { 
   Volume2, 
   VolumeX, 
@@ -80,7 +81,8 @@ import {
   Compass, 
   RotateCcw,
   Play,
-  Mic
+  Mic,
+  Smartphone
 } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'christfire_omega_v10_save';
@@ -89,9 +91,13 @@ const DEFAULT_TASKS = [
   "✅ CF-001 Samantha Crowned Ascension — DONE v10.1",
   "CF-002 John Thunder Ascension — QUEUED",
   "CF-003 Silas Unchained Ascension — QUEUED",
-  "CF-004 Overlord Playable Ascension",
-  "CF-005 Phantasm Playable Ascension",
-  "CF-006 Fix AAB Icon — Beastie+Samantha"
+  "CF-004 Overlord Playable Ascension — QUEUED",
+  "CF-005 Phantasm Playable Ascension — QUEUED",
+  "✅ CF-006 AAB Icon — Beastie+Samantha — DONE (Dex Yes) v10.5",
+  "CF-007 LOWKEY & ABADDON Art Showcase — QUEUED",
+  "CF-008 BFF-DEX-AI Console Integration — QUEUED",
+  "CF-009 Tribute to Benjamin, Brenda, Bianca, Beastie, Beulah — QUEUED",
+  "CF-010 AAB Test & Play Console Deployment — QUEUED"
 ];
 
 const DEFAULT_STATE: GameState = {
@@ -1018,7 +1024,7 @@ export default function App() {
           OMEGA GRAND SCHEME - BEASTIE
         </h2>
         <p className="text-xs text-slate-400">
-          v10.1 — CF-001 SAMANTHA CROWNED ASCENSION ✅ DONE • IN LUMINE VERITAS • May Jesus Reign
+          v10.5 Master • CF-006 AAB ICON ✅ DONE (Dex Yes) • Android Studio AAB • IN LUMINE VERITAS • May Jesus Reign
         </p>
 
         {/* Top Status Pills */}
@@ -1035,12 +1041,16 @@ export default function App() {
           <div className="bg-[#11182E] border border-emerald-500/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300">
             🤖 BFF-DEX-AI: <b className="text-emerald-400">ONLINE</b>
           </div>
-          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-amber-300">
-            👑 NEW: <b className="text-amber-400">SAMANTHA ASCENSION</b>
-          </div>
+          <button 
+            onClick={() => goToScreen('aab')}
+            className="bg-[#11182E] border border-emerald-400/80 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <Smartphone size={13} className="text-emerald-400" />
+            <span>CF-006 ICON:</span> <b className="text-emerald-400">✅ DONE (Dex Yes)</b>
+          </button>
         </div>
 
-        {/* The 8 v10.1 Tabs */}
+        {/* Navigation Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-3">
           {[
             { id: 'home', label: '🏠 HOME' },
@@ -1051,6 +1061,7 @@ export default function App() {
             { id: 'pray', label: '🙏 PRAY' },
             { id: 'oracle', label: '🤖 BFF-DEX-AI' },
             { id: 'workflow', label: '⚙️ WORKFLOW' },
+            { id: 'aab', label: '📦 AAB ICON (CF-006)' },
           ].map((tab) => {
             const isActive = 
               state.screen === tab.id ||
@@ -1159,6 +1170,15 @@ export default function App() {
           <WorkflowView
             tasks={state.workflowTasks || DEFAULT_TASKS}
             onAddTask={handleAddWorkflowTask}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: CF-006 AAB ICON & ANDROID STUDIO SPEC
+        ======================================================== */}
+        {state.screen === 'aab' && (
+          <AabIconView
+            onBackToHome={() => goToScreen('home')}
           />
         )}
 

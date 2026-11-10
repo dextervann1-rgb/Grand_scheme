@@ -12,16 +12,16 @@
   "categories": ["games", "role-playing", "strategy"],
   "icons": [
     {
-      "src": "/assets/aistudio/893429077_2176797186264668_3990998231257042896_n_5b1de633.webp",
-      "sizes": "192x192",
-      "type": "image/webp",
-      "purpose": "any"
+      "src": "/assets/ic_launcher_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "/assets/aistudio/893429077_2176797186264668_3990998231257042896_n_5b1de633.webp",
-      "sizes": "512x512",
-      "type": "image/webp",
-      "purpose": "any maskable"
+      "src": "/assets/ic_launcher.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

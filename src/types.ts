@@ -7,6 +7,7 @@ export type ScreenType =
   | 'pray'
   | 'oracle'
   | 'workflow'
+  | 'aab'
   | 'nodes'
   | 'upgrades'
   | 'shop'

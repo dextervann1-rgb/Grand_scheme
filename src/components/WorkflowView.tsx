@@ -31,17 +31,27 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl">⚙️</span>
-              <h3 className="text-base font-black text-amber-300 m-0">WORKFLOW — CF-001 DONE, CF-002 QUEUED</h3>
+              <h3 className="text-base font-black text-amber-300 m-0">WORKFLOW — CF-001 & CF-006 DONE</h3>
             </div>
 
             <div className="space-y-2 text-xs">
-              <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-emerald-300">
+              <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-emerald-300 space-y-1">
                 <span className="font-bold flex items-center gap-1.5 text-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   DONE: CF-001 Samantha Crowned Ascension
                 </span>
-                <p className="text-slate-300 text-[11px] mt-1">
+                <p className="text-slate-300 text-[11px] m-0">
                   Merged into v10.1 • Real Samantha likeness, +800 DMG, +500 Team Shield, WARDEN JUDGMENT, Judges 5:21.
+                </p>
+              </div>
+
+              <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-emerald-300 space-y-1">
+                <span className="font-bold flex items-center gap-1.5 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  DONE: CF-006 AAB Icon — Beastie+Samantha (Dex Yes)
+                </span>
+                <p className="text-slate-300 text-[11px] m-0">
+                  Locked for v10.5 Master • Master 1024×1024 PNG • Clean Android Studio AAB • <span className="text-amber-400 font-bold">NO PWABuilder (Dex said janky)</span>.
                 </p>
               </div>
 
@@ -52,23 +62,24 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
                 </p>
                 <p>• <b>CF-002:</b> John Thunder Ascension — Mark 3:17, reveals invisible Phantasm, stuns all</p>
                 <p>• <b>CF-003:</b> Silas Unchained Ascension — Acts 16:26, breaks CC, paralyzes shadow</p>
-                <p>• <b>CF-004:</b> Overlord Playable Ascension</p>
-                <p>• <b>CF-005:</b> Phantasm Playable Ascension</p>
-                <p>• <b>CF-006:</b> AAB Icon Lock — Beastie + Samantha official portrait</p>
-                <p>• <b>CF-007:</b> LOWKEY & ABADDON art showcase</p>
-                <p>• <b>CF-008:</b> BFF-DEX-AI console integration</p>
-                <p>• <b>CF-009:</b> Tribute to Benjamin, Brenda, Bianca, Beastie, Beulah</p>
-                <p>• <b>CF-010:</b> AAB Test & Google Play deployment</p>
+                <p>• <b>CF-004:</b> Overlord Playable Ascension — QUEUED</p>
+                <p>• <b>CF-005:</b> Phantasm Playable Ascension — QUEUED</p>
+                <p>• <b>CF-007:</b> LOWKEY & ABADDON art showcase — QUEUED</p>
+                <p>• <b>CF-008:</b> BFF-DEX-AI console integration — QUEUED</p>
+                <p>• <b>CF-009:</b> Tribute to Benjamin, Brenda, Bianca, Beastie, Beulah — QUEUED</p>
+                <p>• <b>CF-010:</b> AAB Test & Play Console testing — QUEUED</p>
               </div>
             </div>
           </div>
 
-          <button
-            onClick={() => alert('CF-001 merged successfully into v10.1. Ready for CF-002 John Thunder when Dexter says Yes.')}
-            className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
-          >
-            ✅ CF-001 MERGED — READY FOR CF-002
-          </button>
+          <div className="space-y-2">
+            <button
+              onClick={() => alert('CF-006 Locked: Beastie + Samantha side-by-side 1024x1024 icon. Clean Android Studio AAB project ready for Google Play Console.')}
+              className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
+            >
+              ✅ CF-006 LOCKED & VERIFIED (DEX YES)
+            </button>
+          </div>
         </div>
 
         {/* Card 2: Interactive Task Queue & Agent Runner */}

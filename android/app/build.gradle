@@ -1,17 +1,18 @@
+// © 2026 Vann Family Ventures LLC | Dexter Vann / dextervann1-rgb | IN LUMINE VERITAS • May Jesus Reign
 plugins {
     id 'com.android.application'
 }
 
 android {
-    namespace 'com.vannfamilyventures.christfire'
+    namespace 'com.vannfamilyventures.christfire.omega.grandscheme.beastie'
     compileSdkVersion 36
 
     defaultConfig {
-        applicationId "com.vannfamilyventures.christfire"
+        applicationId "com.vannfamilyventures.christfire.omega.grandscheme.beastie"
         minSdkVersion 24
         targetSdkVersion 36
-        versionCode 1
-        versionName "9.1.0"
+        versionCode 105
+        versionName "10.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
