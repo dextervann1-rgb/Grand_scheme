@@ -1,9 +1,14 @@
 export type ScreenType = 
   | 'home'
+  | 'asc'
+  | 'samantha'
+  | 'battle'
+  | 'market'
+  | 'pray'
+  | 'oracle'
+  | 'workflow'
   | 'nodes'
   | 'upgrades'
-  | 'battle'
-  | 'pray'
   | 'shop'
   | 'board'
   | 'title' 
@@ -28,6 +33,13 @@ export interface Card {
   heals?: number;
   armorBoost?: number;
   shieldShatterMultiplier?: number;
+  // v10.1 Ascension properties
+  tier?: 'Covenant' | 'Biblical' | 'Epic' | 'Ascension';
+  mult?: number;
+  equipped?: boolean;
+  teamShield?: number;
+  ability?: string;
+  isAscension?: boolean;
 }
 
 export interface EnemyBoss {
@@ -115,4 +127,7 @@ export interface GameState {
   // Upgrades & Nodes progression
   upgrades: Record<string, number>;
   unlockedNodes: number[];
+  // v10.1 Ascension & Workflow
+  inventory: Card[];
+  workflowTasks: string[];
 }

@@ -13,7 +13,13 @@ import {
   Card, 
   EnemyBoss 
 } from './types';
-import { BATTLE_CARDS } from './data/cards';
+import { 
+  BATTLE_CARDS, 
+  SAMANTHA_ASCENSION_CARD, 
+  LOWKEY_ASCENSION_CARD, 
+  ABADDON_ASCENSION_CARD, 
+  INITIAL_INVENTORY 
+} from './data/cards';
 import { 
   HEROES, 
   CHAPTER_BOSSES, 
@@ -53,6 +59,11 @@ import { HomeView } from './components/HomeView';
 import { NodesView } from './components/NodesView';
 import { UpgradesView } from './components/UpgradesView';
 import { BoardView } from './components/BoardView';
+import { SamanthaAscensionView } from './components/SamanthaAscensionView';
+import { AscensionRosterView } from './components/AscensionRosterView';
+import { MarketplaceView } from './components/MarketplaceView';
+import { BFFDexAIView } from './components/BFFDexAIView';
+import { WorkflowView } from './components/WorkflowView';
 import { 
   Volume2, 
   VolumeX, 
@@ -72,7 +83,16 @@ import {
   Mic
 } from 'lucide-react';
 
-const LOCAL_STORAGE_KEY = 'christfire_omega_v9_save';
+const LOCAL_STORAGE_KEY = 'christfire_omega_v10_save';
+
+const DEFAULT_TASKS = [
+  "✅ CF-001 Samantha Crowned Ascension — DONE v10.1",
+  "CF-002 John Thunder Ascension — QUEUED",
+  "CF-003 Silas Unchained Ascension — QUEUED",
+  "CF-004 Overlord Playable Ascension",
+  "CF-005 Phantasm Playable Ascension",
+  "CF-006 Fix AAB Icon — Beastie+Samantha"
+];
 
 const DEFAULT_STATE: GameState = {
   screen: 'home',
@@ -111,6 +131,8 @@ const DEFAULT_STATE: GameState = {
   liquidityAlloc: 30,
   upgrades: {},
   unlockedNodes: [1, 2],
+  inventory: INITIAL_INVENTORY,
+  workflowTasks: DEFAULT_TASKS,
 };
 
 export default function App() {
@@ -124,6 +146,8 @@ export default function App() {
           ...parsed,
           upgrades: parsed.upgrades || {},
           unlockedNodes: parsed.unlockedNodes || [1, 2],
+          inventory: parsed.inventory && parsed.inventory.length > 0 ? parsed.inventory : INITIAL_INVENTORY,
+          workflowTasks: parsed.workflowTasks && parsed.workflowTasks.length > 0 ? parsed.workflowTasks : DEFAULT_TASKS,
         };
       }
     } catch {
@@ -131,6 +155,8 @@ export default function App() {
     }
     return DEFAULT_STATE;
   });
+
+  const [packResultText, setPackResultText] = useState<string | null>(null);
 
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isDodging, setIsDodging] = useState<boolean>(false);
@@ -267,6 +293,119 @@ export default function App() {
     });
   };
 
+  // v10.1 SAMANTHA ASCENSION & MARKETPLACE HANDLERS
+  const handleAddSamanthaAscension = () => {
+    soundEngine.powerUp();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id === 'sam_asc' || c.name.includes('Samantha Crowned Ascension'));
+      if (alreadyHas) {
+        return {
+          ...prev,
+          inventory: prev.inventory.map(c => (c.id === 'sam_asc' || c.name.includes('Samantha Crowned Ascension')) ? { ...c, equipped: true } : c),
+          log: '👑 Samantha Crowned Ascension equipped for battle!',
+        };
+      }
+      return {
+        ...prev,
+        inventory: [SAMANTHA_ASCENSION_CARD, ...prev.inventory],
+        log: '✅ Samantha Crowned Ascension added! +800 DMG, WARDEN JUDGMENT, Shield +500. Equipped for battle!',
+      };
+    });
+  };
+
+  const handleBuyCovenantPack = () => {
+    if (state.fragments < 100) {
+      soundEngine.hurt();
+      setPackResultText('❌ Need 100 💎 Fragments to open a Covenant Pack!');
+      return;
+    }
+    soundEngine.powerUp();
+    const r = Math.random();
+    let card: Card;
+    if (r < 0.02) {
+      card = { ...LOWKEY_ASCENSION_CARD, id: `lowkey_${Date.now()}` };
+    } else if (r < 0.04) {
+      card = { ...ABADDON_ASCENSION_CARD, id: `abaddon_${Date.now()}` };
+    } else if (r < 0.12) {
+      card = { ...SAMANTHA_ASCENSION_CARD, id: `sam_asc_${Date.now()}` };
+    } else if (r < 0.42) {
+      card = {
+        id: `psalm_${Date.now()}`,
+        name: '🔥 Psalm 91 Shield',
+        scripture: 'Psalm 91:4',
+        txt: 'He will cover you with His feathers',
+        dmg: 280,
+        cost: 1,
+        sound: 'shield',
+        tier: 'Biblical',
+        mult: 1.8,
+        equipped: false,
+        effectDesc: 'Biblical Tier: 280 DMG + 150 Shield barrier.',
+      };
+    } else {
+      card = {
+        id: `conqueror_${Date.now()}`,
+        name: '⚔️ Conqueror Blade',
+        scripture: 'Romans 8:37',
+        txt: 'More than conquerors through Him',
+        dmg: 220,
+        cost: 1,
+        sound: 'strike',
+        tier: 'Epic',
+        mult: 1.0,
+        equipped: false,
+        effectDesc: 'Epic Tier: 220 DMG holy strike.',
+      };
+    }
+
+    setPackResultText(`🎉 PULL RESULT: ${card.name} — ${card.tier || 'Epic'} (${card.dmg} DMG) added to Inventory!`);
+    setState(prev => ({
+      ...prev,
+      fragments: prev.fragments - 100,
+      inventory: [card, ...prev.inventory],
+      log: `📦 Opened Covenant Pack: Pulled ${card.name}!`,
+    }));
+  };
+
+  const handleToggleEquip = (cardId: string) => {
+    soundEngine.click();
+    setState(prev => ({
+      ...prev,
+      inventory: prev.inventory.map(c => c.id === cardId ? { ...c, equipped: !c.equipped } : c)
+    }));
+  };
+
+  const handleAddWorkflowTask = (task: string) => {
+    soundEngine.click();
+    setState(prev => ({
+      ...prev,
+      workflowTasks: [...prev.workflowTasks, task]
+    }));
+  };
+
+  const handleSpeakVerse = (text: string) => {
+    voiceNarrator.speak(text);
+    if ('speechSynthesis' in window) {
+      try {
+        const u = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(u);
+      } catch {}
+    }
+  };
+
+  const handleActivateQuadAscension = () => {
+    soundEngine.crown();
+    triggerScreenFlash();
+    triggerHeroAnimation('crown', '🔺 QUAD ASCENSION!', 900);
+    setState(prev => ({
+      ...prev,
+      hp: 1000,
+      energy: 5,
+      faith: prev.faith + 100,
+      log: '🔺 QUAD ASCENSION! Samantha + LOWKEY + ABADDON + BEASTIE = +75% all, full heal, 4000 DMG!',
+    }));
+  };
+
   // BATTLE START
   const startBattle = (ch: number) => {
     soundEngine.click();
@@ -303,7 +442,7 @@ export default function App() {
       alert('Tap a card from your hand first!');
       return;
     }
-    const card = BATTLE_CARDS.find(c => c.id === selectedCardId);
+    const card = (state.inventory && state.inventory.find(c => c.id === selectedCardId)) || BATTLE_CARDS.find(c => c.id === selectedCardId);
     if (!card) return;
 
     if (state.energy < card.cost) {
@@ -318,7 +457,7 @@ export default function App() {
     }
 
     // If Philippians 4:13, trigger QuickTimeVerse for 3.5x shield shatter critical reflex!
-    if (card.id === 'phil') {
+    if (card.id === 'phil' || card.name.includes('Philippians')) {
       setShowQte(true);
       return;
     }
@@ -350,13 +489,46 @@ export default function App() {
       const verse1Heal = (activeUpgrades['verse1'] || 0) * 50;
 
       let cardDamage = card.dmg;
-      if (card.id === 'phil') cardDamage += beastie1Bonus;
+      if (card.id === 'phil' || card.name.includes('Philippians')) cardDamage += beastie1Bonus;
       if (card.id === 'burn' || card.name.includes('Aura')) cardDamage += beastie2Bonus;
       if (card.id === 'crown') cardDamage = Math.round((cardDamage + 600) * sam2Bonus);
 
-      let baseDmg = Math.round(cardDamage * comboMultiplier);
+      let baseDmg = Math.round(cardDamage * (card.mult || 1.0) * comboMultiplier);
 
-      if (card.id === 'crown') {
+      if (card.name.includes('Samantha') || card.id === 'sam_asc') {
+        const shatter = Math.min(bossShield, 400);
+        bossShield = Math.max(0, bossShield - 400);
+        if (bossShield === 0) shieldsShattered++;
+        partyHp = Math.min(1000, partyHp + 500);
+        const actualDmg = Math.round(baseDmg);
+        bossHp = Math.max(0, bossHp - actualDmg);
+        soundEngine.crown();
+        log = `👑 WARDEN JUDGMENT! Shield +500 team, 400 shatter + ${actualDmg} DMG! Judges 5:21!`;
+        triggerHeroAnimation('crown', '👑 WARDEN JUDGMENT!', 850);
+        triggerBossAnimation('damage', `💥 -${actualDmg} DMG!`, 750);
+        triggerScreenFlash();
+        if (narrateVerses) {
+          voiceNarrator.speak("Judges 5:21! March on, my soul; be strong! Warden Judgment!");
+        }
+      } else if (card.name.includes('LOWKEY')) {
+        bossShield = 0;
+        shieldsShattered++;
+        const actualDmg = Math.round(baseDmg * 1.5);
+        bossHp = Math.max(0, bossHp - actualDmg);
+        soundEngine.shatter();
+        log = `🃏 LOWKEY JUDGMENT 4X! -${actualDmg} DEVASTATING DAMAGE! All shields shattered!`;
+        triggerHeroAnimation('attack', '🃏 LOWKEY JUDGMENT!', 800);
+        triggerBossAnimation('damage', `💥 -${actualDmg}!`, 800);
+      } else if (card.name.includes('ABADDON')) {
+        bossShield = 0;
+        shieldsShattered++;
+        const actualDmg = Math.round(baseDmg * 1.8);
+        bossHp = Math.max(0, bossHp - actualDmg);
+        soundEngine.thunder();
+        log = `👑 ABADDON ABYSS STING 5X! -${actualDmg} BRIMSTONE DAMAGE!`;
+        triggerHeroAnimation('attack', '👑 ABYSS STING!', 800);
+        triggerBossAnimation('damage', `💥 -${actualDmg}!`, 800);
+      } else if (card.id === 'crown') {
         crownUsed = true;
         crownsCount++;
         bossShield = 0;
@@ -846,7 +1018,7 @@ export default function App() {
           OMEGA GRAND SCHEME - BEASTIE
         </h2>
         <p className="text-xs text-slate-400">
-          Pray For Prey - Card Battle • IN LUMINE VERITAS • May Jesus Reign
+          v10.1 — CF-001 SAMANTHA CROWNED ASCENSION ✅ DONE • IN LUMINE VERITAS • May Jesus Reign
         </p>
 
         {/* Top Status Pills */}
@@ -860,32 +1032,30 @@ export default function App() {
           <div className="bg-[#11182E] border border-cyan-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
             🛡️ SEC: <span className="text-cyan-400 font-black">{state.security}</span>
           </div>
-          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
-            🔥 STREAK: <span className="text-amber-300 font-bold">Day {state.dailyStreak}</span>
+          <div className="bg-[#11182E] border border-emerald-500/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300">
+            🤖 BFF-DEX-AI: <b className="text-emerald-400">ONLINE</b>
           </div>
-          <div className="bg-[#11182E] border border-cyan-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
-            ⚡ ENERGY: <span className="text-cyan-400 font-bold">{state.energy} / {state.maxEnergy}</span>
-          </div>
-          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
-            📖 VERSES: <span className="text-amber-400 font-bold">{state.verses}</span>
+          <div className="bg-[#11182E] border border-amber-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-amber-300">
+            👑 NEW: <b className="text-amber-400">SAMANTHA ASCENSION</b>
           </div>
         </div>
 
-        {/* 7 Prototype Tabs */}
+        {/* The 8 v10.1 Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-3">
           {[
             { id: 'home', label: '🏠 HOME' },
-            { id: 'nodes', label: '🗺️ NODES' },
-            { id: 'upgrades', label: '⬆️ UPGRADES' },
+            { id: 'asc', label: '🔺 ASCENSION' },
+            { id: 'samantha', label: '👑 SAMANTHA ASCENSION' },
             { id: 'battle', label: '⚔️ BATTLE' },
-            { id: 'pray', label: '🙏 PRAY FOR PREY' },
-            { id: 'shop', label: '🛒 SHOP' },
-            { id: 'board', label: '🏆 BOARD' },
+            { id: 'market', label: '🛒 MARKETPLACE' },
+            { id: 'pray', label: '🙏 PRAY' },
+            { id: 'oracle', label: '🤖 BFF-DEX-AI' },
+            { id: 'workflow', label: '⚙️ WORKFLOW' },
           ].map((tab) => {
             const isActive = 
               state.screen === tab.id ||
               (tab.id === 'home' && (state.screen === 'title' || state.screen === 'prologue' || state.screen === 'strategy' || state.screen === 'treasury')) ||
-              (tab.id === 'nodes' && state.screen === 'map');
+              (tab.id === 'market' && state.screen === 'shop');
 
             return (
               <button
@@ -936,6 +1106,59 @@ export default function App() {
               }));
             }}
             onLogMessage={(msg) => setState(prev => ({ ...prev, log: msg }))}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: ASCENSION ROSTER
+        ======================================================== */}
+        {state.screen === 'asc' && (
+          <AscensionRosterView
+            onActivateQuadAscension={handleActivateQuadAscension}
+            onNavigateToSamantha={() => goToScreen('samantha')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: SAMANTHA CROWNED ASCENSION (CF-001)
+        ======================================================== */}
+        {state.screen === 'samantha' && (
+          <SamanthaAscensionView
+            onAddSamantha={handleAddSamanthaAscension}
+            hasSamantha={Boolean(state.inventory && state.inventory.find(c => c.id === 'sam_asc' || c.name.includes('Samantha Crowned Ascension')))}
+            onNavigateToBattle={() => goToScreen('battle')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: MARKETPLACE & PACKS
+        ======================================================== */}
+        {state.screen === 'market' && (
+          <MarketplaceView
+            fragments={state.fragments}
+            inventory={state.inventory}
+            onBuyPack={handleBuyCovenantPack}
+            onToggleEquip={handleToggleEquip}
+            packResult={packResultText}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: BFF-DEX-AI (ORACLE & TROUBLESHOOTER)
+        ======================================================== */}
+        {state.screen === 'oracle' && (
+          <BFFDexAIView
+            onSpeakVerse={handleSpeakVerse}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: WORKFLOW & AGENT QUEUE
+        ======================================================== */}
+        {state.screen === 'workflow' && (
+          <WorkflowView
+            tasks={state.workflowTasks || DEFAULT_TASKS}
+            onAddTask={handleAddWorkflowTask}
           />
         )}
 
