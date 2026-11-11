@@ -16,6 +16,7 @@ import {
 import { 
   BATTLE_CARDS, 
   SAMANTHA_ASCENSION_CARD, 
+  JOHN_THUNDER_ASCENSION_CARD,
   LOWKEY_ASCENSION_CARD, 
   ABADDON_ASCENSION_CARD, 
   INITIAL_INVENTORY 
@@ -60,6 +61,7 @@ import { NodesView } from './components/NodesView';
 import { UpgradesView } from './components/UpgradesView';
 import { BoardView } from './components/BoardView';
 import { SamanthaAscensionView } from './components/SamanthaAscensionView';
+import { JohnThunderAscensionView } from './components/JohnThunderAscensionView';
 import { AscensionRosterView } from './components/AscensionRosterView';
 import { MarketplaceView } from './components/MarketplaceView';
 import { BFFDexAIView } from './components/BFFDexAIView';
@@ -88,16 +90,16 @@ import {
 const LOCAL_STORAGE_KEY = 'christfire_omega_v10_save';
 
 const DEFAULT_TASKS = [
-  "✅ CF-001 Samantha Crowned Ascension — DONE v10.1",
-  "CF-002 John Thunder Ascension — QUEUED",
-  "CF-003 Silas Unchained Ascension — QUEUED",
-  "CF-004 Overlord Playable Ascension — QUEUED",
-  "CF-005 Phantasm Playable Ascension — QUEUED",
-  "✅ CF-006 AAB Icon — Beastie+Samantha — DONE (Dex Yes) v10.5",
-  "CF-007 LOWKEY & ABADDON Art Showcase — QUEUED",
-  "CF-008 BFF-DEX-AI Console Integration — QUEUED",
-  "CF-009 Tribute to Benjamin, Brenda, Bianca, Beastie, Beulah — QUEUED",
-  "CF-010 AAB Test & Play Console Deployment — QUEUED"
+  "✅ CF-001 Samantha — DONE v10.1",
+  "✅ CF-002 John Thunder — DONE v10.2",
+  "CF-003 Silas Unchained — QUEUED",
+  "CF-004 Overlord Playable — QUEUED",
+  "CF-005 Phantasm Playable — QUEUED",
+  "✅ CF-006 Fix AAB Icon — Beastie+Samantha — DONE (Dex Yes)",
+  "CF-007 LOWKEY/ABADDON art — QUEUED",
+  "CF-008 BFF Console — QUEUED",
+  "CF-009 Tribute — QUEUED",
+  "CF-010 AAB Test — QUEUED"
 ];
 
 const DEFAULT_STATE: GameState = {
@@ -139,6 +141,8 @@ const DEFAULT_STATE: GameState = {
   unlockedNodes: [1, 2],
   inventory: INITIAL_INVENTORY,
   workflowTasks: DEFAULT_TASKS,
+  phantasmRevealed: false,
+  stunned: false,
 };
 
 export default function App() {
@@ -319,6 +323,27 @@ export default function App() {
     });
   };
 
+  const handleAddJohnThunder = () => {
+    soundEngine.thunder();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id === 'john_asc' || c.name.includes('John Thunder'));
+      if (alreadyHas) {
+        return {
+          ...prev,
+          inventory: prev.inventory.map(c => (c.id === 'john_asc' || c.name.includes('John Thunder')) ? { ...c, equipped: true } : c),
+          phantasmRevealed: true,
+          log: '⚡ John Thunder Ascension equipped! Phantasm revealed! Mark 3:17!',
+        };
+      }
+      return {
+        ...prev,
+        inventory: [JOHN_THUNDER_ASCENSION_CARD, ...prev.inventory],
+        phantasmRevealed: true,
+        log: '✅ John Thunder added! +700 DMG, THUNDER REVEAL! Phantasm revealed! Equipped for battle!',
+      };
+    });
+  };
+
   const handleBuyCovenantPack = () => {
     if (state.fragments < 100) {
       soundEngine.hurt();
@@ -334,6 +359,8 @@ export default function App() {
       card = { ...ABADDON_ASCENSION_CARD, id: `abaddon_${Date.now()}` };
     } else if (r < 0.12) {
       card = { ...SAMANTHA_ASCENSION_CARD, id: `sam_asc_${Date.now()}` };
+    } else if (r < 0.20) {
+      card = { ...JOHN_THUNDER_ASCENSION_CARD, id: `john_asc_${Date.now()}` };
     } else if (r < 0.42) {
       card = {
         id: `psalm_${Date.now()}`,
@@ -500,8 +527,32 @@ export default function App() {
       if (card.id === 'crown') cardDamage = Math.round((cardDamage + 600) * sam2Bonus);
 
       let baseDmg = Math.round(cardDamage * (card.mult || 1.0) * comboMultiplier);
+      let isStunnedByThunder = false;
+      let revealsPhantasm = false;
 
-      if (card.name.includes('Samantha') || card.id === 'sam_asc') {
+      if (card.name.includes('John') || card.id === 'john_asc') {
+        isStunnedByThunder = true;
+        revealsPhantasm = true;
+        const hasSamanthaEquipped = prev.inventory.some(c => (c.name.includes('Samantha') || c.id === 'sam_asc') && c.equipped);
+        if (hasSamanthaEquipped) {
+          partyHp = Math.min(1000, partyHp + 500);
+        }
+        // Phantasm illuminated -> +50% DMG
+        const phantasmBonus = 1.5;
+        const actualDmg = Math.round(baseDmg * phantasmBonus);
+        bossHp = Math.max(0, bossHp - actualDmg);
+        soundEngine.thunder();
+        log = hasSamanthaEquipped
+          ? `⚡ THUNDER + WARDEN! Shield +500, Stun all 1 turn, Phantasm Revealed! -${actualDmg} DMG! Mark 3:17!`
+          : `⚡ THUNDER REVEAL! Phantasm revealed (+50% DMG)! Stun all 1 turn! -${actualDmg} DMG! Mark 3:17!`;
+        triggerHeroAnimation('attack', '⚡ THUNDER REVEAL!', 850);
+        triggerBossAnimation('damage', `⚡ -${actualDmg} DMG!`, 750);
+        triggerScreenFlash();
+        triggerScreenShake();
+        if (narrateVerses) {
+          voiceNarrator.speak("Mark 3:17! Boanerges! Sons of Thunder! Thunder reveal!");
+        }
+      } else if (card.name.includes('Samantha') || card.id === 'sam_asc') {
         const shatter = Math.min(bossShield, 400);
         bossShield = Math.max(0, bossShield - 400);
         if (bossShield === 0) shieldsShattered++;
@@ -674,13 +725,17 @@ export default function App() {
         };
       }
 
-      // Proceed to Enemy Turn with Dodge Bar
-      setTimeout(() => {
-        const boss = CHAPTER_BOSSES[prev.chapter] || CHAPTER_BOSSES[1];
-        const incoming = Math.floor(Math.random() * 40) + boss.attackPower;
-        setPendingEnemyDamage(incoming);
-        setIsDodging(true);
-      }, 700);
+      // Proceed to Enemy Turn with Dodge Bar (unless stunned by John Thunder)
+      if (!isStunnedByThunder) {
+        setTimeout(() => {
+          const boss = CHAPTER_BOSSES[prev.chapter] || CHAPTER_BOSSES[1];
+          const incoming = Math.floor(Math.random() * 40) + boss.attackPower;
+          setPendingEnemyDamage(incoming);
+          setIsDodging(true);
+        }, 700);
+      } else {
+        log += ' (Boss Stunned! Enemy attack skipped!)';
+      }
 
       return {
         ...prev,
@@ -695,6 +750,8 @@ export default function App() {
         crownsUsedCount: crownsCount,
         missions: updatedMissions,
         achievements: updatedAch,
+        phantasmRevealed: prev.phantasmRevealed || revealsPhantasm,
+        stunned: isStunnedByThunder,
         log,
       };
     });
@@ -1024,7 +1081,7 @@ export default function App() {
           OMEGA GRAND SCHEME - BEASTIE
         </h2>
         <p className="text-xs text-slate-400">
-          v10.5 Master • CF-006 AAB ICON ✅ DONE (Dex Yes) • Android Studio AAB • IN LUMINE VERITAS • May Jesus Reign
+          v10.2 — CF-002 JOHN THUNDER ASCENSION ✅ DONE • Bless You, Dexter • IN LUMINE VERITAS • May Jesus Reign
         </p>
 
         {/* Top Status Pills */}
@@ -1042,6 +1099,13 @@ export default function App() {
             🤖 BFF-DEX-AI: <b className="text-emerald-400">ONLINE</b>
           </div>
           <button 
+            onClick={() => goToScreen('john')}
+            className="bg-[#11182E] border border-cyan-400/80 hover:bg-cyan-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-cyan-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <Zap size={13} className="text-cyan-400" />
+            <span>⚡ NEW:</span> <b className="text-cyan-400">JOHN THUNDER ASCENSION</b>
+          </button>
+          <button 
             onClick={() => goToScreen('aab')}
             className="bg-[#11182E] border border-emerald-400/80 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
           >
@@ -1055,7 +1119,8 @@ export default function App() {
           {[
             { id: 'home', label: '🏠 HOME' },
             { id: 'asc', label: '🔺 ASCENSION' },
-            { id: 'samantha', label: '👑 SAMANTHA ASCENSION' },
+            { id: 'samantha', label: '👑 SAMANTHA' },
+            { id: 'john', label: '⚡ JOHN THUNDER' },
             { id: 'battle', label: '⚔️ BATTLE' },
             { id: 'market', label: '🛒 MARKETPLACE' },
             { id: 'pray', label: '🙏 PRAY' },
@@ -1127,6 +1192,7 @@ export default function App() {
           <AscensionRosterView
             onActivateQuadAscension={handleActivateQuadAscension}
             onNavigateToSamantha={() => goToScreen('samantha')}
+            onNavigateToJohn={() => goToScreen('john')}
           />
         )}
 
@@ -1137,6 +1203,17 @@ export default function App() {
           <SamanthaAscensionView
             onAddSamantha={handleAddSamanthaAscension}
             hasSamantha={Boolean(state.inventory && state.inventory.find(c => c.id === 'sam_asc' || c.name.includes('Samantha Crowned Ascension')))}
+            onNavigateToBattle={() => goToScreen('battle')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: JOHN THUNDER ASCENSION (CF-002)
+        ======================================================== */}
+        {state.screen === 'john' && (
+          <JohnThunderAscensionView
+            onAddJohn={handleAddJohnThunder}
+            hasJohn={Boolean(state.inventory && state.inventory.find(c => c.id === 'john_asc' || c.name.includes('John Thunder')))}
             onNavigateToBattle={() => goToScreen('battle')}
           />
         )}
@@ -1904,8 +1981,28 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* Phantasm & Stun Combat State */}
+                  <div className="grid grid-cols-2 gap-2 mt-2.5 text-[10px] font-mono">
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-purple-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">Phantasm:</span>
+                      {state.phantasmRevealed ? (
+                        <span className="text-cyan-300 font-bold">⚡ REVEALED (+50%)</span>
+                      ) : (
+                        <span className="text-purple-400">HIDDEN</span>
+                      )}
+                    </div>
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-cyan-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">Stun:</span>
+                      {state.stunned ? (
+                        <span className="text-cyan-300 font-bold">STUNNED 1 TURN</span>
+                      ) : (
+                        <span className="text-slate-500">None</span>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Status Indicator */}
-                  <div className="mt-3 flex items-center justify-between text-xs font-mono bg-slate-950/60 p-2 rounded-xl border border-slate-800">
+                  <div className="mt-2.5 flex items-center justify-between text-xs font-mono bg-slate-950/60 p-2 rounded-xl border border-slate-800">
                     <span className="flex items-center gap-1.5">
                       {state.bossShield <= 0 ? (
                         <span className="text-amber-300 font-bold flex items-center gap-1">

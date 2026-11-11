@@ -8,7 +8,7 @@ interface WorkflowViewProps {
 
 export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) => {
   const [newTaskInput, setNewTaskInput] = useState<string>('');
-  const [agentLog, setAgentLog] = useState<string>('CF-001 agents done. CF-002 agents idle.');
+  const [agentLog, setAgentLog] = useState<string>('CF-002 agents done. CF-003 idle.');
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   const handleAdd = () => {
@@ -19,7 +19,7 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
 
   const handleRunAgents = () => {
     setIsRunning(true);
-    setAgentLog('🤖 BFF-DEX-AI assigning CF-002...\n👑 Beulah drafting John Thunder Mark 3:17...\n🎙️ BeeSpeaks testing voice resonance...\n✅ QA testing 60 FPS, save persistence, and <50MB budget...\nCF-002 draft ready — Dexter, approve to merge.');
+    setAgentLog('🤖 BFF-DEX-AI assigning CF-003...\n👑 Beulah drafting Silas...\n⛓️ QA testing chain breaker...\nCF-003 draft ready — Dexter, approve.');
     setTimeout(() => setIsRunning(false), 800);
   };
 
@@ -31,14 +31,14 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl">⚙️</span>
-              <h3 className="text-base font-black text-amber-300 m-0">WORKFLOW — CF-001 & CF-006 DONE</h3>
+              <h3 className="text-base font-black text-amber-300 m-0">WORKFLOW — CF-001 & CF-002 DONE, CF-003 QUEUED</h3>
             </div>
 
             <div className="space-y-2 text-xs">
               <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-emerald-300 space-y-1">
                 <span className="font-bold flex items-center gap-1.5 text-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  DONE: CF-001 Samantha Crowned Ascension
+                  DONE: CF-001 Samantha Crowned Ascension (v10.1)
                 </span>
                 <p className="text-slate-300 text-[11px] m-0">
                   Merged into v10.1 • Real Samantha likeness, +800 DMG, +500 Team Shield, WARDEN JUDGMENT, Judges 5:21.
@@ -48,10 +48,10 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
               <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-emerald-300 space-y-1">
                 <span className="font-bold flex items-center gap-1.5 text-sm">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  DONE: CF-006 AAB Icon — Beastie+Samantha (Dex Yes)
+                  DONE: CF-002 John Thunder Ascension (v10.2)
                 </span>
                 <p className="text-slate-300 text-[11px] m-0">
-                  Locked for v10.5 Master • Master 1024×1024 PNG • Clean Android Studio AAB • <span className="text-amber-400 font-bold">NO PWABuilder (Dex said janky)</span>.
+                  Merged into v10.2 • +700 DMG, 3 Energy, THUNDER REVEAL, reveals Phantasm (+50% DMG), stuns all, Mark 3:17.
                 </p>
               </div>
 
@@ -60,10 +60,10 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
                   <Clock className="w-4 h-4 text-cyan-400" />
                   NEXT IN PIPELINE:
                 </p>
-                <p>• <b>CF-002:</b> John Thunder Ascension — Mark 3:17, reveals invisible Phantasm, stuns all</p>
-                <p>• <b>CF-003:</b> Silas Unchained Ascension — Acts 16:26, breaks CC, paralyzes shadow</p>
+                <p>• <b>CF-003:</b> Silas Unchained Ascension — Acts 16:26, breaks all CC, paralyzes shadow (QUEUED)</p>
                 <p>• <b>CF-004:</b> Overlord Playable Ascension — QUEUED</p>
                 <p>• <b>CF-005:</b> Phantasm Playable Ascension — QUEUED</p>
+                <p>• <b>CF-006:</b> AAB Icon Lock — Beastie + Samantha official portrait (DONE Dex Yes)</p>
                 <p>• <b>CF-007:</b> LOWKEY & ABADDON art showcase — QUEUED</p>
                 <p>• <b>CF-008:</b> BFF-DEX-AI console integration — QUEUED</p>
                 <p>• <b>CF-009:</b> Tribute to Benjamin, Brenda, Bianca, Beastie, Beulah — QUEUED</p>
@@ -74,10 +74,10 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
 
           <div className="space-y-2">
             <button
-              onClick={() => alert('CF-006 Locked: Beastie + Samantha side-by-side 1024x1024 icon. Clean Android Studio AAB project ready for Google Play Console.')}
+              onClick={() => alert('CF-002 merged. Ready for CF-003 Silas when Dexter says Yes Bless.')}
               className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
             >
-              ✅ CF-006 LOCKED & VERIFIED (DEX YES)
+              ✅ CF-002 MERGED — READY FOR CF-003
             </button>
           </div>
         </div>

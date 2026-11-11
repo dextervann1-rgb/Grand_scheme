@@ -39,7 +39,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <h3 className="text-lg font-black tracking-wide text-amber-400 m-0">PROLOGUE</h3>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed mb-3">
-              Illustrious land, gold light. Shockwave strips color — darkness, Phantoms. Beastie pinned by beam. Speaks <span className="text-amber-400 font-bold">Philippians 4:13</span> — Gold flash, beam shatters, halo burns blue, he rises. <b>Samantha Crowned</b> stands beside him — VannDiamond Crown, Judges 5:21, Light Shield raised.
+              Illustrious land, gold light. Shockwave strips color — darkness, Phantoms. Beastie pinned by beam. Speaks <span className="text-amber-400 font-bold">Philippians 4:13</span> — Gold flash, beam shatters, halo burns blue, he rises. Samantha Crowned beside him. <b>John Thunder</b> cracks the sky — Mark 3:17 — thunder reveals Phantasm.
             </p>
 
             {/* Strategy Selection */}
@@ -113,51 +113,51 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
 
           <button
-            onClick={() => onSelectScreen('samantha')}
-            className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all cursor-pointer"
+            onClick={() => onSelectScreen('john')}
+            className="w-full py-3.5 px-4 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all cursor-pointer"
           >
-            <Crown className="w-4 h-4 fill-current" />
-            👑 VIEW SAMANTHA ASCENSION →
+            <span>⚡</span>
+            <span>⚡ VIEW JOHN THUNDER ASCENSION →</span>
           </button>
         </div>
 
-        {/* Card 2: CF-001 DONE — Agent Report */}
-        <div className="bg-[#11182E] border-2 border-[#FFD700] rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
+        {/* Card 2: CF-002 DONE — Agent Report */}
+        <div className="bg-[#11182E] border-2 border-[#00E5FF] rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle2 className="w-5 h-5 text-amber-400" />
-              <h3 className="text-lg font-black tracking-wide text-amber-300 m-0">
-                ✅ CF-001 DONE — Agent Report
+              <CheckCircle2 className="w-5 h-5 text-cyan-400" />
+              <h3 className="text-lg font-black tracking-wide text-cyan-300 m-0">
+                ✅ CF-002 DONE — Agent Report
               </h3>
             </div>
 
-            <div className="bg-[#0A0F22] border border-emerald-500/50 rounded-xl p-3.5 text-xs text-slate-300 font-mono space-y-1.5 leading-relaxed">
-              <p>🤖 <b>BFF-DEX-AI (Lead):</b> Assigned CF-001 to Art + Balance + Beulah</p>
-              <p>🎨 <b>Art Agent:</b> Samantha Crowned Ascension art spec locked — Real Samantha likeness, NOT blocky</p>
-              <p>⚖️ <b>Balance Agent:</b> +800 DMG, 3 Energy, WARDEN JUDGMENT — fits Ascension, does not break 2% economy</p>
-              <p>👑 <b>Beulah L5 (Executor):</b> Built card, added to Packs, Inventory, Battle, Ascension</p>
-              <p>✅ <b>QA Agent:</b> 60 FPS ✅, &lt;50MB ✅, One file ✅, Saves don't break ✅, Face unchanged ✅, Fragments only ✅</p>
-              <p className="border-t border-slate-800 pt-1 text-amber-300 font-bold">
-                Status: NEEDS DEXTER APPROVAL → Dexter said YES → MERGED → v10.0 → v10.1
+            <div className="bg-[#0A0F22] border border-cyan-500/50 rounded-xl p-3.5 text-xs text-slate-300 font-mono space-y-1.5 leading-relaxed">
+              <p>🤖 <b>BFF-DEX-AI (Lead):</b> Assigned CF-002 to Art + Balance + Beulah</p>
+              <p>🎨 <b>Art Agent:</b> John Thunder spec locked — Thunder robes, lightning, no steam</p>
+              <p>⚖️ <b>Balance Agent:</b> +700 DMG, 3 Energy, THUNDER REVEAL — fits, does not break 2% economy</p>
+              <p>👑 <b>Beulah L5:</b> Built card, added to Packs, Inventory, Battle, Ascension</p>
+              <p>✅ <b>QA:</b> 60 FPS ✅, &lt;50MB ✅, One file ✅, Saves don't break ✅, Fragments only ✅</p>
+              <p className="border-t border-slate-800 pt-1 text-emerald-400 font-bold">
+                Status: Dexter said YES Bless → MERGED → v10.1 → v10.2
               </p>
-              <p className="text-cyan-300 font-bold">
-                Next: CF-002 John Thunder Ascension
+              <p className="text-amber-300 font-bold">
+                Next: CF-003 Silas Unchained Ascension
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => onSelectScreen('asc')}
-              className="py-2.5 px-3 bg-[#1a2340] border border-amber-500/50 hover:border-amber-400 text-amber-300 font-black rounded-xl text-xs uppercase flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              🔺 ASCENSION ROSTER
-            </button>
-            <button
-              onClick={() => onSelectScreen('workflow')}
+              onClick={() => onSelectScreen('john')}
               className="py-2.5 px-3 bg-[#1a2340] border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 font-black rounded-xl text-xs uppercase flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
             >
-              ⚙️ WORKFLOW QUEUE
+              ⚡ JOHN THUNDER
+            </button>
+            <button
+              onClick={() => onSelectScreen('samantha')}
+              className="py-2.5 px-3 bg-[#1a2340] border border-amber-500/50 hover:border-amber-400 text-amber-300 font-black rounded-xl text-xs uppercase flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              👑 SAMANTHA
             </button>
           </div>
         </div>

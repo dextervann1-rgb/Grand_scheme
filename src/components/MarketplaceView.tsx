@@ -47,20 +47,24 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
 
             <div className="space-y-1.5 text-xs">
               <div className="flex justify-between p-2 bg-[#0A0F22] rounded-lg border border-slate-800">
-                <span className="text-slate-300">⚔️ Epic Tier</span>
-                <span className="font-bold text-blue-400">60% Drop Rate</span>
+                <span className="text-slate-300">⚔️ Epic Tier (Conqueror Blade)</span>
+                <span className="font-bold text-blue-400">42% Drop Rate</span>
               </div>
               <div className="flex justify-between p-2 bg-[#0A0F22] rounded-lg border border-slate-800">
-                <span className="text-slate-300">🔥 Biblical Tier</span>
-                <span className="font-bold text-purple-400">30% Drop Rate</span>
+                <span className="text-slate-300">🔥 Biblical Tier (Psalm 91 Shield)</span>
+                <span className="font-bold text-purple-400">38% Drop Rate</span>
               </div>
               <div className="flex justify-between p-2 bg-[#0A0F22] rounded-lg border border-amber-500/30">
-                <span className="text-amber-300 font-bold">👑 Covenant Tier (incl. Samantha 8%)</span>
+                <span className="text-amber-300 font-bold">👑 Samantha Crowned Ascension</span>
                 <span className="font-bold text-amber-400">8% Drop Rate</span>
+              </div>
+              <div className="flex justify-between p-2 bg-[#0A0F22] rounded-lg border border-cyan-500/30">
+                <span className="text-cyan-300 font-bold">⚡ John Thunder Ascension</span>
+                <span className="font-bold text-cyan-400">8% Drop Rate</span>
               </div>
               <div className="flex justify-between p-2 bg-[#0A0F22] rounded-lg border border-red-500/30">
                 <span className="text-red-400 font-bold">🃏 Secret LOWKEY / ABADDON</span>
-                <span className="font-bold text-red-400">2% Secret Drop</span>
+                <span className="font-bold text-red-400">2% + 2% Secret</span>
               </div>
             </div>
           </div>
@@ -97,10 +101,11 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
 
             <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
               {inventory.map((card) => {
-                const isCovenant = card.tier === 'Covenant' || card.name.includes('Samantha') || card.name.includes('LOWKEY') || card.name.includes('ABADDON');
+                const isJohn = card.id === 'john_asc' || card.name.includes('John');
+                const isCovenant = card.tier === 'Covenant' || card.name.includes('Samantha') || card.name.includes('LOWKEY') || card.name.includes('ABADDON') || isJohn;
                 const isBiblical = card.tier === 'Biblical';
-                const borderColor = isCovenant ? 'border-amber-400' : isBiblical ? 'border-purple-400' : 'border-blue-500/50';
-                const tagColor = isCovenant ? 'bg-amber-400 text-slate-950' : isBiblical ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white';
+                const borderColor = isJohn ? 'border-cyan-400' : isCovenant ? 'border-amber-400' : isBiblical ? 'border-purple-400' : 'border-blue-500/50';
+                const tagColor = isJohn ? 'bg-cyan-400 text-slate-950' : isCovenant ? 'bg-amber-400 text-slate-950' : isBiblical ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white';
 
                 return (
                   <div

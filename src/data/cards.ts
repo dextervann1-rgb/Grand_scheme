@@ -96,6 +96,22 @@ export const SAMANTHA_ASCENSION_CARD: Card = {
   effectDesc: 'WARDEN JUDGMENT: +800 DMG, +500 Team Shield. Shatters 400 enemy shield. If Beastie on field -> WARDEN + ROCK (+25% all DMG).',
 };
 
+export const JOHN_THUNDER_ASCENSION_CARD: Card = {
+  id: 'john_asc',
+  name: '⚡ John Thunder Ascension',
+  scripture: 'Mark 3:17',
+  txt: 'James son of Zebedee and his brother John (to them he gave the name Boanerges, which means "sons of thunder") — THUNDER REVEAL',
+  dmg: 700,
+  cost: 3,
+  sound: 'thunder',
+  tier: 'Covenant',
+  mult: 2.2,
+  equipped: true,
+  ability: 'THUNDER_REVEAL',
+  isAscension: true,
+  effectDesc: 'THUNDER REVEAL: +700 DMG. REVEALS Phantasm (+50% DMG to Phantasm). Stuns ALL enemies 1 turn. If Samantha on field -> THUNDER + WARDEN (Shield +500 + Stun + Reveal).',
+};
+
 export const LOWKEY_ASCENSION_CARD: Card = {
   id: 'lowkey_asc',
   name: '🃏 LOWKEY Judgment',

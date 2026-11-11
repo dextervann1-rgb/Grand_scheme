@@ -5,47 +5,49 @@ import { SAMANTHA_CROWNED_HERO } from './CharacterPortraits';
 interface AscensionRosterViewProps {
   onActivateQuadAscension: () => void;
   onNavigateToSamantha: () => void;
+  onNavigateToJohn: () => void;
 }
 
 export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
   onActivateQuadAscension,
   onNavigateToSamantha,
+  onNavigateToJohn,
 }) => {
-  const [quadMessage, setQuadMessage] = useState<string | null>(null);
+  const [synergyMessage, setSynergyMessage] = useState<string | null>(null);
 
-  const handleQuad = () => {
-    setQuadMessage('🔺 QUAD ASCENSION ACTIVATED! Samantha + LOWKEY + ABADDON + BEASTIE = +75% All Damage, Full Party Heal, and 4000 DMG Card Unlocked!');
+  const handleStorm = () => {
+    setSynergyMessage('⚡ STORM ASCENSION ACTIVATED! LOWKEY + ABADDON + BEASTIE + SAMANTHA + JOHN = +100% All Stats, Full Party Heal, and 5000 DMG Card Unlocked! Mark 3:17!');
     onActivateQuadAscension();
-    setTimeout(() => setQuadMessage(null), 6000);
+    setTimeout(() => setSynergyMessage(null), 6000);
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6 pb-6">
       <div className="bg-[#11182E] border border-[#2a3a6a] rounded-2xl p-5 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">🔺</span>
             <h2 className="text-xl font-black text-amber-400 m-0">COVENANT ASCENSION ROSTER</h2>
           </div>
-          <p className="text-xs text-slate-300">
-            Ascended celestial warriors, rare 2% secret drops, and the divine Quad Ascension synergy.
+          <p className="text-xs text-slate-300 m-0">
+            Ascended celestial warriors, rare 2% secret drops, and the divine 5-Card Storm Ascension synergy.
           </p>
         </div>
         <button
-          onClick={handleQuad}
-          className="py-3 px-6 bg-gradient-to-r from-red-500 via-amber-500 to-yellow-500 hover:from-red-400 hover:to-amber-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer"
+          onClick={handleStorm}
+          className="py-3 px-6 bg-gradient-to-r from-cyan-400 via-amber-400 to-yellow-400 hover:from-cyan-300 hover:to-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer"
         >
-          🔺 ACTIVATE QUAD ASCENSION
+          ⚡ ACTIVATE STORM ASCENSION (5-CARD)
         </button>
       </div>
 
-      {quadMessage && (
-        <div className="p-4 bg-gradient-to-r from-purple-950/80 to-amber-950/80 border-2 border-amber-400 rounded-xl text-xs text-amber-300 font-bold shadow-xl animate-fadeIn">
-          {quadMessage}
+      {synergyMessage && (
+        <div className="p-4 bg-gradient-to-r from-cyan-950/90 to-amber-950/90 border-2 border-cyan-400 rounded-xl text-xs text-cyan-300 font-bold shadow-xl animate-fadeIn">
+          {synergyMessage}
         </div>
       )}
 
-      {/* 2x2 Grid */}
+      {/* Grid of Ascensions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Card 1: LOWKEY — 2% */}
         <div className="bg-[#11182E] border-2 border-[#ff2a2a] rounded-2xl p-5 shadow-xl space-y-3">
@@ -89,54 +91,60 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
           </div>
         </div>
 
-        {/* Card 3: BEASTIE — Anchor */}
+        {/* Card 3: SAMANTHA — v10.1 */}
         <div className="bg-[#11182E] border-2 border-[#FFD700] rounded-2xl p-5 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-black text-amber-400 m-0 flex items-center gap-2">
-              <span>🦁</span> BEASTIE — ANCHOR
+              <span>👑</span> SAMANTHA — v10.1 DONE
             </h3>
             <span className="bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
-              APOSTOLIC PILLAR
+              CF-001 COVENANT
             </span>
           </div>
           <div className="p-3 bg-[#0A0F22] rounded-xl border border-amber-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual Profile:</p>
+            <p className="font-bold text-white">Visual & Combat Profile:</p>
             <p>
-              Peter / Big Beastie: Dreadlocks, salt-and-grey beard, cyan halo over black fedora, JESUS SAVES vest. Pinned by skyscraper beam, speaks Philippians 4:13.
+              Real Samantha, burgundy-red hair, white + gold cyber armor, VannDiamond Armored Crown of Light, Light Shield, Judges 5:21.
             </p>
-            <p className="text-amber-400 font-bold pt-1">
-              Stats: +600 Base DMG • Philippians 4:13 Shield Shatter x3.5 • +1,500 Ascension Burst.
+            <p className="text-amber-300 font-bold pt-1">
+              Stats: +800 DMG • 3 Energy • WARDEN JUDGMENT (Shield +500, shatter 400).
             </p>
           </div>
+          <button
+            onClick={onNavigateToSamantha}
+            className="w-full py-2.5 px-4 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer"
+          >
+            👑 VIEW SAMANTHA ASCENSION →
+          </button>
         </div>
 
-        {/* Card 4: SAMANTHA — New Ascension */}
+        {/* Card 4: JOHN THUNDER — NEW v10.2 */}
         <div className="bg-[#11182E] border-2 border-[#00E5FF] rounded-2xl p-5 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-black text-cyan-400 m-0 flex items-center gap-2">
-              <span>👑</span> SAMANTHA — NEW ASCENSION
+              <span>⚡</span> JOHN THUNDER — NEW v10.2
             </h3>
             <span className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
-              CF-001 NEW
+              CF-002 NEW
             </span>
           </div>
           <div className="p-3 bg-[#0A0F22] rounded-xl border border-cyan-500/20 text-xs text-slate-300 space-y-1.5">
             <p className="font-bold text-white">Visual & Combat Profile:</p>
             <p>
-              Real Samantha, burgundy-red hair, white + gold cyber armor, VannDiamond Armored Crown of Light, Light Shield, Judges 5:21.
+              John Boanerges, deep blue + gold thunder robes, lightning seams, twin lightning bolts, storm wings. Mark 3:17.
             </p>
             <p className="text-cyan-300 font-bold pt-1">
-              Stats: +800 DMG • 3 Energy • WARDEN JUDGMENT (+500 Team Shield).
+              Stats: +700 DMG • 3 Energy • THUNDER REVEAL (Stun ALL 1 turn, reveals Phantasm +50% DMG).
             </p>
             <p className="text-[11px] text-slate-400">
-              <b>Combos:</b> Samantha + Beastie = <b>WARDEN + ROCK</b> (+25% All DMG). Samantha + LOWKEY + ABADDON + BEASTIE = <b>QUAD ASCENSION</b> (+75% All, Heal Full, 4,000 DMG).
+              <b>Combos:</b> John + Samantha = <b>THUNDER + WARDEN</b> (Shield +500 + Stun + Reveal). 5-Card = <b>STORM ASCENSION</b> (+100% all, heal full, 5000 DMG).
             </p>
           </div>
           <button
-            onClick={onNavigateToSamantha}
+            onClick={onNavigateToJohn}
             className="w-full py-2.5 px-4 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer"
           >
-            👑 VIEW SAMANTHA ASCENSION CARD & SPEC →
+            ⚡ VIEW JOHN THUNDER ASCENSION →
           </button>
         </div>
       </div>

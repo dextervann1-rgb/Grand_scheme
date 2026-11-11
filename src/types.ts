@@ -2,6 +2,7 @@ export type ScreenType =
   | 'home'
   | 'asc'
   | 'samantha'
+  | 'john'
   | 'battle'
   | 'market'
   | 'pray'
@@ -128,7 +129,9 @@ export interface GameState {
   // Upgrades & Nodes progression
   upgrades: Record<string, number>;
   unlockedNodes: number[];
-  // v10.1 Ascension & Workflow
+  // v10.1 & v10.2 Ascension & Workflow
   inventory: Card[];
   workflowTasks: string[];
+  phantasmRevealed?: boolean;
+  stunned?: boolean;
 }

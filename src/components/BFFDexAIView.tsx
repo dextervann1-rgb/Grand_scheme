@@ -8,9 +8,9 @@ interface BFFDexAIViewProps {
 
 export const BFFDexAIView: React.FC<BFFDexAIViewProps> = ({ onSpeakVerse }) => {
   const [askQuery, setAskQuery] = useState<string>('');
-  const [verseQuery, setVerseQuery] = useState<string>('Judges 5:21 — March on, my soul; be strong!');
+  const [verseQuery, setVerseQuery] = useState<string>('Mark 3:17 — Sons of Thunder!');
   const [responseLog, setResponseLog] = useState<string>(
-    'BFF-DEX-AI: CF-001 done. Next is CF-002 John Thunder. Ready when you are, Dexter.'
+    'BFF-DEX-AI: CF-002 done. Bless you, Dexter. Next is CF-003 Silas. Ready when you are.'
   );
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -26,7 +26,7 @@ export const BFFDexAIView: React.FC<BFFDexAIViewProps> = ({ onSpeakVerse }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           heroName: 'Beulah L5 (BFF-DEX-AI)',
-          currentSituation: `Dexter Vann asks: ${q}. Status: CF-001 Samantha Crowned merged into v10.1. Next is CF-002 John Thunder.`,
+          currentSituation: `Dexter Vann asks: ${q}. Status: CF-002 John Thunder merged into v10.2. Next is CF-003 Silas Unchained.`,
           userStrategy: 'ARCHITECT'
         })
       });
@@ -40,8 +40,10 @@ export const BFFDexAIView: React.FC<BFFDexAIViewProps> = ({ onSpeakVerse }) => {
       // Fallback
     }
 
-    if (q.toLowerCase().includes('john') || q.toLowerCase().includes('cf-002')) {
-      setResponseLog(`BFF-DEX-AI: I see "${q}". CF-001 Samantha Crowned Ascension is merged. CF-002 John Thunder Ascension is drafted with Mark 3:17, lightning stun, and stealth reveal. Awaiting your approval to merge.`);
+    if (q.toLowerCase().includes('silas') || q.toLowerCase().includes('cf-003')) {
+      setResponseLog(`BFF-DEX-AI: I see "${q}". CF-002 John Thunder Ascension is merged. CF-003 Silas Unchained is queued — Acts 16:26, breaks all CC, paralyzes shadow. Say Yes Bless to run it.`);
+    } else if (q.toLowerCase().includes('john') || q.toLowerCase().includes('cf-002')) {
+      setResponseLog(`BFF-DEX-AI: I see "${q}". CF-002 John Thunder Ascension is live! +700 DMG, THUNDER REVEAL, reveals Phantasm, stuns all, Mark 3:17.`);
     } else if (q.toLowerCase().includes('bug') || q.toLowerCase().includes('fix')) {
       setResponseLog(`BFF-DEX-AI: Diagnostic complete for "${q}". Zero memory leaks, WebAudio synth online, 60 FPS locked, local storage saves verified.`);
     } else {
