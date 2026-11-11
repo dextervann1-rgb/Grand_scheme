@@ -8,7 +8,7 @@ interface WorkflowViewProps {
 
 export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) => {
   const [newTaskInput, setNewTaskInput] = useState<string>('');
-  const [agentLog, setAgentLog] = useState<string>('CF-002 agents done. CF-003 idle.');
+  const [agentLog, setAgentLog] = useState<string>('CF-004 agents done. CF-005 idle.');
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   const handleAdd = () => {
@@ -19,7 +19,7 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
 
   const handleRunAgents = () => {
     setIsRunning(true);
-    setAgentLog('🤖 BFF-DEX-AI assigning CF-003...\n👑 Beulah drafting Silas...\n⛓️ QA testing chain breaker...\nCF-003 draft ready — Dexter, approve.');
+    setAgentLog('🤖 BFF-DEX-AI assigning CF-005...\n👑 Beulah drafting Phantasm...\n✅ QA testing invisible + glide...\nCF-005 draft ready — Dexter, approve.');
     setTimeout(() => setIsRunning(false), 800);
   };
 
@@ -31,7 +31,7 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl">⚙️</span>
-              <h3 className="text-base font-black text-amber-300 m-0">WORKFLOW — CF-001 & CF-002 DONE, CF-003 QUEUED</h3>
+              <h3 className="text-base font-black text-amber-300 m-0">WORKFLOW — CF-001, CF-002, CF-003 & CF-004 DONE, CF-005 QUEUED</h3>
             </div>
 
             <div className="space-y-2 text-xs">
@@ -55,14 +55,32 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
                 </p>
               </div>
 
+              <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-emerald-300 space-y-1">
+                <span className="font-bold flex items-center gap-1.5 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  DONE: CF-003 Silas Unchained Ascension (v10.3)
+                </span>
+                <p className="text-slate-300 text-[11px] m-0">
+                  Merged into v10.3 • +650 DMG, 3 Energy, CHAIN BREAKER, cleanses all CC, paralyzes shadow 2 turns, Acts 16:26.
+                </p>
+              </div>
+
+              <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-emerald-300 space-y-1">
+                <span className="font-bold flex items-center gap-1.5 text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  DONE: CF-004 Overlord Playable Ascension (v10.4)
+                </span>
+                <p className="text-slate-300 text-[11px] m-0">
+                  Merged into v10.4 • +1200 DMG, 4 Energy, OVERLORD CRUSH (ignores 50% shield), Tanks 50% team damage 2 turns, Revelation 19:16.
+                </p>
+              </div>
+
               <div className="p-3 bg-[#0A0F22] border border-cyan-500/30 rounded-xl text-slate-300 space-y-1">
                 <p className="font-bold text-cyan-300 flex items-center gap-1.5">
                   <Clock className="w-4 h-4 text-cyan-400" />
                   NEXT IN PIPELINE:
                 </p>
-                <p>• <b>CF-003:</b> Silas Unchained Ascension — Acts 16:26, breaks all CC, paralyzes shadow (QUEUED)</p>
-                <p>• <b>CF-004:</b> Overlord Playable Ascension — QUEUED</p>
-                <p>• <b>CF-005:</b> Phantasm Playable Ascension — QUEUED</p>
+                <p>• <b>CF-005:</b> Phantasm Playable Ascension — After beating her, invisible + glide (QUEUED)</p>
                 <p>• <b>CF-006:</b> AAB Icon Lock — Beastie + Samantha official portrait (DONE Dex Yes)</p>
                 <p>• <b>CF-007:</b> LOWKEY & ABADDON art showcase — QUEUED</p>
                 <p>• <b>CF-008:</b> BFF-DEX-AI console integration — QUEUED</p>
@@ -74,10 +92,10 @@ export const WorkflowView: React.FC<WorkflowViewProps> = ({ tasks, onAddTask }) 
 
           <div className="space-y-2">
             <button
-              onClick={() => alert('CF-002 merged. Ready for CF-003 Silas when Dexter says Yes Bless.')}
+              onClick={() => alert('CF-004 merged. Ready for CF-005 Phantasm when Dexter says Yes.')}
               className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
             >
-              ✅ CF-002 MERGED — READY FOR CF-003
+              ✅ CF-004 MERGED — READY FOR CF-005
             </button>
           </div>
         </div>

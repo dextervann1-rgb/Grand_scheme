@@ -39,7 +39,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <h3 className="text-lg font-black tracking-wide text-amber-400 m-0">PROLOGUE</h3>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed mb-3">
-              Illustrious land, gold light. Shockwave strips color — darkness, Phantoms. Beastie pinned by beam. Speaks <span className="text-amber-400 font-bold">Philippians 4:13</span> — Gold flash, beam shatters, halo burns blue, he rises. Samantha Crowned beside him. <b>John Thunder</b> cracks the sky — Mark 3:17 — thunder reveals Phantasm.
+              Illustrious land, gold light. Shockwave strips color — darkness, Phantoms. Beastie pinned by beam. Speaks <span className="text-amber-400 font-bold">Philippians 4:13</span> — Gold flash, beam shatters. Samantha, John, Silas beside him. <b>Overlord</b> — once boss, now redeemed — kneels, then rises as playable ally. Chapter 3 boss becomes Chapter 4 ally.
             </p>
 
             {/* Strategy Selection */}
@@ -113,51 +113,63 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
 
           <button
-            onClick={() => onSelectScreen('john')}
-            className="w-full py-3.5 px-4 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all cursor-pointer"
+            onClick={() => onSelectScreen('overlord')}
+            className="w-full py-3.5 px-4 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all cursor-pointer"
           >
-            <span>⚡</span>
-            <span>⚡ VIEW JOHN THUNDER ASCENSION →</span>
+            <span>👹</span>
+            <span>👹 VIEW OVERLORD PLAYABLE →</span>
           </button>
         </div>
 
-        {/* Card 2: CF-002 DONE — Agent Report */}
-        <div className="bg-[#11182E] border-2 border-[#00E5FF] rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
+        {/* Card 2: CF-004 DONE — Agent Report */}
+        <div className="bg-[#11182E] border-2 border-[#dc2626] rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle2 className="w-5 h-5 text-cyan-400" />
-              <h3 className="text-lg font-black tracking-wide text-cyan-300 m-0">
-                ✅ CF-002 DONE — Agent Report
+              <CheckCircle2 className="w-5 h-5 text-red-500" />
+              <h3 className="text-lg font-black tracking-wide text-red-400 m-0">
+                ✅ CF-004 DONE — Agent Report
               </h3>
             </div>
 
-            <div className="bg-[#0A0F22] border border-cyan-500/50 rounded-xl p-3.5 text-xs text-slate-300 font-mono space-y-1.5 leading-relaxed">
-              <p>🤖 <b>BFF-DEX-AI (Lead):</b> Assigned CF-002 to Art + Balance + Beulah</p>
-              <p>🎨 <b>Art Agent:</b> John Thunder spec locked — Thunder robes, lightning, no steam</p>
-              <p>⚖️ <b>Balance Agent:</b> +700 DMG, 3 Energy, THUNDER REVEAL — fits, does not break 2% economy</p>
-              <p>👑 <b>Beulah L5:</b> Built card, added to Packs, Inventory, Battle, Ascension</p>
-              <p>✅ <b>QA:</b> 60 FPS ✅, &lt;50MB ✅, One file ✅, Saves don't break ✅, Fragments only ✅</p>
+            <div className="bg-[#0A0F22] border border-red-600/50 rounded-xl p-3.5 text-xs text-slate-300 font-mono space-y-1.5 leading-relaxed">
+              <p>🤖 <b>BFF-DEX-AI:</b> Assigned CF-004 to Art + Balance + Beulah</p>
+              <p>🎨 <b>Art Agent:</b> Overlord Redeemed spec locked — Dark armor cracked by gold light</p>
+              <p>⚖️ <b>Balance Agent:</b> +1200 DMG, 4 Energy, OVERLORD CRUSH — Boss-tier, but NOT stronger than LOWKEY+ABADDON combo</p>
+              <p>👑 <b>Beulah L5:</b> Built card, added to Packs, Inventory, Battle, Ascension, Boss Unlock logic</p>
+              <p>✅ <b>QA:</b> 60 FPS ✅, &lt;50MB ✅, One file ✅, Saves don't break ✅, Unlock only after beating Overlord ✅</p>
               <p className="border-t border-slate-800 pt-1 text-emerald-400 font-bold">
-                Status: Dexter said YES Bless → MERGED → v10.1 → v10.2
+                Status: Dexter said YES → MERGED → v10.3 → v10.4
               </p>
               <p className="text-amber-300 font-bold">
-                Next: CF-003 Silas Unchained Ascension
+                Next: CF-005 Phantasm Playable
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-4 gap-1.5">
+            <button
+              onClick={() => onSelectScreen('overlord')}
+              className="py-2.5 px-1 bg-[#1a2340] border border-red-500/50 hover:border-red-400 text-red-300 font-black rounded-xl text-[11px] uppercase flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+            >
+              👹 OVERLORD
+            </button>
+            <button
+              onClick={() => onSelectScreen('silas')}
+              className="py-2.5 px-1 bg-[#1a2340] border border-orange-500/50 hover:border-orange-400 text-orange-300 font-black rounded-xl text-[11px] uppercase flex items-center justify-center gap-1 cursor-pointer active:scale-95"
+            >
+              ⛓️ SILAS
+            </button>
             <button
               onClick={() => onSelectScreen('john')}
-              className="py-2.5 px-3 bg-[#1a2340] border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 font-black rounded-xl text-xs uppercase flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+              className="py-2.5 px-1 bg-[#1a2340] border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 font-black rounded-xl text-[11px] uppercase flex items-center justify-center gap-1 cursor-pointer active:scale-95"
             >
-              ⚡ JOHN THUNDER
+              ⚡ JOHN
             </button>
             <button
               onClick={() => onSelectScreen('samantha')}
-              className="py-2.5 px-3 bg-[#1a2340] border border-amber-500/50 hover:border-amber-400 text-amber-300 font-black rounded-xl text-xs uppercase flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
+              className="py-2.5 px-1 bg-[#1a2340] border border-amber-500/50 hover:border-amber-400 text-amber-300 font-black rounded-xl text-[11px] uppercase flex items-center justify-center gap-1 cursor-pointer active:scale-95"
             >
-              👑 SAMANTHA
+              👑 SAM
             </button>
           </div>
         </div>

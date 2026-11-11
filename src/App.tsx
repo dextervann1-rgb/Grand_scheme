@@ -17,6 +17,8 @@ import {
   BATTLE_CARDS, 
   SAMANTHA_ASCENSION_CARD, 
   JOHN_THUNDER_ASCENSION_CARD,
+  SILAS_UNCHAINED_ASCENSION_CARD,
+  OVERLORD_PLAYABLE_ASCENSION_CARD,
   LOWKEY_ASCENSION_CARD, 
   ABADDON_ASCENSION_CARD, 
   INITIAL_INVENTORY 
@@ -62,6 +64,8 @@ import { UpgradesView } from './components/UpgradesView';
 import { BoardView } from './components/BoardView';
 import { SamanthaAscensionView } from './components/SamanthaAscensionView';
 import { JohnThunderAscensionView } from './components/JohnThunderAscensionView';
+import { SilasUnchainedAscensionView } from './components/SilasUnchainedAscensionView';
+import { OverlordAscensionView } from './components/OverlordAscensionView';
 import { AscensionRosterView } from './components/AscensionRosterView';
 import { MarketplaceView } from './components/MarketplaceView';
 import { BFFDexAIView } from './components/BFFDexAIView';
@@ -92,8 +96,8 @@ const LOCAL_STORAGE_KEY = 'christfire_omega_v10_save';
 const DEFAULT_TASKS = [
   "✅ CF-001 Samantha — DONE v10.1",
   "✅ CF-002 John Thunder — DONE v10.2",
-  "CF-003 Silas Unchained — QUEUED",
-  "CF-004 Overlord Playable — QUEUED",
+  "✅ CF-003 Silas Unchained — DONE v10.3",
+  "✅ CF-004 Overlord Playable — DONE v10.4",
   "CF-005 Phantasm Playable — QUEUED",
   "✅ CF-006 Fix AAB Icon — Beastie+Samantha — DONE (Dex Yes)",
   "CF-007 LOWKEY/ABADDON art — QUEUED",
@@ -143,6 +147,10 @@ const DEFAULT_STATE: GameState = {
   workflowTasks: DEFAULT_TASKS,
   phantasmRevealed: false,
   stunned: false,
+  paralyzed: 0,
+  ccCleanse: false,
+  overlordUnlocked: false,
+  tankTurns: 0,
 };
 
 export default function App() {
@@ -158,6 +166,8 @@ export default function App() {
           unlockedNodes: parsed.unlockedNodes || [1, 2],
           inventory: parsed.inventory && parsed.inventory.length > 0 ? parsed.inventory : INITIAL_INVENTORY,
           workflowTasks: parsed.workflowTasks && parsed.workflowTasks.length > 0 ? parsed.workflowTasks : DEFAULT_TASKS,
+          overlordUnlocked: parsed.overlordUnlocked ?? false,
+          tankTurns: parsed.tankTurns ?? 0,
         };
       }
     } catch {
@@ -344,6 +354,70 @@ export default function App() {
     });
   };
 
+  const handleAddSilasUnchained = () => {
+    soundEngine.shatter();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id === 'silas_asc' || c.name.includes('Silas'));
+      if (alreadyHas) {
+        return {
+          ...prev,
+          inventory: prev.inventory.map(c => (c.id === 'silas_asc' || c.name.includes('Silas')) ? { ...c, equipped: true } : c),
+          paralyzed: 2,
+          ccCleanse: true,
+          log: '⛓️ Silas Unchained Ascension equipped! All CC cleansed! Shadow paralyzed 2 turns! Acts 16:26!',
+        };
+      }
+      return {
+        ...prev,
+        inventory: [SILAS_UNCHAINED_ASCENSION_CARD, ...prev.inventory],
+        paralyzed: 2,
+        ccCleanse: true,
+        log: '✅ Silas added! +650 DMG, CHAIN BREAKER! All CC cleansed! Shadow paralyzed 2 turns! Equipped for battle!',
+      };
+    });
+  };
+
+  const handleAddOverlord = () => {
+    soundEngine.strike();
+    soundEngine.thunder();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id === 'overlord_asc' || c.name.includes('Overlord'));
+      if (alreadyHas) {
+        return {
+          ...prev,
+          inventory: prev.inventory.map(c => (c.id === 'overlord_asc' || c.name.includes('Overlord')) ? { ...c, equipped: true } : c),
+          overlordUnlocked: true,
+          tankTurns: 2,
+          log: '👹 Overlord Redeemed equipped! OVERLORD CRUSH ready! Tank 50% active for 2 turns! Revelation 19:16!',
+        };
+      }
+      return {
+        ...prev,
+        inventory: [OVERLORD_PLAYABLE_ASCENSION_CARD, ...prev.inventory],
+        overlordUnlocked: true,
+        tankTurns: 2,
+        log: '✅ Overlord Redeemed added! +1200 DMG, OVERLORD CRUSH! Tank 50% active for 2 turns! Revelation 19:16!',
+      };
+    });
+  };
+
+  const handleSimulateBeatOverlord = () => {
+    soundEngine.victory();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id === 'overlord_asc' || c.name.includes('Overlord'));
+      const newInventory = alreadyHas 
+        ? prev.inventory.map(c => (c.id === 'overlord_asc' || c.name.includes('Overlord')) ? { ...c, equipped: true } : c)
+        : [OVERLORD_PLAYABLE_ASCENSION_CARD, ...prev.inventory];
+      return {
+        ...prev,
+        overlordUnlocked: true,
+        tankTurns: 2,
+        inventory: newInventory,
+        log: '🏆 OVERLORD BEATEN! Ch3 Cleared! Overlord Redeemed unlocked & added to inventory! Revelation 19:16!',
+      };
+    });
+  };
+
   const handleBuyCovenantPack = () => {
     if (state.fragments < 100) {
       soundEngine.hurt();
@@ -361,7 +435,9 @@ export default function App() {
       card = { ...SAMANTHA_ASCENSION_CARD, id: `sam_asc_${Date.now()}` };
     } else if (r < 0.20) {
       card = { ...JOHN_THUNDER_ASCENSION_CARD, id: `john_asc_${Date.now()}` };
-    } else if (r < 0.42) {
+    } else if (r < 0.28) {
+      card = { ...SILAS_UNCHAINED_ASCENSION_CARD, id: `silas_asc_${Date.now()}` };
+    } else if (r < 0.66) {
       card = {
         id: `psalm_${Date.now()}`,
         name: '🔥 Psalm 91 Shield',
@@ -529,8 +605,62 @@ export default function App() {
       let baseDmg = Math.round(cardDamage * (card.mult || 1.0) * comboMultiplier);
       let isStunnedByThunder = false;
       let revealsPhantasm = false;
+      let cleansesCc = false;
+      let paralyzeTurns = prev.paralyzed || 0;
+      let tankTurns = prev.tankTurns || 0;
 
-      if (card.name.includes('John') || card.id === 'john_asc') {
+      if (card.name.includes('Overlord') || card.id === 'overlord_asc') {
+        tankTurns = 2;
+        let actualDmg = Math.round(baseDmg * 1.4); // BOSS + ROCK combo: +40% all DMG
+        // Ignores 50% shield (pierces directly to boss HP)
+        if (bossShield > 0) {
+          const shieldTarget = Math.round(actualDmg * 0.5);
+          const shieldAbsorbed = Math.min(bossShield, shieldTarget);
+          bossShield = Math.max(0, bossShield - shieldAbsorbed);
+          const directHpDmg = actualDmg - shieldAbsorbed;
+          bossHp = Math.max(0, bossHp - directHpDmg);
+          log = `👹 OVERLORD CRUSH (BOSS + ROCK)! ${actualDmg} DMG! Ignored 50% shield (-${shieldAbsorbed} shield, -${directHpDmg} HP)! Tank 50% active for 2 turns! Revelation 19:16!`;
+        } else {
+          bossHp = Math.max(0, bossHp - actualDmg);
+          log = `👹 OVERLORD CRUSH (BOSS + ROCK)! -${actualDmg} PIERCING DAMAGE! Tank 50% active for 2 turns! Revelation 19:16!`;
+        }
+        soundEngine.strike();
+        soundEngine.thunder();
+        triggerHeroAnimation('attack', '👹 OVERLORD CRUSH!', 900);
+        triggerBossAnimation('damage', `💥 -${actualDmg} CRUSH!`, 850);
+        triggerScreenFlash();
+        triggerScreenShake();
+        if (narrateVerses) {
+          voiceNarrator.speak("Revelation 19:16! KING OF KINGS AND LORD OF LORDS! Overlord Crush!");
+        }
+      } else if (card.name.includes('Silas') || card.id === 'silas_asc') {
+        cleansesCc = true;
+        paralyzeTurns = 2;
+        const hasJohnEquipped = prev.inventory.some(c => (c.name.includes('John') || c.id === 'john_asc') && c.equipped);
+        let actualDmg = Math.round(baseDmg);
+        if (hasJohnEquipped) {
+          isStunnedByThunder = true;
+          revealsPhantasm = true;
+          actualDmg = Math.round(actualDmg * 1.5);
+          bossHp = Math.max(0, bossHp - actualDmg);
+          soundEngine.shatter();
+          soundEngine.thunder();
+          log = `⛓️⚡ CHAIN + THUNDER COMBO! CC Cleanse + Phantasm Reveal + 2-Turn Paralyze + Stun! -${actualDmg} DMG! Acts 16:26 & Mark 3:17!`;
+          triggerHeroAnimation('attack', '⛓️⚡ CHAIN + THUNDER!', 900);
+          triggerBossAnimation('damage', `⛓️⚡ -${actualDmg} DMG!`, 800);
+        } else {
+          bossHp = Math.max(0, bossHp - actualDmg);
+          soundEngine.shatter();
+          log = `⛓️ CHAIN BREAKER! All CC cleansed! Shadow Paralyzed for 2 turns! -${actualDmg} DMG! Acts 16:26!`;
+          triggerHeroAnimation('attack', '⛓️ CHAIN BREAKER!', 850);
+          triggerBossAnimation('damage', `⛓️ -${actualDmg} PARALYZED!`, 750);
+        }
+        triggerScreenFlash();
+        triggerScreenShake();
+        if (narrateVerses) {
+          voiceNarrator.speak("Acts 16:26! Suddenly there was a violent earthquake, and every chain broke loose! Silas Unchained!");
+        }
+      } else if (card.name.includes('John') || card.id === 'john_asc') {
         isStunnedByThunder = true;
         revealsPhantasm = true;
         const hasSamanthaEquipped = prev.inventory.some(c => (c.name.includes('Samantha') || c.id === 'sam_asc') && c.equipped);
@@ -634,6 +764,7 @@ export default function App() {
         if (card.sound === 'thunder') soundEngine.thunder();
         else if (card.sound === 'shield') soundEngine.shield();
         else if (card.sound === 'verse') soundEngine.verse(verses);
+        else if (card.sound === 'shatter') soundEngine.shatter();
         else soundEngine.strike();
 
         if (card.heals) {
@@ -706,6 +837,12 @@ export default function App() {
         const nextChapter = prev.chapter + 1;
         const updatedUnlockedNodes = Array.from(new Set([...(prev.unlockedNodes || [1, 2]), nextChapter]));
 
+        const isOverlordBeaten = prev.chapter === 3 || prev.overlordUnlocked;
+        const alreadyHasOverlord = prev.inventory.some(c => c.id === 'overlord_asc' || c.name.includes('Overlord'));
+        const updatedInventory = (prev.chapter === 3 && !alreadyHasOverlord)
+          ? [OVERLORD_PLAYABLE_ASCENSION_CARD, ...prev.inventory]
+          : prev.inventory;
+
         return {
           ...prev,
           bossHp: 0,
@@ -713,9 +850,13 @@ export default function App() {
           valuation: prev.valuation + 500,
           fragments: prev.fragments + 500,
           unlockedNodes: updatedUnlockedNodes,
+          inventory: updatedInventory,
+          overlordUnlocked: isOverlordBeaten,
           verses,
           combo,
-          log: `🏆 CHAPTER ${prev.chapter} BOSS SLAIN! +500 💎 Fragments Awarded! In Lumine Veritas!`,
+          log: prev.chapter === 3
+            ? `🏆 CHAPTER 3 OVERLORD DEFEATED! Overlord Redeemed Playable Ascension UNLOCKED! +500 💎 Fragments! In Lumine Veritas!`
+            : `🏆 CHAPTER ${prev.chapter} BOSS SLAIN! +500 💎 Fragments Awarded! In Lumine Veritas!`,
           missions: updatedMissions,
           achievements: achWithBoss,
           leaderboard: newLeaderboard,
@@ -725,8 +866,13 @@ export default function App() {
         };
       }
 
-      // Proceed to Enemy Turn with Dodge Bar (unless stunned by John Thunder)
-      if (!isStunnedByThunder) {
+      // Proceed to Enemy Turn with Dodge Bar (unless stunned or paralyzed)
+      const isBossBlocked = isStunnedByThunder || paralyzeTurns > 0;
+      if (paralyzeTurns > 0) {
+        paralyzeTurns -= 1;
+      }
+
+      if (!isBossBlocked) {
         setTimeout(() => {
           const boss = CHAPTER_BOSSES[prev.chapter] || CHAPTER_BOSSES[1];
           const incoming = Math.floor(Math.random() * 40) + boss.attackPower;
@@ -734,7 +880,11 @@ export default function App() {
           setIsDodging(true);
         }, 700);
       } else {
-        log += ' (Boss Stunned! Enemy attack skipped!)';
+        if (isStunnedByThunder) {
+          log += ' (Boss Stunned! Enemy attack skipped!)';
+        } else {
+          log += ` (Boss Paralyzed! Enemy attack skipped! ${paralyzeTurns > 0 ? '1 turn remaining!' : 'Paralyze expired!'})`;
+        }
       }
 
       return {
@@ -752,6 +902,9 @@ export default function App() {
         achievements: updatedAch,
         phantasmRevealed: prev.phantasmRevealed || revealsPhantasm,
         stunned: isStunnedByThunder,
+        paralyzed: paralyzeTurns,
+        ccCleanse: cleansesCc || prev.ccCleanse,
+        tankTurns,
         log,
       };
     });
@@ -763,6 +916,17 @@ export default function App() {
   const handleDefend = () => {
     soundEngine.shield();
     triggerHeroAnimation('dodge', '🛡️ DEFEND POISE!', 550);
+    if (state.paralyzed && state.paralyzed > 0) {
+      setState(prev => ({
+        ...prev,
+        energy: Math.min(prev.maxEnergy, prev.energy + 2),
+        hp: Math.min(prev.maxHp, prev.hp + 80),
+        paralyzed: Math.max(0, (prev.paralyzed || 1) - 1),
+        log: '🛡️ DEFEND POISE: +2 Energy & +80 HP restored! Boss remains paralyzed — attack skipped!',
+      }));
+      return;
+    }
+
     setState(prev => ({
       ...prev,
       energy: Math.min(prev.maxEnergy, prev.energy + 2),
@@ -795,7 +959,16 @@ export default function App() {
     }
 
     setState(prev => {
-      const newHp = Math.max(0, prev.hp - finalDamage);
+      let finalTakenDamage = finalDamage;
+      let remainingTankTurns = prev.tankTurns || 0;
+      let tankMsg = '';
+      if (finalTakenDamage > 0 && remainingTankTurns > 0) {
+        finalTakenDamage = Math.round(finalTakenDamage * 0.5);
+        remainingTankTurns = Math.max(0, remainingTankTurns - 1);
+        tankMsg = ` (Overlord absorbed 50% damage! ${remainingTankTurns > 0 ? '1 turn remaining' : 'Tank expired'})`;
+      }
+
+      const newHp = Math.max(0, prev.hp - finalTakenDamage);
       const newEnergy = Math.min(prev.maxEnergy, prev.energy + energyBonus + 1);
       const newTurn = prev.turn + 1;
       const perfectCount = prev.perfectDodgesCount + (result === 'PERFECT' ? 1 : 0);
@@ -805,10 +978,10 @@ export default function App() {
       if (result === 'PERFECT') {
         log = `✨ PERFECT DODGE! Zero damage taken, +1⚡ Energy, and COMBO x${prev.combo} preserved!`;
       } else if (result === 'GOOD') {
-        log = `🛡️ GOOD DODGE! Glanced blow for -${finalDamage} DMG! Combo x${prev.combo} held.`;
+        log = `🛡️ GOOD DODGE! Glanced blow for -${finalTakenDamage} DMG!${tankMsg} Combo x${prev.combo} held.`;
       } else {
         soundEngine.hurt();
-        log = `💥 MISS! Boss hit for full -${finalDamage} DMG!${prev.combo > 1 ? ` (Combo x${prev.combo} broken!)` : ''}`;
+        log = `💥 MISS! Boss hit for full -${finalTakenDamage} DMG!${tankMsg}${prev.combo > 1 ? ` (Combo x${prev.combo} broken!)` : ''}`;
       }
 
       // Mission update
@@ -835,6 +1008,7 @@ export default function App() {
           energy: 3,
           combo: 0,
           turn: 1,
+          tankTurns: 0,
           log,
         };
       }
@@ -845,6 +1019,7 @@ export default function App() {
         energy: newEnergy,
         turn: newTurn,
         combo: newCombo,
+        tankTurns: remainingTankTurns,
         perfectDodgesCount: perfectCount,
         missions: updatedMissions,
         achievements: updatedAch,
@@ -1081,7 +1256,7 @@ export default function App() {
           OMEGA GRAND SCHEME - BEASTIE
         </h2>
         <p className="text-xs text-slate-400">
-          v10.2 — CF-002 JOHN THUNDER ASCENSION ✅ DONE • Bless You, Dexter • IN LUMINE VERITAS • May Jesus Reign
+          v10.4 — CF-004 OVERLORD PLAYABLE ASCENSION ✅ DONE • IN LUMINE VERITAS • May Jesus Reign
         </p>
 
         {/* Top Status Pills */}
@@ -1103,7 +1278,19 @@ export default function App() {
             className="bg-[#11182E] border border-cyan-400/80 hover:bg-cyan-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-cyan-300 cursor-pointer transition flex items-center gap-1.5"
           >
             <Zap size={13} className="text-cyan-400" />
-            <span>⚡ NEW:</span> <b className="text-cyan-400">JOHN THUNDER ASCENSION</b>
+            <span>⚡ NEW:</span> <b className="text-cyan-400">JOHN THUNDER</b>
+          </button>
+          <button 
+            onClick={() => goToScreen('silas')}
+            className="bg-[#11182E] border border-orange-500 hover:bg-orange-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-orange-400 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <span>⛓️ NEW:</span> <b className="text-orange-400">SILAS UNCHAINED</b>
+          </button>
+          <button 
+            onClick={() => goToScreen('overlord')}
+            className="bg-[#11182E] border border-red-500 hover:bg-red-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-red-400 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <span>👹 NEW:</span> <b className="text-red-400">OVERLORD PLAYABLE</b>
           </button>
           <button 
             onClick={() => goToScreen('aab')}
@@ -1121,6 +1308,8 @@ export default function App() {
             { id: 'asc', label: '🔺 ASCENSION' },
             { id: 'samantha', label: '👑 SAMANTHA' },
             { id: 'john', label: '⚡ JOHN THUNDER' },
+            { id: 'silas', label: '⛓️ SILAS' },
+            { id: 'overlord', label: '👹 OVERLORD' },
             { id: 'battle', label: '⚔️ BATTLE' },
             { id: 'market', label: '🛒 MARKETPLACE' },
             { id: 'pray', label: '🙏 PRAY' },
@@ -1193,6 +1382,8 @@ export default function App() {
             onActivateQuadAscension={handleActivateQuadAscension}
             onNavigateToSamantha={() => goToScreen('samantha')}
             onNavigateToJohn={() => goToScreen('john')}
+            onNavigateToSilas={() => goToScreen('silas')}
+            onNavigateToOverlord={() => goToScreen('overlord')}
           />
         )}
 
@@ -1214,6 +1405,30 @@ export default function App() {
           <JohnThunderAscensionView
             onAddJohn={handleAddJohnThunder}
             hasJohn={Boolean(state.inventory && state.inventory.find(c => c.id === 'john_asc' || c.name.includes('John Thunder')))}
+            onNavigateToBattle={() => goToScreen('battle')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: SILAS UNCHAINED ASCENSION (CF-003)
+        ======================================================== */}
+        {state.screen === 'silas' && (
+          <SilasUnchainedAscensionView
+            onAddSilas={handleAddSilasUnchained}
+            hasSilas={Boolean(state.inventory && state.inventory.find(c => c.id === 'silas_asc' || c.name.includes('Silas')))}
+            onNavigateToBattle={() => goToScreen('battle')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: OVERLORD PLAYABLE ASCENSION (CF-004)
+        ======================================================== */}
+        {state.screen === 'overlord' && (
+          <OverlordAscensionView
+            onAddOverlord={handleAddOverlord}
+            onSimulateBeatOverlord={handleSimulateBeatOverlord}
+            hasOverlord={Boolean(state.inventory && state.inventory.find(c => c.id === 'overlord_asc' || c.name.includes('Overlord')))}
+            overlordUnlocked={Boolean(state.overlordUnlocked)}
             onNavigateToBattle={() => goToScreen('battle')}
           />
         )}
@@ -1981,8 +2196,8 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Phantasm & Stun Combat State */}
-                  <div className="grid grid-cols-2 gap-2 mt-2.5 text-[10px] font-mono">
+                  {/* Phantasm, Stun, Paralyze, CC, Tank & Overlord Combat State */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-2.5 text-[10px] font-mono">
                     <div className="bg-[#0c071a] p-1.5 rounded-lg border border-purple-500/30 flex items-center justify-between">
                       <span className="text-slate-400">Phantasm:</span>
                       {state.phantasmRevealed ? (
@@ -1997,6 +2212,38 @@ export default function App() {
                         <span className="text-cyan-300 font-bold">STUNNED 1 TURN</span>
                       ) : (
                         <span className="text-slate-500">None</span>
+                      )}
+                    </div>
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-orange-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">Paralyze:</span>
+                      {state.paralyzed && state.paralyzed > 0 ? (
+                        <span className="text-orange-400 font-bold">PARALYZED ({state.paralyzed}T)</span>
+                      ) : (
+                        <span className="text-slate-500">None</span>
+                      )}
+                    </div>
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-emerald-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">CC:</span>
+                      {state.ccCleanse ? (
+                        <span className="text-emerald-400 font-bold">CLEANSED (FREE)</span>
+                      ) : (
+                        <span className="text-slate-500">Normal</span>
+                      )}
+                    </div>
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-red-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">Tank 50%:</span>
+                      {state.tankTurns && state.tankTurns > 0 ? (
+                        <span className="text-red-400 font-bold">ACTIVE ({state.tankTurns}T)</span>
+                      ) : (
+                        <span className="text-slate-500">None</span>
+                      )}
+                    </div>
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-amber-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">Overlord:</span>
+                      {state.overlordUnlocked ? (
+                        <span className="text-amber-300 font-bold">UNLOCKED ⚔️</span>
+                      ) : (
+                        <span className="text-slate-500">LOCKED (Ch3)</span>
                       )}
                     </div>
                   </div>

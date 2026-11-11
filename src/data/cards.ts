@@ -112,6 +112,38 @@ export const JOHN_THUNDER_ASCENSION_CARD: Card = {
   effectDesc: 'THUNDER REVEAL: +700 DMG. REVEALS Phantasm (+50% DMG to Phantasm). Stuns ALL enemies 1 turn. If Samantha on field -> THUNDER + WARDEN (Shield +500 + Stun + Reveal).',
 };
 
+export const SILAS_UNCHAINED_ASCENSION_CARD: Card = {
+  id: 'silas_asc',
+  name: '⛓️ Silas Unchained Ascension',
+  scripture: 'Acts 16:26',
+  txt: 'Suddenly there was a violent earthquake, the foundations were shaken, prison doors flew open, and everyone\'s chains came loose — CHAIN BREAKER',
+  dmg: 650,
+  cost: 3,
+  sound: 'shatter',
+  tier: 'Covenant',
+  mult: 2.0,
+  equipped: true,
+  ability: 'CHAIN_BREAKER',
+  isAscension: true,
+  effectDesc: 'CHAIN BREAKER: +650 DMG. BREAKS ALL CC on whole team. PARALYZES Phantom/Boss for 2 turns. If John on field -> CHAIN + THUNDER (Break CC + Reveal + Stun + Paralyze).',
+};
+
+export const OVERLORD_PLAYABLE_ASCENSION_CARD: Card = {
+  id: 'overlord_asc',
+  name: '👹 Overlord Redeemed Ascension',
+  scripture: 'Revelation 19:16',
+  txt: 'On his robe and on his thigh he has this name written: KING OF KINGS AND LORD OF LORDS — OVERLORD CRUSH',
+  dmg: 1200,
+  cost: 4,
+  sound: 'strike',
+  tier: 'Mythic',
+  mult: 3.0,
+  equipped: true,
+  ability: 'OVERLORD_CRUSH',
+  isAscension: true,
+  effectDesc: 'OVERLORD CRUSH: +1200 DMG. Ignores 50% shield. TANK 50%: Takes 50% of all team damage for 2 turns. If Beastie on team -> BOSS + ROCK (+40% DMG, Overlord tanks 50%). If 7-card team -> OMEGA ASCENSION (+150% all, heal full, 8000 DMG).',
+};
+
 export const LOWKEY_ASCENSION_CARD: Card = {
   id: 'lowkey_asc',
   name: '🃏 LOWKEY Judgment',

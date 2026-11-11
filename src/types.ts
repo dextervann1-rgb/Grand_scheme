@@ -3,6 +3,8 @@ export type ScreenType =
   | 'asc'
   | 'samantha'
   | 'john'
+  | 'silas'
+  | 'overlord'
   | 'battle'
   | 'market'
   | 'pray'
@@ -29,14 +31,14 @@ export interface Card {
   txt: string;
   dmg: number;
   cost: number;
-  sound: 'verse' | 'shield' | 'thunder' | 'crown' | 'strike';
+  sound: 'verse' | 'shield' | 'thunder' | 'crown' | 'strike' | 'shatter';
   isLegendary?: boolean;
   effectDesc: string;
   heals?: number;
   armorBoost?: number;
   shieldShatterMultiplier?: number;
   // v10.1 Ascension properties
-  tier?: 'Covenant' | 'Biblical' | 'Epic' | 'Ascension';
+  tier?: 'Covenant' | 'Biblical' | 'Epic' | 'Ascension' | 'Mythic';
   mult?: number;
   equipped?: boolean;
   teamShield?: number;
@@ -129,9 +131,13 @@ export interface GameState {
   // Upgrades & Nodes progression
   upgrades: Record<string, number>;
   unlockedNodes: number[];
-  // v10.1 & v10.2 Ascension & Workflow
+  // v10.1, v10.2 & v10.3 Ascension & Workflow
   inventory: Card[];
   workflowTasks: string[];
   phantasmRevealed?: boolean;
   stunned?: boolean;
+  paralyzed?: number;
+  ccCleanse?: boolean;
+  overlordUnlocked?: boolean;
+  tankTurns?: number;
 }
