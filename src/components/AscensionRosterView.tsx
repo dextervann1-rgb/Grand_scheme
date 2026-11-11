@@ -8,6 +8,7 @@ interface AscensionRosterViewProps {
   onNavigateToJohn: () => void;
   onNavigateToSilas: () => void;
   onNavigateToOverlord: () => void;
+  onNavigateToPhantasm: () => void;
 }
 
 export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
@@ -16,11 +17,12 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
   onNavigateToJohn,
   onNavigateToSilas,
   onNavigateToOverlord,
+  onNavigateToPhantasm,
 }) => {
   const [synergyMessage, setSynergyMessage] = useState<string | null>(null);
 
-  const handleOmega = () => {
-    setSynergyMessage('🔺 OMEGA ASCENSION ACTIVATED! LOWKEY + ABADDON + BEASTIE + SAMANTHA + JOHN + SILAS + OVERLORD = +150% All Stats, Full Party Heal, Cleanse All CC, and 8000 DMG Card Unlocked! Revelation 19:16!');
+  const handleGrandScheme = () => {
+    setSynergyMessage('🔺 GRAND SCHEME ASCENSION ACTIVATED! LOWKEY + ABADDON + BEASTIE + SAMANTHA + JOHN + SILAS + OVERLORD + PHANTASM = +175% All Stats, Full Party Heal, Cleanse All CC, Team Stealth 1 Turn, and 10,000 DMG Card Unlocked! 1 John 4:4 • Revelation 19:16!');
     onActivateQuadAscension();
     setTimeout(() => setSynergyMessage(null), 6000);
   };
@@ -34,19 +36,19 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
             <h2 className="text-xl font-black text-amber-400 m-0">COVENANT ASCENSION ROSTER</h2>
           </div>
           <p className="text-xs text-slate-300 m-0">
-            Ascended celestial warriors, rare 2% secret drops, and the divine 7-Card Omega Ascension synergy.
+            Ascended celestial warriors, rare 2% secret drops, redeemed boss allies, and the 8-Card Grand Scheme Ascension.
           </p>
         </div>
         <button
-          onClick={handleOmega}
-          className="py-3 px-6 bg-gradient-to-r from-red-600 via-orange-500 to-amber-400 hover:from-red-500 hover:to-orange-400 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer"
+          onClick={handleGrandScheme}
+          className="py-3 px-6 bg-gradient-to-r from-purple-600 via-red-600 to-amber-400 hover:from-purple-500 hover:to-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all cursor-pointer"
         >
-          🔺 ACTIVATE OMEGA ASCENSION (7-CARD • 8000 DMG)
+          🔺 ACTIVATE GRAND SCHEME ASCENSION (8-CARD • 10000 DMG)
         </button>
       </div>
 
       {synergyMessage && (
-        <div className="p-4 bg-gradient-to-r from-red-950/90 to-amber-950/90 border-2 border-red-500 rounded-xl text-xs text-amber-300 font-bold shadow-xl animate-fadeIn">
+        <div className="p-4 bg-gradient-to-r from-purple-950/90 to-amber-950/90 border-2 border-purple-500 rounded-xl text-xs text-amber-300 font-bold shadow-xl animate-fadeIn">
           {synergyMessage}
         </div>
       )}
@@ -149,14 +151,14 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
           </button>
         </div>
 
-        {/* Card 5: SILAS UNCHAINED — NEW v10.3 */}
+        {/* Card 5: SILAS UNCHAINED — v10.3 */}
         <div className="bg-[#11182E] border-2 border-[#f97316] rounded-2xl p-5 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-black text-orange-400 m-0 flex items-center gap-2">
-              <span>⛓️</span> SILAS — NEW v10.3
+              <span>⛓️</span> SILAS — v10.3 DONE
             </h3>
             <span className="bg-orange-500/20 text-orange-400 border border-orange-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
-              CF-003 NEW
+              CF-003 COVENANT
             </span>
           </div>
           <div className="p-3 bg-[#0A0F22] rounded-xl border border-orange-500/20 text-xs text-slate-300 space-y-1.5">
@@ -179,11 +181,11 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
           </button>
         </div>
 
-        {/* Card 6: OVERLORD REDEEMED — NEW v10.4 */}
+        {/* Card 6: OVERLORD REDEEMED — v10.4 */}
         <div className="bg-[#11182E] border-2 border-[#dc2626] rounded-2xl p-5 shadow-xl space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-black text-red-400 m-0 flex items-center gap-2">
-              <span>👹</span> OVERLORD — NEW v10.4
+              <span>👹</span> OVERLORD — v10.4 DONE
             </h3>
             <span className="bg-red-600/20 text-red-400 border border-red-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
               CF-004 MYTHIC
@@ -209,32 +211,62 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
           </button>
         </div>
 
-        {/* Card 7: 7-CARD OMEGA ASCENSION */}
+        {/* Card 7: PHANTASM REDEEMED — NEW v10.5 */}
+        <div className="bg-[#11182E] border-2 border-[#a855f7] rounded-2xl p-5 shadow-xl space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-black text-purple-300 m-0 flex items-center gap-2">
+              <span>👻</span> PHANTASM — NEW v10.5
+            </h3>
+            <span className="bg-purple-600/20 text-purple-300 border border-purple-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
+              CF-005 MYTHIC
+            </span>
+          </div>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-purple-500/20 text-xs text-slate-300 space-y-1.5">
+            <p className="font-bold text-white">Visual & Combat Profile:</p>
+            <p>
+              Phantasm Redeemed, veil lifted, eyes glowing celestial gold, shadow robes turning to radiant white and gold. 1 John 4:4.
+            </p>
+            <p className="text-purple-300 font-bold pt-1">
+              Stats: +900 DMG • 3 Energy • PHANTASM GLIDE (Ignores 100% shield) • Stealth team 1 turn.
+            </p>
+            <p className="text-[11px] text-slate-400">
+              <b>Combos:</b> Phantasm + John = <b>SHADOW + THUNDER</b> (+60% DMG to revealed enemies).
+            </p>
+          </div>
+          <button
+            onClick={onNavigateToPhantasm}
+            className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-500 text-white font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
+          >
+            👻 VIEW PHANTASM PLAYABLE →
+          </button>
+        </div>
+
+        {/* Card 8: 8-CARD GRAND SCHEME ASCENSION */}
         <div className="bg-[#11182E] border-2 border-[#eab308] rounded-2xl p-5 shadow-xl space-y-3 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-black text-amber-300 m-0 flex items-center gap-2">
-                <span>🔺</span> 7-CARD OMEGA ASCENSION
+                <span>🔺</span> 8-CARD GRAND SCHEME ASCENSION
               </h3>
               <span className="bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
-                7-CARD ULTIMATE
+                8-CARD ULTIMATE
               </span>
             </div>
             <div className="p-3 bg-[#0A0F22] rounded-xl border border-amber-500/20 text-xs text-slate-300 space-y-1.5 mt-3">
               <p className="font-bold text-white">Ultimate Team Synergy:</p>
               <p>
-                LOWKEY + ABADDON + BEASTIE + SAMANTHA + JOHN + SILAS + OVERLORD.
+                LOWKEY + ABADDON + BEASTIE + SAMANTHA + JOHN + SILAS + OVERLORD + PHANTASM.
               </p>
               <p className="text-amber-300 font-bold pt-1">
-                Effect: +150% all stats, heal party full, cleanse all CC, 8000 DMG ultimate card — Absolute pinnacle in the entire game.
+                Effect: +175% all stats, heal party full, cleanse all CC, stealth whole team 1 turn, 10,000 DMG ultimate card!
               </p>
             </div>
           </div>
           <button
-            onClick={handleOmega}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-red-600 via-orange-500 to-amber-400 hover:from-red-500 hover:to-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
+            onClick={handleGrandScheme}
+            className="w-full py-2.5 px-4 bg-gradient-to-r from-purple-600 via-red-600 to-amber-400 hover:from-purple-500 hover:to-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
           >
-            🔺 ACTIVATE OMEGA ASCENSION (8000 DMG)
+            🔺 ACTIVATE GRAND SCHEME ASCENSION (10,000 DMG)
           </button>
         </div>
       </div>

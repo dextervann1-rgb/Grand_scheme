@@ -5,6 +5,7 @@ export type ScreenType =
   | 'john'
   | 'silas'
   | 'overlord'
+  | 'phantasm'
   | 'battle'
   | 'market'
   | 'pray'
@@ -131,7 +132,7 @@ export interface GameState {
   // Upgrades & Nodes progression
   upgrades: Record<string, number>;
   unlockedNodes: number[];
-  // v10.1, v10.2 & v10.3 Ascension & Workflow
+  // v10.1 - v10.5 Ascension & Workflow
   inventory: Card[];
   workflowTasks: string[];
   phantasmRevealed?: boolean;
@@ -140,4 +141,6 @@ export interface GameState {
   ccCleanse?: boolean;
   overlordUnlocked?: boolean;
   tankTurns?: number;
+  phantasmUnlocked?: boolean;
+  stealthTurns?: number;
 }

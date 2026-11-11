@@ -70,6 +70,10 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
                 <span className="text-red-400 font-bold">🃏 Secret LOWKEY / ABADDON</span>
                 <span className="font-bold text-red-400">2% + 2% Secret</span>
               </div>
+              <div className="flex justify-between p-2 bg-purple-950/30 rounded-lg border border-purple-600/40">
+                <span className="text-purple-300 font-bold">👻 Phantasm Redeemed (Mythic)</span>
+                <span className="font-bold text-amber-300 text-[11px]">NOT in Packs • Beat Ch2 to Unlock (6000 💎)</span>
+              </div>
               <div className="flex justify-between p-2 bg-red-950/30 rounded-lg border border-red-600/40">
                 <span className="text-red-300 font-bold">👹 Overlord Redeemed (Mythic)</span>
                 <span className="font-bold text-amber-300 text-[11px]">NOT in Packs • Beat Ch3 to Unlock</span>
@@ -109,13 +113,14 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
 
             <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
               {inventory.map((card) => {
+                const isPhantasm = card.id === 'phantasm_asc' || card.name.includes('Phantasm');
                 const isOverlord = card.id === 'overlord_asc' || card.name.includes('Overlord');
                 const isSilas = card.id === 'silas_asc' || card.name.includes('Silas');
                 const isJohn = card.id === 'john_asc' || card.name.includes('John');
                 const isCovenant = card.tier === 'Covenant' || card.name.includes('Samantha') || card.name.includes('LOWKEY') || card.name.includes('ABADDON') || isJohn || isSilas;
                 const isBiblical = card.tier === 'Biblical';
-                const borderColor = isOverlord ? 'border-red-600' : isSilas ? 'border-orange-500' : isJohn ? 'border-cyan-400' : isCovenant ? 'border-amber-400' : isBiblical ? 'border-purple-400' : 'border-blue-500/50';
-                const tagColor = isOverlord ? 'bg-red-600 text-white' : isSilas ? 'bg-orange-500 text-slate-950' : isJohn ? 'bg-cyan-400 text-slate-950' : isCovenant ? 'bg-amber-400 text-slate-950' : isBiblical ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white';
+                const borderColor = isPhantasm ? 'border-purple-500' : isOverlord ? 'border-red-600' : isSilas ? 'border-orange-500' : isJohn ? 'border-cyan-400' : isCovenant ? 'border-amber-400' : isBiblical ? 'border-purple-400' : 'border-blue-500/50';
+                const tagColor = isPhantasm ? 'bg-purple-600 text-white' : isOverlord ? 'bg-red-600 text-white' : isSilas ? 'bg-orange-500 text-slate-950' : isJohn ? 'bg-cyan-400 text-slate-950' : isCovenant ? 'bg-amber-400 text-slate-950' : isBiblical ? 'bg-purple-600 text-white' : 'bg-blue-600 text-white';
 
                 return (
                   <div

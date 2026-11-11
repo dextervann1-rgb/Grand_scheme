@@ -144,6 +144,22 @@ export const OVERLORD_PLAYABLE_ASCENSION_CARD: Card = {
   effectDesc: 'OVERLORD CRUSH: +1200 DMG. Ignores 50% shield. TANK 50%: Takes 50% of all team damage for 2 turns. If Beastie on team -> BOSS + ROCK (+40% DMG, Overlord tanks 50%). If 7-card team -> OMEGA ASCENSION (+150% all, heal full, 8000 DMG).',
 };
 
+export const PHANTASM_PLAYABLE_ASCENSION_CARD: Card = {
+  id: 'phantasm_asc',
+  name: '👻 Phantasm Redeemed Ascension',
+  scripture: '1 John 4:4',
+  txt: 'You, dear children, are from God and have overcome them, because the one who is in you is greater than the one who is in the world — PHANTASM GLIDE',
+  dmg: 900,
+  cost: 3,
+  sound: 'shield',
+  tier: 'Mythic',
+  mult: 2.8,
+  equipped: true,
+  ability: 'PHANTASM_GLIDE',
+  isAscension: true,
+  effectDesc: 'PHANTASM GLIDE: +900 DMG true damage (ignores 100% shield). STEALTH 1 TURN: Whole team cannot be hit for 1 turn. If John on field -> SHADOW + THUNDER (+60% DMG to revealed enemies). If 8-card team -> GRAND SCHEME ASCENSION (+175% all, heal full, cleanse all, stealth all, 10000 DMG).',
+};
+
 export const LOWKEY_ASCENSION_CARD: Card = {
   id: 'lowkey_asc',
   name: '🃏 LOWKEY Judgment',

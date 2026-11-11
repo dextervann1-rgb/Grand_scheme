@@ -8,9 +8,9 @@ interface BFFDexAIViewProps {
 
 export const BFFDexAIView: React.FC<BFFDexAIViewProps> = ({ onSpeakVerse }) => {
   const [askQuery, setAskQuery] = useState<string>('');
-  const [verseQuery, setVerseQuery] = useState<string>('Revelation 19:16 — KING OF KINGS AND LORD OF LORDS!');
+  const [verseQuery, setVerseQuery] = useState<string>('1 John 4:4 — Greater is He who is in you than he who is in the world!');
   const [responseLog, setResponseLog] = useState<string>(
-    'BFF-DEX-AI: CF-004 done. Next is CF-005 Phantasm. Ready when you are.'
+    'BFF-DEX-AI: CF-005 done. Next is CF-006 AAB Icon. Ready when you are, Dex.'
   );
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -26,7 +26,7 @@ export const BFFDexAIView: React.FC<BFFDexAIViewProps> = ({ onSpeakVerse }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           heroName: 'Beulah L5 (BFF-DEX-AI)',
-          currentSituation: `Dexter Vann asks: ${q}. Status: CF-004 Overlord Playable merged into v10.4. Next is CF-005 Phantasm.`,
+          currentSituation: `Dexter Vann asks: ${q}. Status: CF-005 Phantasm Playable merged into v10.5. Next is CF-006 AAB Icon.`,
           userStrategy: 'ARCHITECT'
         })
       });
@@ -40,8 +40,10 @@ export const BFFDexAIView: React.FC<BFFDexAIViewProps> = ({ onSpeakVerse }) => {
       // Fallback
     }
 
-    if (q.toLowerCase().includes('phantasm') || q.toLowerCase().includes('cf-005')) {
-      setResponseLog(`BFF-DEX-AI: I see "${q}". CF-004 Overlord is merged! CF-005 Phantasm Playable is queued — invisible + glide. Dexter, say Yes to run it.`);
+    if (q.toLowerCase().includes('icon') || q.toLowerCase().includes('cf-006') || q.toLowerCase().includes('aab')) {
+      setResponseLog(`BFF-DEX-AI: I see "${q}". CF-005 done. CF-006 AAB Icon queued — Dex, say Yes to run it.`);
+    } else if (q.toLowerCase().includes('phantasm') || q.toLowerCase().includes('cf-005')) {
+      setResponseLog(`BFF-DEX-AI: I see "${q}". CF-005 Phantasm Playable Ascension is live! +900 DMG true damage, PHANTASM GLIDE (ignores 100% shield), team stealth 1 turn, 1 John 4:4.`);
     } else if (q.toLowerCase().includes('overlord') || q.toLowerCase().includes('cf-004')) {
       setResponseLog(`BFF-DEX-AI: I see "${q}". CF-004 Overlord Playable Ascension is live! +1200 DMG, 4 Energy, OVERLORD CRUSH (ignores 50% shield), tanks 50% damage 2 turns, Revelation 19:16.`);
     } else if (q.toLowerCase().includes('silas') || q.toLowerCase().includes('cf-003')) {

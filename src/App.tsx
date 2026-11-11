@@ -19,6 +19,7 @@ import {
   JOHN_THUNDER_ASCENSION_CARD,
   SILAS_UNCHAINED_ASCENSION_CARD,
   OVERLORD_PLAYABLE_ASCENSION_CARD,
+  PHANTASM_PLAYABLE_ASCENSION_CARD,
   LOWKEY_ASCENSION_CARD, 
   ABADDON_ASCENSION_CARD, 
   INITIAL_INVENTORY 
@@ -66,6 +67,7 @@ import { SamanthaAscensionView } from './components/SamanthaAscensionView';
 import { JohnThunderAscensionView } from './components/JohnThunderAscensionView';
 import { SilasUnchainedAscensionView } from './components/SilasUnchainedAscensionView';
 import { OverlordAscensionView } from './components/OverlordAscensionView';
+import { PhantasmAscensionView } from './components/PhantasmAscensionView';
 import { AscensionRosterView } from './components/AscensionRosterView';
 import { MarketplaceView } from './components/MarketplaceView';
 import { BFFDexAIView } from './components/BFFDexAIView';
@@ -98,8 +100,8 @@ const DEFAULT_TASKS = [
   "✅ CF-002 John Thunder — DONE v10.2",
   "✅ CF-003 Silas Unchained — DONE v10.3",
   "✅ CF-004 Overlord Playable — DONE v10.4",
-  "CF-005 Phantasm Playable — QUEUED",
-  "✅ CF-006 Fix AAB Icon — Beastie+Samantha — DONE (Dex Yes)",
+  "✅ CF-005 Phantasm Playable — DONE v10.5",
+  "CF-006 Fix AAB Icon — QUEUED",
   "CF-007 LOWKEY/ABADDON art — QUEUED",
   "CF-008 BFF Console — QUEUED",
   "CF-009 Tribute — QUEUED",
@@ -151,6 +153,8 @@ const DEFAULT_STATE: GameState = {
   ccCleanse: false,
   overlordUnlocked: false,
   tankTurns: 0,
+  phantasmUnlocked: false,
+  stealthTurns: 0,
 };
 
 export default function App() {
@@ -168,6 +172,8 @@ export default function App() {
           workflowTasks: parsed.workflowTasks && parsed.workflowTasks.length > 0 ? parsed.workflowTasks : DEFAULT_TASKS,
           overlordUnlocked: parsed.overlordUnlocked ?? false,
           tankTurns: parsed.tankTurns ?? 0,
+          phantasmUnlocked: parsed.phantasmUnlocked ?? false,
+          stealthTurns: parsed.stealthTurns ?? 0,
         };
       }
     } catch {
@@ -418,6 +424,47 @@ export default function App() {
     });
   };
 
+  const handleAddPhantasm = () => {
+    soundEngine.shield();
+    soundEngine.thunder();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id === 'phantasm_asc' || c.name.includes('Phantasm'));
+      if (alreadyHas) {
+        return {
+          ...prev,
+          inventory: prev.inventory.map(c => (c.id === 'phantasm_asc' || c.name.includes('Phantasm')) ? { ...c, equipped: true } : c),
+          phantasmUnlocked: true,
+          stealthTurns: 1,
+          log: '👻 Phantasm Redeemed equipped! PHANTASM GLIDE ready! Stealth active for 1 turn! 1 John 4:4!',
+        };
+      }
+      return {
+        ...prev,
+        inventory: [PHANTASM_PLAYABLE_ASCENSION_CARD, ...prev.inventory],
+        phantasmUnlocked: true,
+        stealthTurns: 1,
+        log: '✅ Phantasm Redeemed added! +900 DMG, PHANTASM GLIDE (True Damage)! Stealth active for 1 turn! 1 John 4:4!',
+      };
+    });
+  };
+
+  const handleSimulateBeatPhantasm = () => {
+    soundEngine.victory();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id === 'phantasm_asc' || c.name.includes('Phantasm'));
+      const newInventory = alreadyHas 
+        ? prev.inventory.map(c => (c.id === 'phantasm_asc' || c.name.includes('Phantasm')) ? { ...c, equipped: true } : c)
+        : [PHANTASM_PLAYABLE_ASCENSION_CARD, ...prev.inventory];
+      return {
+        ...prev,
+        phantasmUnlocked: true,
+        stealthTurns: 1,
+        inventory: newInventory,
+        log: '🏆 PHANTASM BEATEN! Ch2 Cleared! Phantasm Redeemed unlocked & added to inventory! 1 John 4:4!',
+      };
+    });
+  };
+
   const handleBuyCovenantPack = () => {
     if (state.fragments < 100) {
       soundEngine.hurt();
@@ -608,8 +655,28 @@ export default function App() {
       let cleansesCc = false;
       let paralyzeTurns = prev.paralyzed || 0;
       let tankTurns = prev.tankTurns || 0;
+      let stealthTurns = prev.stealthTurns || 0;
 
-      if (card.name.includes('Overlord') || card.id === 'overlord_asc') {
+      if (card.name.includes('Phantasm') || card.id === 'phantasm_asc') {
+        stealthTurns = 1;
+        const hasJohnEquipped = prev.inventory.some(c => (c.name.includes('John') || c.id === 'john_asc') && c.equipped);
+        const isRevealed = prev.phantasmRevealed || hasJohnEquipped;
+        const comboMult = isRevealed ? 1.6 : 1.0; // SHADOW + THUNDER combo: +60% DMG
+        const actualDmg = Math.round(baseDmg * comboMult);
+        // Ignores 100% boss shield: deals pure TRUE damage straight to boss HP!
+        bossHp = Math.max(0, bossHp - actualDmg);
+        soundEngine.shield();
+        soundEngine.thunder();
+        log = isRevealed
+          ? `👻⚡ SHADOW + THUNDER COMBO! John reveals, Phantasm glides! +60% DMG! -${actualDmg} TRUE DMG (ignores 100% shield)! Whole team gains STEALTH for 1 turn! 1 John 4:4!`
+          : `👻 PHANTASM GLIDE! -${actualDmg} TRUE DMG directly to boss HP (ignores 100% shield)! Whole team gains STEALTH for 1 turn! 1 John 4:4!`;
+        triggerHeroAnimation('attack', isRevealed ? '👻⚡ SHADOW + THUNDER!' : '👻 PHANTASM GLIDE!', 900);
+        triggerBossAnimation('damage', `👻 -${actualDmg} TRUE HP!`, 850);
+        triggerScreenFlash();
+        if (narrateVerses) {
+          voiceNarrator.speak("1 John 4:4! Greater is He who is in you than he who is in the world! Phantasm Glide!");
+        }
+      } else if (card.name.includes('Overlord') || card.id === 'overlord_asc') {
         tankTurns = 2;
         let actualDmg = Math.round(baseDmg * 1.4); // BOSS + ROCK combo: +40% all DMG
         // Ignores 50% shield (pierces directly to boss HP)
@@ -838,10 +905,16 @@ export default function App() {
         const updatedUnlockedNodes = Array.from(new Set([...(prev.unlockedNodes || [1, 2]), nextChapter]));
 
         const isOverlordBeaten = prev.chapter === 3 || prev.overlordUnlocked;
+        const isPhantasmBeaten = prev.chapter === 2 || prev.phantasmUnlocked;
         const alreadyHasOverlord = prev.inventory.some(c => c.id === 'overlord_asc' || c.name.includes('Overlord'));
-        const updatedInventory = (prev.chapter === 3 && !alreadyHasOverlord)
-          ? [OVERLORD_PLAYABLE_ASCENSION_CARD, ...prev.inventory]
-          : prev.inventory;
+        const alreadyHasPhantasm = prev.inventory.some(c => c.id === 'phantasm_asc' || c.name.includes('Phantasm'));
+        let updatedInventory = prev.inventory;
+        if (prev.chapter === 3 && !alreadyHasOverlord) {
+          updatedInventory = [OVERLORD_PLAYABLE_ASCENSION_CARD, ...updatedInventory];
+        }
+        if (prev.chapter === 2 && !alreadyHasPhantasm) {
+          updatedInventory = [PHANTASM_PLAYABLE_ASCENSION_CARD, ...updatedInventory];
+        }
 
         return {
           ...prev,
@@ -852,9 +925,12 @@ export default function App() {
           unlockedNodes: updatedUnlockedNodes,
           inventory: updatedInventory,
           overlordUnlocked: isOverlordBeaten,
+          phantasmUnlocked: isPhantasmBeaten,
           verses,
           combo,
-          log: prev.chapter === 3
+          log: prev.chapter === 2
+            ? `🏆 CHAPTER 2 PHANTASM DEFEATED! Phantasm Redeemed Playable Ascension UNLOCKED! +500 💎 Fragments! 1 John 4:4!`
+            : prev.chapter === 3
             ? `🏆 CHAPTER 3 OVERLORD DEFEATED! Overlord Redeemed Playable Ascension UNLOCKED! +500 💎 Fragments! In Lumine Veritas!`
             : `🏆 CHAPTER ${prev.chapter} BOSS SLAIN! +500 💎 Fragments Awarded! In Lumine Veritas!`,
           missions: updatedMissions,
@@ -905,6 +981,7 @@ export default function App() {
         paralyzed: paralyzeTurns,
         ccCleanse: cleansesCc || prev.ccCleanse,
         tankTurns,
+        stealthTurns,
         log,
       };
     });
@@ -960,12 +1037,18 @@ export default function App() {
 
     setState(prev => {
       let finalTakenDamage = finalDamage;
+      let remainingStealthTurns = prev.stealthTurns || 0;
       let remainingTankTurns = prev.tankTurns || 0;
-      let tankMsg = '';
-      if (finalTakenDamage > 0 && remainingTankTurns > 0) {
+      let defenseMsg = '';
+
+      if (finalTakenDamage > 0 && remainingStealthTurns > 0) {
+        finalTakenDamage = 0;
+        remainingStealthTurns = Math.max(0, remainingStealthTurns - 1);
+        defenseMsg = ' (Phantasm STEALTH completely evaded all incoming damage!)';
+      } else if (finalTakenDamage > 0 && remainingTankTurns > 0) {
         finalTakenDamage = Math.round(finalTakenDamage * 0.5);
         remainingTankTurns = Math.max(0, remainingTankTurns - 1);
-        tankMsg = ` (Overlord absorbed 50% damage! ${remainingTankTurns > 0 ? '1 turn remaining' : 'Tank expired'})`;
+        defenseMsg = ` (Overlord absorbed 50% damage! ${remainingTankTurns > 0 ? '1 turn remaining' : 'Tank expired'})`;
       }
 
       const newHp = Math.max(0, prev.hp - finalTakenDamage);
@@ -978,10 +1061,10 @@ export default function App() {
       if (result === 'PERFECT') {
         log = `✨ PERFECT DODGE! Zero damage taken, +1⚡ Energy, and COMBO x${prev.combo} preserved!`;
       } else if (result === 'GOOD') {
-        log = `🛡️ GOOD DODGE! Glanced blow for -${finalTakenDamage} DMG!${tankMsg} Combo x${prev.combo} held.`;
+        log = `🛡️ GOOD DODGE! Glanced blow for -${finalTakenDamage} DMG!${defenseMsg} Combo x${prev.combo} held.`;
       } else {
         soundEngine.hurt();
-        log = `💥 MISS! Boss hit for full -${finalTakenDamage} DMG!${tankMsg}${prev.combo > 1 ? ` (Combo x${prev.combo} broken!)` : ''}`;
+        log = `💥 MISS! Boss hit for -${finalTakenDamage} DMG!${defenseMsg}${prev.combo > 1 ? ` (Combo x${prev.combo} broken!)` : ''}`;
       }
 
       // Mission update
@@ -1009,6 +1092,7 @@ export default function App() {
           combo: 0,
           turn: 1,
           tankTurns: 0,
+          stealthTurns: 0,
           log,
         };
       }
@@ -1020,6 +1104,7 @@ export default function App() {
         turn: newTurn,
         combo: newCombo,
         tankTurns: remainingTankTurns,
+        stealthTurns: remainingStealthTurns,
         perfectDodgesCount: perfectCount,
         missions: updatedMissions,
         achievements: updatedAch,
@@ -1256,7 +1341,7 @@ export default function App() {
           OMEGA GRAND SCHEME - BEASTIE
         </h2>
         <p className="text-xs text-slate-400">
-          v10.4 — CF-004 OVERLORD PLAYABLE ASCENSION ✅ DONE • IN LUMINE VERITAS • May Jesus Reign
+          v10.5 — CF-005 PHANTASM PLAYABLE ASCENSION ✅ DONE • Dex Yes • IN LUMINE VERITAS • May Jesus Reign
         </p>
 
         {/* Top Status Pills */}
@@ -1293,6 +1378,12 @@ export default function App() {
             <span>👹 NEW:</span> <b className="text-red-400">OVERLORD PLAYABLE</b>
           </button>
           <button 
+            onClick={() => goToScreen('phantasm')}
+            className="bg-[#11182E] border border-purple-500 hover:bg-purple-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-purple-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <span>👻 NEW:</span> <b className="text-purple-300">PHANTASM PLAYABLE</b>
+          </button>
+          <button 
             onClick={() => goToScreen('aab')}
             className="bg-[#11182E] border border-emerald-400/80 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
           >
@@ -1307,9 +1398,10 @@ export default function App() {
             { id: 'home', label: '🏠 HOME' },
             { id: 'asc', label: '🔺 ASCENSION' },
             { id: 'samantha', label: '👑 SAMANTHA' },
-            { id: 'john', label: '⚡ JOHN THUNDER' },
+            { id: 'john', label: '⚡ JOHN' },
             { id: 'silas', label: '⛓️ SILAS' },
             { id: 'overlord', label: '👹 OVERLORD' },
+            { id: 'phantasm', label: '👻 PHANTASM' },
             { id: 'battle', label: '⚔️ BATTLE' },
             { id: 'market', label: '🛒 MARKETPLACE' },
             { id: 'pray', label: '🙏 PRAY' },
@@ -1384,6 +1476,7 @@ export default function App() {
             onNavigateToJohn={() => goToScreen('john')}
             onNavigateToSilas={() => goToScreen('silas')}
             onNavigateToOverlord={() => goToScreen('overlord')}
+            onNavigateToPhantasm={() => goToScreen('phantasm')}
           />
         )}
 
@@ -1429,6 +1522,19 @@ export default function App() {
             onSimulateBeatOverlord={handleSimulateBeatOverlord}
             hasOverlord={Boolean(state.inventory && state.inventory.find(c => c.id === 'overlord_asc' || c.name.includes('Overlord')))}
             overlordUnlocked={Boolean(state.overlordUnlocked)}
+            onNavigateToBattle={() => goToScreen('battle')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: PHANTASM PLAYABLE ASCENSION (CF-005)
+        ======================================================== */}
+        {state.screen === 'phantasm' && (
+          <PhantasmAscensionView
+            onAddPhantasm={handleAddPhantasm}
+            onSimulateBeatPhantasm={handleSimulateBeatPhantasm}
+            hasPhantasm={Boolean(state.inventory && state.inventory.find(c => c.id === 'phantasm_asc' || c.name.includes('Phantasm')))}
+            phantasmUnlocked={Boolean(state.phantasmUnlocked)}
             onNavigateToBattle={() => goToScreen('battle')}
           />
         )}
@@ -2196,12 +2302,12 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Phantasm, Stun, Paralyze, CC, Tank & Overlord Combat State */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-2.5 text-[10px] font-mono">
+                  {/* Combat State: Phantasm Boss, Stun, Paralyze, CC, Tank, Overlord, Stealth & Phantasm Ally */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5 mt-2.5 text-[10px] font-mono">
                     <div className="bg-[#0c071a] p-1.5 rounded-lg border border-purple-500/30 flex items-center justify-between">
-                      <span className="text-slate-400">Phantasm:</span>
+                      <span className="text-slate-400">Boss Veil:</span>
                       {state.phantasmRevealed ? (
-                        <span className="text-cyan-300 font-bold">⚡ REVEALED (+50%)</span>
+                        <span className="text-cyan-300 font-bold">REVEALED</span>
                       ) : (
                         <span className="text-purple-400">HIDDEN</span>
                       )}
@@ -2209,7 +2315,7 @@ export default function App() {
                     <div className="bg-[#0c071a] p-1.5 rounded-lg border border-cyan-500/30 flex items-center justify-between">
                       <span className="text-slate-400">Stun:</span>
                       {state.stunned ? (
-                        <span className="text-cyan-300 font-bold">STUNNED 1 TURN</span>
+                        <span className="text-cyan-300 font-bold">STUNNED</span>
                       ) : (
                         <span className="text-slate-500">None</span>
                       )}
@@ -2217,7 +2323,7 @@ export default function App() {
                     <div className="bg-[#0c071a] p-1.5 rounded-lg border border-orange-500/30 flex items-center justify-between">
                       <span className="text-slate-400">Paralyze:</span>
                       {state.paralyzed && state.paralyzed > 0 ? (
-                        <span className="text-orange-400 font-bold">PARALYZED ({state.paralyzed}T)</span>
+                        <span className="text-orange-400 font-bold">{state.paralyzed}T</span>
                       ) : (
                         <span className="text-slate-500">None</span>
                       )}
@@ -2225,7 +2331,7 @@ export default function App() {
                     <div className="bg-[#0c071a] p-1.5 rounded-lg border border-emerald-500/30 flex items-center justify-between">
                       <span className="text-slate-400">CC:</span>
                       {state.ccCleanse ? (
-                        <span className="text-emerald-400 font-bold">CLEANSED (FREE)</span>
+                        <span className="text-emerald-400 font-bold">CLEANSED</span>
                       ) : (
                         <span className="text-slate-500">Normal</span>
                       )}
@@ -2233,7 +2339,7 @@ export default function App() {
                     <div className="bg-[#0c071a] p-1.5 rounded-lg border border-red-500/30 flex items-center justify-between">
                       <span className="text-slate-400">Tank 50%:</span>
                       {state.tankTurns && state.tankTurns > 0 ? (
-                        <span className="text-red-400 font-bold">ACTIVE ({state.tankTurns}T)</span>
+                        <span className="text-red-400 font-bold">{state.tankTurns}T</span>
                       ) : (
                         <span className="text-slate-500">None</span>
                       )}
@@ -2241,9 +2347,25 @@ export default function App() {
                     <div className="bg-[#0c071a] p-1.5 rounded-lg border border-amber-500/30 flex items-center justify-between">
                       <span className="text-slate-400">Overlord:</span>
                       {state.overlordUnlocked ? (
-                        <span className="text-amber-300 font-bold">UNLOCKED ⚔️</span>
+                        <span className="text-amber-300 font-bold">UNLOCKED</span>
                       ) : (
-                        <span className="text-slate-500">LOCKED (Ch3)</span>
+                        <span className="text-slate-500">LOCKED</span>
+                      )}
+                    </div>
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-purple-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">Stealth:</span>
+                      {state.stealthTurns && state.stealthTurns > 0 ? (
+                        <span className="text-purple-300 font-bold">STEALTH (1T)</span>
+                      ) : (
+                        <span className="text-slate-500">None</span>
+                      )}
+                    </div>
+                    <div className="bg-[#0c071a] p-1.5 rounded-lg border border-indigo-500/30 flex items-center justify-between">
+                      <span className="text-slate-400">Phantasm:</span>
+                      {state.phantasmUnlocked ? (
+                        <span className="text-purple-300 font-bold">UNLOCKED</span>
+                      ) : (
+                        <span className="text-slate-500">LOCKED</span>
                       )}
                     </div>
                   </div>
