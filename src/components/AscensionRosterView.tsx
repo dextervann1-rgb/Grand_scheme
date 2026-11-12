@@ -9,6 +9,7 @@ interface AscensionRosterViewProps {
   onNavigateToSilas: () => void;
   onNavigateToOverlord: () => void;
   onNavigateToPhantasm: () => void;
+  onNavigateToNemesis?: () => void;
 }
 
 export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
@@ -18,6 +19,7 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
   onNavigateToSilas,
   onNavigateToOverlord,
   onNavigateToPhantasm,
+  onNavigateToNemesis,
 }) => {
   const [synergyMessage, setSynergyMessage] = useState<string | null>(null);
 
@@ -62,7 +64,7 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               <span>🃏</span> LOWKEY — 2% DROP
             </h3>
             <span className="bg-red-500/20 text-red-400 border border-red-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
-              SECRET COVENANT
+              CF-007 LOCKED ART
             </span>
           </div>
           <div className="p-3 bg-[#0A0F22] rounded-xl border border-red-500/20 text-xs text-slate-300 space-y-1.5">
@@ -71,9 +73,17 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               Dexter likeness, bull horns (no halo), ChristFire rays, brown iris with red sclera, 4 arms (bottom 2 cyborg), VannDiamond wings BLING half-mast, Feet of Bronze.
             </p>
             <p className="text-red-400 font-bold pt-1">
-              Stats: +1,000 DMG • LOWKEY JUDGMENT 4x Multiplier.
+              Stats: +1,000 DMG • LOWKEY JUDGMENT 4x Multiplier • Nemesis Pair Synergy.
             </p>
           </div>
+          {onNavigateToNemesis && (
+            <button
+              onClick={onNavigateToNemesis}
+              className="w-full py-2.5 px-4 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
+            >
+              🃏 VIEW LOWKEY ART & PROMPTS (CF-007) →
+            </button>
+          )}
         </div>
 
         {/* Card 2: ABADDON — 2% */}
@@ -83,7 +93,7 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               <span>👑</span> ABADDON — 2% DROP
             </h3>
             <span className="bg-purple-500/20 text-purple-400 border border-purple-500/40 text-[10px] font-black px-2 py-0.5 rounded-full">
-              SECRET COVENANT
+              CF-007 LOCKED ART
             </span>
           </div>
           <div className="p-3 bg-[#0A0F22] rounded-xl border border-purple-500/20 text-xs text-slate-300 space-y-1.5">
@@ -92,9 +102,17 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               Andrew likeness, firmament blue gaze no steam, 15-gem VannDiamond Crown, armored diamond wings dripping fire/brimstone, locusts green stingers, scorpion red tip, Key Abba Seal, 24k Rose Gold + Palladium + Brass + Purple + Silver. Revelation 9:1-11.
             </p>
             <p className="text-purple-400 font-bold pt-1">
-              Stats: +1,000 DMG • ABYSS STING 5x Multiplier.
+              Stats: +1,000 DMG • ABYSS STING 5x Multiplier • Nemesis Pair Synergy.
             </p>
           </div>
+          {onNavigateToNemesis && (
+            <button
+              onClick={onNavigateToNemesis}
+              className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-500 text-white font-black rounded-xl text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer shadow"
+            >
+              👑 VIEW ABADDON ART & PROMPTS (CF-007) →
+            </button>
+          )}
         </div>
 
         {/* Card 3: SAMANTHA — v10.1 */}

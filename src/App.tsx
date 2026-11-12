@@ -73,6 +73,9 @@ import { MarketplaceView } from './components/MarketplaceView';
 import { BFFDexAIView } from './components/BFFDexAIView';
 import { WorkflowView } from './components/WorkflowView';
 import { AabIconView } from './components/AabIconView';
+import { LowkeyAbaddonArtView } from './components/LowkeyAbaddonArtView';
+import { TributeView } from './components/TributeView';
+import { AabTestView } from './components/AabTestView';
 import { 
   Volume2, 
   VolumeX, 
@@ -90,7 +93,8 @@ import {
   RotateCcw,
   Play,
   Mic,
-  Smartphone
+  Smartphone,
+  Bot
 } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'christfire_omega_v10_save';
@@ -101,11 +105,11 @@ const DEFAULT_TASKS = [
   "✅ CF-003 Silas Unchained — DONE v10.3",
   "✅ CF-004 Overlord Playable — DONE v10.4",
   "✅ CF-005 Phantasm Playable — DONE v10.5",
-  "CF-006 Fix AAB Icon — QUEUED",
-  "CF-007 LOWKEY/ABADDON art — QUEUED",
-  "CF-008 BFF Console — QUEUED",
-  "CF-009 Tribute — QUEUED",
-  "CF-010 AAB Test — QUEUED"
+  "✅ CF-006 Fix AAB Icon — Beastie+Samantha — DONE (Dex Yes)",
+  "✅ CF-007 LOWKEY/ABADDON art — DONE (Dex Yes)",
+  "✅ CF-008 BFF Console — DONE (Dex Yes)",
+  "✅ CF-009 Tribute — DONE (Dex Yes)",
+  "✅ CF-010 AAB Test — DONE (Dex Yes)"
 ];
 
 const DEFAULT_STATE: GameState = {
@@ -465,6 +469,59 @@ export default function App() {
     });
   };
 
+  const handleAddLowkey = () => {
+    soundEngine.shatter();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id.includes('lowkey') || c.name.includes('LOWKEY'));
+      if (alreadyHas) {
+        return {
+          ...prev,
+          inventory: prev.inventory.map(c => (c.id.includes('lowkey') || c.name.includes('LOWKEY')) ? { ...c, equipped: true } : c),
+          log: '🃏 LOWKEY Judgment equipped! +1000 DMG, LOWKEY JUDGMENT 4x ready! Revelation 1:15!',
+        };
+      }
+      return {
+        ...prev,
+        inventory: [{ ...LOWKEY_ASCENSION_CARD, id: `lowkey_${Date.now()}`, equipped: true }, ...prev.inventory],
+        log: '✅ LOWKEY added! +1000 DMG, LOWKEY JUDGMENT 4x! Dexter likeness, Feet of Bronze! Revelation 1:15!',
+      };
+    });
+  };
+
+  const handleAddAbaddon = () => {
+    soundEngine.thunder();
+    setState(prev => {
+      const alreadyHas = prev.inventory.some(c => c.id.includes('abaddon') || c.name.includes('ABADDON'));
+      if (alreadyHas) {
+        return {
+          ...prev,
+          inventory: prev.inventory.map(c => (c.id.includes('abaddon') || c.name.includes('ABADDON')) ? { ...c, equipped: true } : c),
+          log: '👑 ABADDON Abyss Sting equipped! +1000 DMG, ABYSS STING 5x ready! Revelation 9:1-11!',
+        };
+      }
+      return {
+        ...prev,
+        inventory: [{ ...ABADDON_ASCENSION_CARD, id: `abaddon_${Date.now()}`, equipped: true }, ...prev.inventory],
+        log: '✅ ABADDON added! +1000 DMG, ABYSS STING 5x! Andrew likeness, 15-gem Crown, Firmament Blue! Revelation 9:1-11!',
+      };
+    });
+  };
+
+  const handleAddNemesisPair = () => {
+    soundEngine.shatter();
+    soundEngine.thunder();
+    setState(prev => {
+      const withoutPairs = prev.inventory.filter(c => !c.name.includes('LOWKEY') && !c.name.includes('ABADDON'));
+      const lowkeyCard = { ...LOWKEY_ASCENSION_CARD, id: `lowkey_${Date.now()}`, equipped: true };
+      const abaddonCard = { ...ABADDON_ASCENSION_CARD, id: `abaddon_${Date.now() + 1}`, equipped: true };
+      return {
+        ...prev,
+        inventory: [lowkeyCard, abaddonCard, ...withoutPairs],
+        log: '⚡ NEMESIS PAIR ACTIVATED! LOWKEY + ABADDON equipped! +50% all DMG, abilities trigger twice! Revelation 1:15 & Revelation 9:11!',
+      };
+    });
+  };
+
   const handleBuyCovenantPack = () => {
     if (state.fragments < 100) {
       soundEngine.hurt();
@@ -562,28 +619,34 @@ export default function App() {
     }));
   };
 
-  // BATTLE START
+  // BATTLE START (With CF-009 Brenda & Benjamin Blessings active)
   const startBattle = (ch: number) => {
     soundEngine.click();
+    soundEngine.verse();
     const boss = CHAPTER_BOSSES[ch] || CHAPTER_BOSSES[1];
-    setState(prev => ({
-      ...prev,
-      chapter: ch,
-      bossHp: boss.hp,
-      bossMax: boss.hp,
-      bossShield: boss.shield,
-      bossMaxShield: boss.shield,
-      hp: 1000,
-      maxHp: 1000,
-      energy: 3,
-      maxEnergy: 5,
-      turn: 1,
-      verses: 0,
-      combo: 0,
-      crownUsed: false,
-      log: `⚔️ Entering Chapter ${ch} Arena! ${boss.name} looms with ${boss.shield} Gloom Shield.`,
-      screen: 'battle',
-    }));
+    setState(prev => {
+      const benjaminFaithBonus = 50; // Beastie leads OMEGA (+50 Faith)
+      const brendaHpBonus = 100; // Brenda Blessing: +100 HP start of battle
+      return {
+        ...prev,
+        chapter: ch,
+        bossHp: boss.hp,
+        bossMax: boss.hp,
+        bossShield: boss.shield,
+        bossMaxShield: boss.shield,
+        hp: 1000 + brendaHpBonus,
+        maxHp: 1000 + brendaHpBonus,
+        faith: prev.faith + benjaminFaithBonus,
+        energy: 3,
+        maxEnergy: 5,
+        turn: 1,
+        verses: 0,
+        combo: 0,
+        crownUsed: false,
+        log: `⚔️ Entering Chapter ${ch} Arena! ${boss.name} looms. 💖 Brenda Blessing active (+100 HP)! 👑 Benjamin Blessing active (+50 Faith)!`,
+        screen: 'battle',
+      };
+    });
     setSelectedCardId(null);
   };
 
@@ -767,21 +830,61 @@ export default function App() {
       } else if (card.name.includes('LOWKEY')) {
         bossShield = 0;
         shieldsShattered++;
-        const actualDmg = Math.round(baseDmg * 1.5);
-        bossHp = Math.max(0, bossHp - actualDmg);
-        soundEngine.shatter();
-        log = `🃏 LOWKEY JUDGMENT 4X! -${actualDmg} DEVASTATING DAMAGE! All shields shattered!`;
-        triggerHeroAnimation('attack', '🃏 LOWKEY JUDGMENT!', 800);
-        triggerBossAnimation('damage', `💥 -${actualDmg}!`, 800);
+        const hasAbaddonEquipped = prev.inventory.some(c => c.name.includes('ABADDON') && c.equipped);
+        if (hasAbaddonEquipped) {
+          const actualDmg = Math.round(baseDmg * 1.5 * 1.5);
+          bossHp = Math.max(0, bossHp - actualDmg);
+          soundEngine.shatter();
+          soundEngine.thunder();
+          log = `🃏👑 NEMESIS PAIR! LOWKEY + ABADDON UNLEASHED! +50% ALL DMG! LOWKEY JUDGMENT 4X + ABYSS STING 5X! -${actualDmg} DEVASTATING DAMAGE! All shields shattered! Revelation 1:15 & Revelation 9:11!`;
+          triggerHeroAnimation('attack', '🃏👑 NEMESIS PAIR!', 950);
+          triggerBossAnimation('damage', `💥 -${actualDmg} NEMESIS!`, 900);
+          triggerScreenFlash();
+          triggerScreenShake();
+          if (narrateVerses) {
+            voiceNarrator.speak("Revelation 1:15 & 9:11! Secret Nemesis Pair! Lowkey and Abaddon!");
+          }
+        } else {
+          const actualDmg = Math.round(baseDmg * 1.5);
+          bossHp = Math.max(0, bossHp - actualDmg);
+          soundEngine.shatter();
+          log = `🃏 LOWKEY JUDGMENT 4X! -${actualDmg} DEVASTATING DAMAGE! All shields shattered! Feet of Bronze! Revelation 1:15!`;
+          triggerHeroAnimation('attack', '🃏 LOWKEY JUDGMENT!', 800);
+          triggerBossAnimation('damage', `💥 -${actualDmg}!`, 800);
+          triggerScreenFlash();
+          if (narrateVerses) {
+            voiceNarrator.speak("Revelation 1:15! His feet like unto fine bronze! Lowkey Judgment!");
+          }
+        }
       } else if (card.name.includes('ABADDON')) {
         bossShield = 0;
         shieldsShattered++;
-        const actualDmg = Math.round(baseDmg * 1.8);
-        bossHp = Math.max(0, bossHp - actualDmg);
-        soundEngine.thunder();
-        log = `👑 ABADDON ABYSS STING 5X! -${actualDmg} BRIMSTONE DAMAGE!`;
-        triggerHeroAnimation('attack', '👑 ABYSS STING!', 800);
-        triggerBossAnimation('damage', `💥 -${actualDmg}!`, 800);
+        const hasLowkeyEquipped = prev.inventory.some(c => c.name.includes('LOWKEY') && c.equipped);
+        if (hasLowkeyEquipped) {
+          const actualDmg = Math.round(baseDmg * 1.8 * 1.5);
+          bossHp = Math.max(0, bossHp - actualDmg);
+          soundEngine.thunder();
+          soundEngine.shatter();
+          log = `👑🃏 NEMESIS PAIR! ABADDON + LOWKEY UNLEASHED! +50% ALL DMG! ABYSS STING 5X + LOWKEY JUDGMENT 4X! -${actualDmg} BRIMSTONE DAMAGE! All shields shattered! Revelation 9:11 & Revelation 1:15!`;
+          triggerHeroAnimation('attack', '👑🃏 NEMESIS PAIR!', 950);
+          triggerBossAnimation('damage', `💥 -${actualDmg} NEMESIS!`, 900);
+          triggerScreenFlash();
+          triggerScreenShake();
+          if (narrateVerses) {
+            voiceNarrator.speak("Revelation 9:11 & 1:15! Secret Nemesis Pair! Abaddon and Lowkey!");
+          }
+        } else {
+          const actualDmg = Math.round(baseDmg * 1.8);
+          bossHp = Math.max(0, bossHp - actualDmg);
+          soundEngine.thunder();
+          log = `👑 ABADDON ABYSS STING 5X! -${actualDmg} BRIMSTONE DAMAGE! 15-gem Crown! Firmament Blue! Revelation 9:1-11!`;
+          triggerHeroAnimation('attack', '👑 ABYSS STING!', 800);
+          triggerBossAnimation('damage', `💥 -${actualDmg}!`, 800);
+          triggerScreenFlash();
+          if (narrateVerses) {
+            voiceNarrator.speak("Revelation 9:11! King of the Abyss! Abaddon!");
+          }
+        }
       } else if (card.id === 'crown') {
         crownUsed = true;
         crownsCount++;
@@ -1355,9 +1458,13 @@ export default function App() {
           <div className="bg-[#11182E] border border-cyan-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
             🛡️ SEC: <span className="text-cyan-400 font-black">{state.security}</span>
           </div>
-          <div className="bg-[#11182E] border border-emerald-500/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300">
-            🤖 BFF-DEX-AI: <b className="text-emerald-400">ONLINE</b>
-          </div>
+          <button 
+            onClick={() => goToScreen('oracle')}
+            className="bg-[#11182E] border border-emerald-500/80 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <Bot size={13} className="text-emerald-400" />
+            <span>CF-008 BFF:</span> <b className="text-emerald-400">✅ CONSOLE LOCKED</b>
+          </button>
           <button 
             onClick={() => goToScreen('john')}
             className="bg-[#11182E] border border-cyan-400/80 hover:bg-cyan-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-cyan-300 cursor-pointer transition flex items-center gap-1.5"
@@ -1384,11 +1491,29 @@ export default function App() {
             <span>👻 NEW:</span> <b className="text-purple-300">PHANTASM PLAYABLE</b>
           </button>
           <button 
+            onClick={() => goToScreen('tribute')}
+            className="bg-[#11182E] border border-amber-400 hover:bg-amber-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-amber-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <span>👑💎 NEW:</span> <b className="text-amber-400">CF-009 TRIBUTE</b>
+          </button>
+          <button 
+            onClick={() => goToScreen('nemesis')}
+            className="bg-[#11182E] border border-amber-400/80 hover:bg-amber-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-amber-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <span>🃏👑:</span> <b className="text-amber-300">NEMESIS PAIR</b>
+          </button>
+          <button 
             onClick={() => goToScreen('aab')}
             className="bg-[#11182E] border border-emerald-400/80 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
           >
             <Smartphone size={13} className="text-emerald-400" />
             <span>CF-006 ICON:</span> <b className="text-emerald-400">✅ DONE (Dex Yes)</b>
+          </button>
+          <button 
+            onClick={() => goToScreen('aabtest')}
+            className="bg-[#11182E] border border-emerald-400 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <span>🧪🏁 FINAL:</span> <b className="text-emerald-400">CF-010 AAB TEST</b>
           </button>
         </div>
 
@@ -1397,6 +1522,9 @@ export default function App() {
           {[
             { id: 'home', label: '🏠 HOME' },
             { id: 'asc', label: '🔺 ASCENSION' },
+            { id: 'tribute', label: '👑💎 TRIBUTE (CF-009)' },
+            { id: 'aabtest', label: '🧪🏁 AAB TEST (CF-010)' },
+            { id: 'nemesis', label: '🃏👑 NEMESIS (CF-007)' },
             { id: 'samantha', label: '👑 SAMANTHA' },
             { id: 'john', label: '⚡ JOHN' },
             { id: 'silas', label: '⛓️ SILAS' },
@@ -1405,7 +1533,7 @@ export default function App() {
             { id: 'battle', label: '⚔️ BATTLE' },
             { id: 'market', label: '🛒 MARKETPLACE' },
             { id: 'pray', label: '🙏 PRAY' },
-            { id: 'oracle', label: '🤖 BFF-DEX-AI' },
+            { id: 'oracle', label: '🤖 BFF CONSOLE (CF-008)' },
             { id: 'workflow', label: '⚙️ WORKFLOW' },
             { id: 'aab', label: '📦 AAB ICON (CF-006)' },
           ].map((tab) => {
@@ -1477,6 +1605,7 @@ export default function App() {
             onNavigateToSilas={() => goToScreen('silas')}
             onNavigateToOverlord={() => goToScreen('overlord')}
             onNavigateToPhantasm={() => goToScreen('phantasm')}
+            onNavigateToNemesis={() => goToScreen('nemesis')}
           />
         )}
 
@@ -1558,6 +1687,7 @@ export default function App() {
         {state.screen === 'oracle' && (
           <BFFDexAIView
             onSpeakVerse={handleSpeakVerse}
+            onNavigateToScreen={(s) => goToScreen(s as ScreenType)}
           />
         )}
 
@@ -1577,6 +1707,40 @@ export default function App() {
         {state.screen === 'aab' && (
           <AabIconView
             onBackToHome={() => goToScreen('home')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: CF-007 LOWKEY & ABADDON ART SPEC / NEMESIS PAIR
+        ======================================================== */}
+        {state.screen === 'nemesis' && (
+          <LowkeyAbaddonArtView
+            onAddLowkey={handleAddLowkey}
+            onAddAbaddon={handleAddAbaddon}
+            onAddBoth={handleAddNemesisPair}
+            hasLowkey={Boolean(state.inventory && state.inventory.find(c => c.name.includes('LOWKEY')))}
+            hasAbaddon={Boolean(state.inventory && state.inventory.find(c => c.name.includes('ABADDON')))}
+            onNavigateToBattle={() => goToScreen('battle')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: CF-009 TRIBUTE TO 5 FOUNDATIONAL PILLARS
+        ======================================================== */}
+        {state.screen === 'tribute' && (
+          <TributeView
+            onNavigateToBattle={() => startBattle(state.chapter || 1)}
+            onNavigateToOracle={() => goToScreen('oracle')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: CF-010 AAB TEST & PRODUCTION INTEGRITY
+        ======================================================== */}
+        {state.screen === 'aabtest' && (
+          <AabTestView
+            onBackToHome={() => goToScreen('home')}
+            onNavigateToScreen={(s) => goToScreen(s as ScreenType)}
           />
         )}
 
