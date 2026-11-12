@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Sparkles, Shield, CheckCircle2, Flame, Sword, Crown, Trophy } from 'lucide-react';
+import { Sparkles, Shield, CheckCircle2, Flame, Sword, Crown, Trophy, Maximize2, Download, X } from 'lucide-react';
+import { OVERLORD_REDEEMED_IMG } from './CharacterPortraits';
 
 interface OverlordAscensionViewProps {
   onAddOverlord: () => void;
@@ -19,6 +20,7 @@ export const OverlordAscensionView: React.FC<OverlordAscensionViewProps> = ({
   const [customVerse, setCustomVerse] = useState<string>('');
   const [verseApplied, setVerseApplied] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [showFullArt, setShowFullArt] = useState<boolean>(false);
 
   const handleApplyVerse = () => {
     if (!customVerse.trim()) return;
@@ -52,33 +54,62 @@ export const OverlordAscensionView: React.FC<OverlordAscensionViewProps> = ({
 
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Column 1: Art Spec */}
-          <div className="bg-[#0A0F22] border border-red-600/40 rounded-xl p-5 space-y-3">
-            <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-              <span className="text-xl">🎨</span>
-              <h3 className="font-black text-red-400 text-base m-0">ART SPEC — LOCKED (Art Agent)</h3>
+          {/* Column 1: Official Card Art + Spec */}
+          <div className="bg-[#0A0F22] border border-red-600/40 rounded-xl p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🎨</span>
+                <h3 className="font-black text-red-400 text-base m-0">OFFICIAL ASCENSION CARD ART</h3>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setShowFullArt(true)}
+                  className="px-2.5 py-1 bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-red-300 font-mono text-[10px] font-bold rounded-lg flex items-center gap-1 cursor-pointer transition"
+                >
+                  <Maximize2 size={11} />
+                  <span>ZOOM</span>
+                </button>
+                <a
+                  href={OVERLORD_REDEEMED_IMG}
+                  download="OVERLORD_REDEEMED_Ascension_Official.webp"
+                  className="px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-mono text-[10px] font-black rounded-lg flex items-center gap-1 cursor-pointer transition"
+                >
+                  <Download size={11} />
+                  <span>SAVE</span>
+                </a>
+              </div>
             </div>
 
-            {/* Visual Portrait Card */}
-            <div className="bg-gradient-to-b from-[#2a0e0e] to-[#0c0505] border-2 border-red-500/70 rounded-xl p-4 shadow-lg relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-bl-lg">
-                OVERLORD CRUSH
+            {/* Full Card Master Artwork Showcase (Compact Fit, Uncropped) */}
+            <div className={`bg-gradient-to-b from-[#2a0e0e] to-[#0c0505] border-2 ${verseApplied ? 'border-amber-400 shadow-[0_0_24px_rgba(255,215,0,0.35)]' : 'border-red-500/70 shadow-lg'} rounded-xl p-3.5 flex flex-col sm:flex-row items-center gap-4`}>
+              <div
+                onClick={() => setShowFullArt(true)}
+                className="shrink-0 bg-[#05070F] rounded-xl border border-red-400/70 p-1 cursor-pointer hover:scale-[1.03] transition-transform shadow-md"
+                title="Click to inspect full-size card"
+              >
+                <img
+                  src={OVERLORD_REDEEMED_IMG}
+                  alt="Overlord Redeemed Official Ascension Card"
+                  className="h-44 sm:h-52 w-auto max-w-full object-contain rounded-lg block"
+                  loading="eager"
+                />
               </div>
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl bg-red-950/80 border-2 border-red-500 flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(220,38,38,0.5)] shrink-0">
-                  👹
-                </div>
-                <div>
-                  <h4 className="text-amber-300 font-serif font-black text-lg m-0">
-                    Overlord Redeemed
-                  </h4>
-                  <p className="text-red-300 text-xs font-mono font-bold m-0">
-                    Cracked Armor • Gold Light • Redeemed Blade
-                  </p>
-                  <p className="text-slate-400 text-[11px] mt-1 m-0">
-                    Once Chapter 3 arch-boss, now kneeling before the King of Kings, rising as humanity’s most devastating frontline tank.
-                  </p>
-                </div>
+              <div className="space-y-1.5 text-center sm:text-left">
+                <span className="inline-block bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                  OVERLORD CRUSH • MYTHIC
+                </span>
+                <h4 className="text-amber-300 font-serif font-black text-base m-0">
+                  Overlord Redeemed
+                </h4>
+                <p className="text-red-300 text-[11px] font-mono font-bold m-0">
+                  King of Kings • Revelation 19:16
+                </p>
+                <p className="text-slate-300 text-[11px] m-0 leading-relaxed">
+                  Fractured dark plate glowing with veins of ChristFire gold, bearing the blazing Redeemed Blade alongside Beastie.
+                </p>
+                <p className="text-[10px] text-red-300/80 font-mono m-0 pt-0.5">
+                  Tap card art to view full screen
+                </p>
               </div>
             </div>
 
@@ -233,6 +264,42 @@ const OVERLORD_PLAYABLE = {
 // QA: 60 FPS, <50MB, One file, Saves don't break, Unlock logic works, Fragments only`}
         </pre>
       </div>
+
+      {/* Lightbox Full-Res Art Modal */}
+      {showFullArt && (
+        <div
+          onClick={() => setShowFullArt(false)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-md w-full bg-[#0A0F22] border-2 border-red-500 rounded-3xl p-4 shadow-2xl flex flex-col items-center space-y-3 max-h-[92vh] overflow-y-auto"
+          >
+            <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2">
+              <span className="font-serif font-black text-red-400 text-sm">👹 OVERLORD REDEEMED — CANON ART</span>
+              <button
+                onClick={() => setShowFullArt(false)}
+                className="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <img
+              src={OVERLORD_REDEEMED_IMG}
+              alt="Overlord Redeemed Official Card"
+              className="max-h-[70vh] max-w-full w-auto rounded-2xl border border-red-500/60 object-contain"
+            />
+            <a
+              href={OVERLORD_REDEEMED_IMG}
+              download="OVERLORD_REDEEMED_Ascension_Official.webp"
+              className="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5"
+            >
+              <Download size={14} />
+              <span>DOWNLOAD OFFICIAL CARD WEBP</span>
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

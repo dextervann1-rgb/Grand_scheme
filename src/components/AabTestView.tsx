@@ -192,9 +192,20 @@ export const AabTestView: React.FC<AabTestViewProps> = ({ onBackToHome, onNaviga
 
       {/* Card 2: What You Uploaded (CF-006 Recap) */}
       <div className="bg-[#11182E] border border-[#2a3a6a] rounded-2xl p-5 shadow-xl space-y-3">
-        <h3 className="text-base sm:text-lg font-black text-amber-300 m-0 flex items-center gap-2">
-          <span>📦</span> WHAT YOU UPLOADED (CF-006 Recap)
-        </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <h3 className="text-base sm:text-lg font-black text-amber-300 m-0 flex items-center gap-2">
+            <span>📦</span> WHAT YOU UPLOADED (CF-006 Recap)
+          </h3>
+          {onNavigateToScreen && (
+            <button
+              onClick={() => onNavigateToScreen('aabguide')}
+              className="py-1.5 px-3 bg-cyan-950/80 border border-cyan-500/50 hover:bg-cyan-900 text-cyan-300 font-bold rounded-lg text-xs cursor-pointer flex items-center gap-1.5 self-start sm:self-auto"
+            >
+              <span>📖 VIEW AAB UPLOAD GUIDE</span>
+              <ArrowRight size={12} />
+            </button>
+          )}
+        </div>
         <ul className="space-y-2 text-xs text-slate-300 list-disc pl-5 leading-relaxed">
           <li>
             <b>File:</b> <span className="text-amber-400 font-bold">app-release.aab</span> — From Android Studio → Build → Generate App Bundle → Release

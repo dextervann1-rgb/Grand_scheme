@@ -15,6 +15,7 @@ export type ScreenType =
   | 'aab'
   | 'tribute'
   | 'aabtest'
+  | 'aabguide'
   | 'nodes'
   | 'upgrades'
   | 'shop'
@@ -48,6 +49,7 @@ export interface Card {
   teamShield?: number;
   ability?: string;
   isAscension?: boolean;
+  image?: string;
 }
 
 export interface EnemyBoss {

@@ -109,6 +109,7 @@ export const JOHN_THUNDER_ASCENSION_CARD: Card = {
   equipped: true,
   ability: 'THUNDER_REVEAL',
   isAscension: true,
+  image: '/assets/aistudio/905020104_1481740813828831_2778501178794237622_n_be91670e.webp',
   effectDesc: 'THUNDER REVEAL: +700 DMG. REVEALS Phantasm (+50% DMG to Phantasm). Stuns ALL enemies 1 turn. If Samantha on field -> THUNDER + WARDEN (Shield +500 + Stun + Reveal).',
 };
 
@@ -125,6 +126,7 @@ export const SILAS_UNCHAINED_ASCENSION_CARD: Card = {
   equipped: true,
   ability: 'CHAIN_BREAKER',
   isAscension: true,
+  image: '/assets/aistudio/904935929_1080645728295501_3200949746795349510_n_f8535300.webp',
   effectDesc: 'CHAIN BREAKER: +650 DMG. BREAKS ALL CC on whole team. PARALYZES Phantom/Boss for 2 turns. If John on field -> CHAIN + THUNDER (Break CC + Reveal + Stun + Paralyze).',
 };
 
@@ -141,6 +143,7 @@ export const OVERLORD_PLAYABLE_ASCENSION_CARD: Card = {
   equipped: true,
   ability: 'OVERLORD_CRUSH',
   isAscension: true,
+  image: '/assets/aistudio/905896371_1342142107924944_2407678333126456020_n_35023ac1.webp',
   effectDesc: 'OVERLORD CRUSH: +1200 DMG. Ignores 50% shield. TANK 50%: Takes 50% of all team damage for 2 turns. If Beastie on team -> BOSS + ROCK (+40% DMG, Overlord tanks 50%). If 7-card team -> OMEGA ASCENSION (+150% all, heal full, 8000 DMG).',
 };
 
@@ -157,6 +160,7 @@ export const PHANTASM_PLAYABLE_ASCENSION_CARD: Card = {
   equipped: true,
   ability: 'PHANTASM_GLIDE',
   isAscension: true,
+  image: '/assets/aistudio/905127461_1143359611401230_4237143131124309682_n_054cdbca.webp',
   effectDesc: 'PHANTASM GLIDE: +900 DMG true damage (ignores 100% shield). STEALTH 1 TURN: Whole team cannot be hit for 1 turn. If John on field -> SHADOW + THUNDER (+60% DMG to revealed enemies). If 8-card team -> GRAND SCHEME ASCENSION (+175% all, heal full, cleanse all, stealth all, 10000 DMG).',
 };
 
@@ -173,6 +177,7 @@ export const LOWKEY_ASCENSION_CARD: Card = {
   equipped: false,
   ability: 'LOWKEY_JUDGMENT',
   isAscension: true,
+  image: '/assets/lowkey_nemesis_official.webp',
   effectDesc: 'Secret 2% Drop: +1000 DMG, LOWKEY JUDGMENT 4x.',
 };
 
@@ -189,6 +194,7 @@ export const ABADDON_ASCENSION_CARD: Card = {
   equipped: false,
   ability: 'ABYSS_STING',
   isAscension: true,
+  image: '/assets/abaddon_nemesis_official.webp',
   effectDesc: 'Secret 2% Drop: +1000 DMG, ABYSS STING 5x.',
 };
 

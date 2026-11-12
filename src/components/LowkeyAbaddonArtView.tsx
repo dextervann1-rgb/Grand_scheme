@@ -11,8 +11,12 @@ import {
   Eye, 
   CheckCircle2, 
   Terminal,
-  Gem
+  Gem,
+  Download,
+  X,
+  Maximize2
 } from 'lucide-react';
+import { LowkeyPortrait, AbaddonPortrait, LOWKEY_NEMESIS_IMG, ABADDON_NEMESIS_IMG } from './CharacterPortraits';
 
 interface LowkeyAbaddonArtViewProps {
   onAddLowkey?: () => void;
@@ -33,6 +37,7 @@ export const LowkeyAbaddonArtView: React.FC<LowkeyAbaddonArtViewProps> = ({
 }) => {
   const [copiedLowkey, setCopiedLowkey] = useState(false);
   const [copiedAbaddon, setCopiedAbaddon] = useState(false);
+  const [selectedArtModal, setSelectedArtModal] = useState<'lowkey' | 'abaddon' | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const LOWKEY_PROMPT = `LOWKEY - Dexter Vann face likeness UNCHANGED, natural brown iris, RED sclera, real bull horns, NO halo, ChristFire gold rays from horn tips, 4 arms - top 2 human, bottom 2 cyborg metal + gold, VannDiamond bling wings diamond-encrusted, Feet of Bronze glowing, black + gold armor, standing tall, dark throne + gold light, +1000 DMG`;
@@ -109,6 +114,28 @@ export const LowkeyAbaddonArtView: React.FC<LowkeyAbaddonArtViewProps> = ({
               </span>
             </div>
 
+            {/* Master Artwork Render */}
+            <div className="flex flex-col items-center justify-center py-2 space-y-2">
+              <LowkeyPortrait size="lg" onClick={() => setSelectedArtModal('lowkey')} />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedArtModal('lowkey')}
+                  className="px-3 py-1 bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-red-300 font-mono text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer transition shadow"
+                >
+                  <Maximize2 size={12} />
+                  <span>VIEW FULL RES</span>
+                </button>
+                <a
+                  href={LOWKEY_NEMESIS_IMG}
+                  download="LOWKEY_Dexter_Vann_Official_Master.webp"
+                  className="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-mono text-[11px] font-black rounded-lg flex items-center gap-1 cursor-pointer transition shadow"
+                >
+                  <Download size={12} />
+                  <span>DOWNLOAD ART</span>
+                </a>
+              </div>
+            </div>
+
             <div className="p-3 bg-red-950/30 border border-red-500/40 rounded-xl text-xs text-slate-200">
               <p className="font-black text-red-300 mb-1">
                 Face Likeness: DEXTER VANN — UNCHANGED.
@@ -182,6 +209,28 @@ export const LowkeyAbaddonArtView: React.FC<LowkeyAbaddonArtViewProps> = ({
               <span className="bg-purple-600/30 text-purple-300 border border-purple-500 text-[10px] font-black px-2.5 py-0.5 rounded-full">
                 SECRET COVENANT
               </span>
+            </div>
+
+            {/* Master Artwork Render */}
+            <div className="flex flex-col items-center justify-center py-2 space-y-2">
+              <AbaddonPortrait size="lg" onClick={() => setSelectedArtModal('abaddon')} />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedArtModal('abaddon')}
+                  className="px-3 py-1 bg-purple-950/80 hover:bg-purple-900 border border-purple-500/50 text-purple-300 font-mono text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer transition shadow"
+                >
+                  <Maximize2 size={12} />
+                  <span>VIEW FULL RES</span>
+                </button>
+                <a
+                  href={ABADDON_NEMESIS_IMG}
+                  download="ABADDON_Andrew_Official_Master.webp"
+                  className="px-3 py-1 bg-purple-400 hover:bg-purple-300 text-slate-950 font-mono text-[11px] font-black rounded-lg flex items-center gap-1 cursor-pointer transition shadow"
+                >
+                  <Download size={12} />
+                  <span>DOWNLOAD ART</span>
+                </a>
+              </div>
             </div>
 
             <div className="p-3 bg-purple-950/30 border border-purple-500/40 rounded-xl text-xs text-slate-200">
@@ -388,6 +437,56 @@ export const LowkeyAbaddonArtView: React.FC<LowkeyAbaddonArtViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Lightbox Full-Res Art Modal */}
+      {selectedArtModal && (
+        <div 
+          onClick={() => setSelectedArtModal(null)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fadeIn"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-lg w-full bg-[#0A0F22] border-2 border-amber-400 rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col items-center space-y-4 max-h-[92vh] overflow-y-auto"
+          >
+            <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2">
+              <h3 className="font-serif font-black text-amber-300 text-base sm:text-lg flex items-center gap-2 m-0">
+                <span>{selectedArtModal === 'lowkey' ? '🃏 LOWKEY (Dexter Vann)' : '👑 ABADDON (Andrew)'}</span>
+                <span className="text-xs font-mono font-bold text-emerald-400">OFFICIAL CANON ART</span>
+              </h3>
+              <button
+                onClick={() => setSelectedArtModal(null)}
+                className="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer transition"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="relative w-full max-h-[65vh] flex justify-center overflow-hidden rounded-2xl border-2 border-amber-400/80 shadow-2xl bg-black">
+              <img
+                src={selectedArtModal === 'lowkey' ? LOWKEY_NEMESIS_IMG : ABADDON_NEMESIS_IMG}
+                alt={selectedArtModal === 'lowkey' ? 'LOWKEY Official Artwork' : 'ABADDON Official Artwork'}
+                className="max-h-[65vh] w-auto object-contain"
+              />
+            </div>
+
+            <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2 pt-1">
+              <div className="text-[11px] text-slate-400 font-mono text-center sm:text-left">
+                {selectedArtModal === 'lowkey' 
+                  ? 'Dexter Vann likeness • Bull Horns + Gold Rays • Feet of Bronze' 
+                  : 'Andrew likeness • 15-Gem Crown • Locust Swarm • Key Abba Seal'}
+              </div>
+              <a
+                href={selectedArtModal === 'lowkey' ? LOWKEY_NEMESIS_IMG : ABADDON_NEMESIS_IMG}
+                download={selectedArtModal === 'lowkey' ? 'LOWKEY_Dexter_Vann_Official_Master.webp' : 'ABADDON_Andrew_Official_Master.webp'}
+                className="px-4 py-2 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 text-slate-950 font-black rounded-xl text-xs flex items-center gap-1.5 shadow transition cursor-pointer shrink-0"
+              >
+                <Download size={13} />
+                <span>SAVE MASTER WEBP</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

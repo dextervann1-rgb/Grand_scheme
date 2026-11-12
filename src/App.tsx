@@ -76,6 +76,7 @@ import { AabIconView } from './components/AabIconView';
 import { LowkeyAbaddonArtView } from './components/LowkeyAbaddonArtView';
 import { TributeView } from './components/TributeView';
 import { AabTestView } from './components/AabTestView';
+import { AabGuideView } from './components/AabGuideView';
 import { 
   Volume2, 
   VolumeX, 
@@ -1515,6 +1516,12 @@ export default function App() {
           >
             <span>🧪🏁 FINAL:</span> <b className="text-emerald-400">CF-010 AAB TEST</b>
           </button>
+          <button 
+            onClick={() => goToScreen('aabguide')}
+            className="bg-[#11182E] border border-cyan-400 hover:bg-cyan-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-cyan-300 cursor-pointer transition flex items-center gap-1.5"
+          >
+            <span>📖 NEW:</span> <b className="text-cyan-400">AAB UPLOAD GUIDE</b>
+          </button>
         </div>
 
         {/* Navigation Tabs */}
@@ -1524,6 +1531,7 @@ export default function App() {
             { id: 'asc', label: '🔺 ASCENSION' },
             { id: 'tribute', label: '👑💎 TRIBUTE (CF-009)' },
             { id: 'aabtest', label: '🧪🏁 AAB TEST (CF-010)' },
+            { id: 'aabguide', label: '📖 AAB GUIDE' },
             { id: 'nemesis', label: '🃏👑 NEMESIS (CF-007)' },
             { id: 'samantha', label: '👑 SAMANTHA' },
             { id: 'john', label: '⚡ JOHN' },
@@ -1739,6 +1747,16 @@ export default function App() {
         ======================================================== */}
         {state.screen === 'aabtest' && (
           <AabTestView
+            onBackToHome={() => goToScreen('home')}
+            onNavigateToScreen={(s) => goToScreen(s as ScreenType)}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: AAB UPLOAD GUIDE (HOW + FROM WHERE)
+        ======================================================== */}
+        {state.screen === 'aabguide' && (
+          <AabGuideView
             onBackToHome={() => goToScreen('home')}
             onNavigateToScreen={(s) => goToScreen(s as ScreenType)}
           />
@@ -2727,21 +2745,30 @@ export default function App() {
                             isCrownDisabled ? 'opacity-40 cursor-not-allowed' : ''
                           }`}
                         >
-                          <div>
-                            <div className="flex items-start justify-between gap-1 mb-1">
-                              <b className={`text-xs font-serif font-black leading-tight ${c.isLegendary ? 'text-amber-300' : 'text-slate-900'}`}>
-                                {c.name}
-                              </b>
-                              <span className={`text-[10px] font-mono font-black px-1.5 py-0.5 rounded ${
-                                c.isLegendary ? 'bg-amber-400 text-black' : 'bg-slate-900 text-white'
-                              }`}>
-                                {c.cost} ⚡
-                              </span>
-                            </div>
+                          <div className="flex items-start gap-2.5">
+                            {c.image && (
+                              <img 
+                                src={c.image} 
+                                alt={c.name} 
+                                className="w-11 h-16 rounded-lg object-contain bg-[#05070F] border border-amber-400/80 shrink-0 shadow-sm" 
+                              />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-1 mb-1">
+                                <b className={`text-xs font-serif font-black leading-tight truncate ${c.isLegendary ? 'text-amber-300' : 'text-slate-900'}`}>
+                                  {c.name}
+                                </b>
+                                <span className={`text-[10px] font-mono font-black px-1.5 py-0.5 rounded shrink-0 ${
+                                  c.isLegendary ? 'bg-amber-400 text-black' : 'bg-slate-900 text-white'
+                                }`}>
+                                  {c.cost} ⚡
+                                </span>
+                              </div>
 
-                            <p className={`text-[11px] italic mb-1 leading-snug line-clamp-2 ${c.isLegendary ? 'text-amber-100' : 'text-slate-700'}`}>
-                              &ldquo;{c.txt}&rdquo;
-                            </p>
+                              <p className={`text-[11px] italic mb-1 leading-snug line-clamp-2 ${c.isLegendary ? 'text-amber-100' : 'text-slate-700'}`}>
+                                &ldquo;{c.txt}&rdquo;
+                              </p>
+                            </div>
                           </div>
 
                           <div className="mt-2 pt-1.5 border-t border-slate-300/40 flex items-center justify-between text-[10px] font-mono">

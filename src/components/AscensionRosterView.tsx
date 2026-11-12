@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { Sparkles, Flame, Shield, Zap, Skull, Crown, Link2Off } from 'lucide-react';
-import { SAMANTHA_CROWNED_HERO } from './CharacterPortraits';
+import { 
+  SAMANTHA_CROWNED_HERO,
+  LOWKEY_NEMESIS_IMG,
+  ABADDON_NEMESIS_IMG,
+  JOHN_THUNDER_IMG,
+  SILAS_UNCHAINED_IMG,
+  OVERLORD_REDEEMED_IMG,
+  PHANTASM_ASCENSION_IMG
+} from './CharacterPortraits';
 
 interface AscensionRosterViewProps {
   onActivateQuadAscension: () => void;
@@ -67,14 +75,21 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               CF-007 LOCKED ART
             </span>
           </div>
-          <div className="p-3 bg-[#0A0F22] rounded-xl border border-red-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual Profile:</p>
-            <p>
-              Dexter likeness, bull horns (no halo), ChristFire rays, brown iris with red sclera, 4 arms (bottom 2 cyborg), VannDiamond wings BLING half-mast, Feet of Bronze.
-            </p>
-            <p className="text-red-400 font-bold pt-1">
-              Stats: +1,000 DMG • LOWKEY JUDGMENT 4x Multiplier • Nemesis Pair Synergy.
-            </p>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-red-500/20 text-xs text-slate-300 flex items-start gap-3">
+            <img
+              src={LOWKEY_NEMESIS_IMG}
+              alt="LOWKEY"
+              className="w-20 h-28 rounded-lg object-contain bg-[#05070F] border border-red-500/60 shrink-0 shadow"
+            />
+            <div className="space-y-1.5">
+              <p className="font-bold text-white m-0">Visual Profile:</p>
+              <p className="m-0">
+                Dexter likeness, bull horns (no halo), ChristFire rays, brown iris with red sclera, 4 arms (bottom 2 cyborg), VannDiamond wings BLING half-mast, Feet of Bronze.
+              </p>
+              <p className="text-red-400 font-bold pt-1 m-0">
+                Stats: +1,000 DMG • LOWKEY JUDGMENT 4x Multiplier • Nemesis Pair Synergy.
+              </p>
+            </div>
           </div>
           {onNavigateToNemesis && (
             <button
@@ -96,14 +111,21 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               CF-007 LOCKED ART
             </span>
           </div>
-          <div className="p-3 bg-[#0A0F22] rounded-xl border border-purple-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual Profile:</p>
-            <p>
-              Andrew likeness, firmament blue gaze no steam, 15-gem VannDiamond Crown, armored diamond wings dripping fire/brimstone, locusts green stingers, scorpion red tip, Key Abba Seal, 24k Rose Gold + Palladium + Brass + Purple + Silver. Revelation 9:1-11.
-            </p>
-            <p className="text-purple-400 font-bold pt-1">
-              Stats: +1,000 DMG • ABYSS STING 5x Multiplier • Nemesis Pair Synergy.
-            </p>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-purple-500/20 text-xs text-slate-300 flex items-start gap-3">
+            <img
+              src={ABADDON_NEMESIS_IMG}
+              alt="ABADDON"
+              className="w-20 h-28 rounded-lg object-contain bg-[#05070F] border border-purple-500/60 shrink-0 shadow"
+            />
+            <div className="space-y-1.5">
+              <p className="font-bold text-white m-0">Visual Profile:</p>
+              <p className="m-0">
+                Andrew likeness, firmament blue gaze, 15-gem VannDiamond Crown, armored diamond wings dripping fire/brimstone, locusts green stingers, scorpion red tip, Key Abba Seal, 24k Rose Gold + Palladium + Brass + Purple + Silver. Revelation 9:1-11.
+              </p>
+              <p className="text-purple-400 font-bold pt-1 m-0">
+                Stats: +1,000 DMG • ABYSS STING 5x Multiplier • Nemesis Pair Synergy.
+              </p>
+            </div>
           </div>
           {onNavigateToNemesis && (
             <button
@@ -125,14 +147,21 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               CF-001 COVENANT
             </span>
           </div>
-          <div className="p-3 bg-[#0A0F22] rounded-xl border border-amber-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual & Combat Profile:</p>
-            <p>
-              Real Samantha, burgundy-red hair, white + gold cyber armor, VannDiamond Armored Crown of Light, Light Shield, Judges 5:21.
-            </p>
-            <p className="text-amber-300 font-bold pt-1">
-              Stats: +800 DMG • WARDEN JUDGMENT (Shield +500, shatter 400).
-            </p>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-amber-500/20 text-xs text-slate-300 flex items-start gap-3">
+            <img
+              src={SAMANTHA_CROWNED_HERO}
+              alt="Samantha Crowned"
+              className="w-20 h-28 rounded-lg object-contain bg-[#05070F] border border-amber-400/60 shrink-0 shadow"
+            />
+            <div className="space-y-1.5">
+              <p className="font-bold text-white m-0">Visual & Combat Profile:</p>
+              <p className="m-0">
+                Real Samantha, burgundy-red hair, white + gold cyber armor, VannDiamond Armored Crown of Light, Light Shield, Judges 5:21.
+              </p>
+              <p className="text-amber-300 font-bold pt-1 m-0">
+                Stats: +800 DMG • WARDEN JUDGMENT (Shield +500, shatter 400).
+              </p>
+            </div>
           </div>
           <button
             onClick={onNavigateToSamantha}
@@ -152,14 +181,21 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               CF-002 COVENANT
             </span>
           </div>
-          <div className="p-3 bg-[#0A0F22] rounded-xl border border-cyan-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual & Combat Profile:</p>
-            <p>
-              John Boanerges, deep blue + gold thunder robes, lightning seams, twin lightning bolts, storm wings. Mark 3:17.
-            </p>
-            <p className="text-cyan-300 font-bold pt-1">
-              Stats: +700 DMG • THUNDER REVEAL (Reveals Phantasm, stuns all).
-            </p>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-cyan-500/20 text-xs text-slate-300 flex items-start gap-3">
+            <img
+              src={JOHN_THUNDER_IMG}
+              alt="John Thunder Ascension"
+              className="w-20 h-28 rounded-lg object-contain bg-[#05070F] border border-cyan-400/60 shrink-0 shadow"
+            />
+            <div className="space-y-1.5">
+              <p className="font-bold text-white m-0">Visual & Combat Profile:</p>
+              <p className="m-0">
+                John Boanerges, deep blue + gold thunder robes, lightning seams, twin lightning bolts, storm wings. Mark 3:17.
+              </p>
+              <p className="text-cyan-300 font-bold pt-1 m-0">
+                Stats: +700 DMG • THUNDER REVEAL (Reveals Phantasm, stuns all).
+              </p>
+            </div>
           </div>
           <button
             onClick={onNavigateToJohn}
@@ -179,17 +215,24 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               CF-003 COVENANT
             </span>
           </div>
-          <div className="p-3 bg-[#0A0F22] rounded-xl border border-orange-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual & Combat Profile:</p>
-            <p>
-              Silas Unchained, shattered iron shackles, torn prison robes, holy earthquake fissures. Acts 16:26.
-            </p>
-            <p className="text-orange-400 font-bold pt-1">
-              Stats: +650 DMG • 3 Energy • CHAIN BREAKER.
-            </p>
-            <p className="text-[11px] text-slate-400">
-              <b>Combos:</b> Silas + John = <b>CHAIN + THUNDER</b> (Breaks all CC, paralyzes phantom 2 turns, reveals + stuns).
-            </p>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-orange-500/20 text-xs text-slate-300 flex items-start gap-3">
+            <img
+              src={SILAS_UNCHAINED_IMG}
+              alt="Silas Unchained"
+              className="w-20 h-28 rounded-lg object-contain bg-[#05070F] border border-orange-500/60 shrink-0 shadow"
+            />
+            <div className="space-y-1.5">
+              <p className="font-bold text-white m-0">Visual & Combat Profile:</p>
+              <p className="m-0">
+                Silas Unchained, shattered iron shackles, torn prison robes, holy earthquake fissures. Acts 16:26.
+              </p>
+              <p className="text-orange-400 font-bold pt-1 m-0">
+                Stats: +650 DMG • 3 Energy • CHAIN BREAKER.
+              </p>
+              <p className="text-[11px] text-slate-400 m-0">
+                <b>Combos:</b> Silas + John = <b>CHAIN + THUNDER</b> (Breaks all CC, paralyzes phantom 2 turns, reveals + stuns).
+              </p>
+            </div>
           </div>
           <button
             onClick={onNavigateToSilas}
@@ -209,17 +252,24 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               CF-004 MYTHIC
             </span>
           </div>
-          <div className="p-3 bg-[#0A0F22] rounded-xl border border-red-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual & Combat Profile:</p>
-            <p>
-              Overlord Redeemed, black + crimson plate cracked by gold light, Redeemed Blade glowing gold, kneeling before King of Kings. Revelation 19:16.
-            </p>
-            <p className="text-red-400 font-bold pt-1">
-              Stats: +1200 DMG • 4 Energy • OVERLORD CRUSH (Ignores 50% shield) • Tanks 50% team damage 2 turns.
-            </p>
-            <p className="text-[11px] text-slate-400">
-              <b>Combos:</b> Overlord + Beastie = <b>BOSS + ROCK</b> (+40% all DMG, Overlord tanks 50%).
-            </p>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-red-500/20 text-xs text-slate-300 flex items-start gap-3">
+            <img
+              src={OVERLORD_REDEEMED_IMG}
+              alt="Overlord Redeemed"
+              className="w-20 h-28 rounded-lg object-contain bg-[#05070F] border border-red-500/60 shrink-0 shadow"
+            />
+            <div className="space-y-1.5">
+              <p className="font-bold text-white m-0">Visual & Combat Profile:</p>
+              <p className="m-0">
+                Overlord Redeemed, black + crimson plate cracked by gold light, Redeemed Blade glowing gold, kneeling before King of Kings. Revelation 19:16.
+              </p>
+              <p className="text-red-400 font-bold pt-1 m-0">
+                Stats: +1200 DMG • 4 Energy • OVERLORD CRUSH (Ignores 50% shield) • Tanks 50% team damage 2 turns.
+              </p>
+              <p className="text-[11px] text-slate-400 m-0">
+                <b>Combos:</b> Overlord + Beastie = <b>BOSS + ROCK</b> (+40% all DMG, Overlord tanks 50%).
+              </p>
+            </div>
           </div>
           <button
             onClick={onNavigateToOverlord}
@@ -239,17 +289,24 @@ export const AscensionRosterView: React.FC<AscensionRosterViewProps> = ({
               CF-005 MYTHIC
             </span>
           </div>
-          <div className="p-3 bg-[#0A0F22] rounded-xl border border-purple-500/20 text-xs text-slate-300 space-y-1.5">
-            <p className="font-bold text-white">Visual & Combat Profile:</p>
-            <p>
-              Phantasm Redeemed, veil lifted, eyes glowing celestial gold, shadow robes turning to radiant white and gold. 1 John 4:4.
-            </p>
-            <p className="text-purple-300 font-bold pt-1">
-              Stats: +900 DMG • 3 Energy • PHANTASM GLIDE (Ignores 100% shield) • Stealth team 1 turn.
-            </p>
-            <p className="text-[11px] text-slate-400">
-              <b>Combos:</b> Phantasm + John = <b>SHADOW + THUNDER</b> (+60% DMG to revealed enemies).
-            </p>
+          <div className="p-3 bg-[#0A0F22] rounded-xl border border-purple-500/20 text-xs text-slate-300 flex items-start gap-3">
+            <img
+              src={PHANTASM_ASCENSION_IMG}
+              alt="Phantasm Redeemed"
+              className="w-20 h-28 rounded-lg object-contain bg-[#05070F] border border-purple-500/60 shrink-0 shadow"
+            />
+            <div className="space-y-1.5">
+              <p className="font-bold text-white m-0">Visual & Combat Profile:</p>
+              <p className="m-0">
+                Phantasm Redeemed, veil lifted, eyes glowing celestial gold, shadow robes turning to radiant white and gold. 1 John 4:4.
+              </p>
+              <p className="text-purple-300 font-bold pt-1 m-0">
+                Stats: +900 DMG • 3 Energy • PHANTASM GLIDE (Ignores 100% shield) • Stealth team 1 turn.
+              </p>
+              <p className="text-[11px] text-slate-400 m-0">
+                <b>Combos:</b> Phantasm + John = <b>SHADOW + THUNDER</b> (+60% DMG to revealed enemies).
+              </p>
+            </div>
           </div>
           <button
             onClick={onNavigateToPhantasm}

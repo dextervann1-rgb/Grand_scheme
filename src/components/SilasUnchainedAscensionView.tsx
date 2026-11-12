@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Sparkles, Shield, CheckCircle2, Crosshair, Link2Off, Flame } from 'lucide-react';
+import { Sparkles, Shield, CheckCircle2, Crosshair, Link2Off, Flame, Maximize2, Download, X } from 'lucide-react';
+import { SILAS_UNCHAINED_IMG } from './CharacterPortraits';
 
 interface SilasUnchainedAscensionViewProps {
   onAddSilas: () => void;
@@ -15,6 +16,7 @@ export const SilasUnchainedAscensionView: React.FC<SilasUnchainedAscensionViewPr
   const [customVerse, setCustomVerse] = useState<string>('');
   const [verseApplied, setVerseApplied] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [showFullArt, setShowFullArt] = useState<boolean>(false);
 
   const handleApplyVerse = () => {
     if (!customVerse.trim()) return;
@@ -48,33 +50,62 @@ export const SilasUnchainedAscensionView: React.FC<SilasUnchainedAscensionViewPr
 
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Column 1: Art Spec */}
-          <div className="bg-[#0A0F22] border border-orange-500/30 rounded-xl p-5 space-y-3">
-            <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-              <span className="text-xl">🎨</span>
-              <h3 className="font-black text-orange-400 text-base m-0">ART SPEC — LOCKED (Art Agent)</h3>
+          {/* Column 1: Official Card Art + Spec */}
+          <div className="bg-[#0A0F22] border border-orange-500/30 rounded-xl p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🎨</span>
+                <h3 className="font-black text-orange-400 text-base m-0">OFFICIAL ASCENSION CARD ART</h3>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setShowFullArt(true)}
+                  className="px-2.5 py-1 bg-orange-950/80 hover:bg-orange-900 border border-orange-500/50 text-orange-300 font-mono text-[10px] font-bold rounded-lg flex items-center gap-1 cursor-pointer transition"
+                >
+                  <Maximize2 size={11} />
+                  <span>ZOOM</span>
+                </button>
+                <a
+                  href={SILAS_UNCHAINED_IMG}
+                  download="SILAS_UNCHAINED_Ascension_Official.webp"
+                  className="px-2.5 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-mono text-[10px] font-black rounded-lg flex items-center gap-1 cursor-pointer transition"
+                >
+                  <Download size={11} />
+                  <span>SAVE</span>
+                </a>
+              </div>
             </div>
 
-            {/* Visual Portrait Card */}
-            <div className="bg-gradient-to-b from-[#241308] to-[#0c0704] border-2 border-orange-400/60 rounded-xl p-4 shadow-lg relative overflow-hidden">
-              <div className="absolute top-0 right-0 bg-orange-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-bl-lg">
-                CHAIN BREAKER
+            {/* Full Card Master Artwork Showcase (Compact Fit, Uncropped) */}
+            <div className={`bg-gradient-to-b from-[#241308] to-[#0c0704] border-2 ${verseApplied ? 'border-amber-400 shadow-[0_0_24px_rgba(255,215,0,0.35)]' : 'border-orange-500/70 shadow-lg'} rounded-xl p-3.5 flex flex-col sm:flex-row items-center gap-4`}>
+              <div
+                onClick={() => setShowFullArt(true)}
+                className="shrink-0 bg-[#05070F] rounded-xl border border-orange-400/70 p-1 cursor-pointer hover:scale-[1.03] transition-transform shadow-md"
+                title="Click to inspect full-size card"
+              >
+                <img
+                  src={SILAS_UNCHAINED_IMG}
+                  alt="Silas Unchained Official Ascension Card"
+                  className="h-44 sm:h-52 w-auto max-w-full object-contain rounded-lg block"
+                  loading="eager"
+                />
               </div>
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl bg-orange-950/80 border-2 border-orange-400 flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(249,115,22,0.4)] shrink-0">
-                  ⛓️
-                </div>
-                <div>
-                  <h4 className="text-amber-300 font-serif font-black text-lg m-0">
-                    Silas Unchained
-                  </h4>
-                  <p className="text-orange-200 text-xs font-mono font-bold m-0">
-                    Shattered Shackles • Holy Earthquake
-                  </p>
-                  <p className="text-slate-400 text-[11px] mt-1 m-0">
-                    Prison doors blown open, chains in mid-air shatter, golden divine light flooding the dungeon floor.
-                  </p>
-                </div>
+              <div className="space-y-1.5 text-center sm:text-left">
+                <span className="inline-block bg-orange-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full">
+                  CHAIN BREAKER • #10017
+                </span>
+                <h4 className="text-amber-300 font-serif font-black text-base m-0">
+                  Silas Unchained
+                </h4>
+                <p className="text-orange-200 text-[11px] font-mono font-bold m-0">
+                  Redeemed Warrior • Acts 16:26
+                </p>
+                <p className="text-slate-300 text-[11px] m-0 leading-relaxed">
+                  Prison doors blown wide open, iron chains shattering mid-air, arms raised in praise amidst seismic holy light.
+                </p>
+                <p className="text-[10px] text-orange-300/80 font-mono m-0 pt-0.5">
+                  Tap card art to view full screen
+                </p>
               </div>
             </div>
 
@@ -224,6 +255,42 @@ const SILAS_UNCHAINED = {
 // QA: 60 FPS, <50MB, One file/clean build, Saves don't break, Fragments only`}
         </pre>
       </div>
+
+      {/* Lightbox Full-Res Art Modal */}
+      {showFullArt && (
+        <div
+          onClick={() => setShowFullArt(false)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-md w-full bg-[#0A0F22] border-2 border-orange-500 rounded-3xl p-4 shadow-2xl flex flex-col items-center space-y-3 max-h-[92vh] overflow-y-auto"
+          >
+            <div className="w-full flex items-center justify-between border-b border-slate-800 pb-2">
+              <span className="font-serif font-black text-orange-400 text-sm">⛓️ SILAS UNCHAINED — CANON ART</span>
+              <button
+                onClick={() => setShowFullArt(false)}
+                className="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <img
+              src={SILAS_UNCHAINED_IMG}
+              alt="Silas Unchained Official Card"
+              className="max-h-[70vh] max-w-full w-auto rounded-2xl border border-orange-500/60 object-contain"
+            />
+            <a
+              href={SILAS_UNCHAINED_IMG}
+              download="SILAS_UNCHAINED_Ascension_Official.webp"
+              className="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5"
+            >
+              <Download size={14} />
+              <span>DOWNLOAD OFFICIAL CARD WEBP</span>
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

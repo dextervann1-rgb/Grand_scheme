@@ -9,6 +9,16 @@ export const GLOOM_TROOPER_IMG = '/assets/bosses/gloom_trooper.jpg';
 export const BOSS_PHANTASM_IMG = '/assets/bosses/phantasm.jpg';
 export const BOSS_OVERLORD_IMG = '/assets/bosses/overlord.jpg';
 
+// Nemesis Pair (CF-007) - Official User Artwork
+export const LOWKEY_NEMESIS_IMG = '/assets/lowkey_nemesis_official.webp';
+export const ABADDON_NEMESIS_IMG = '/assets/abaddon_nemesis_official.webp';
+
+// Covenant & Mythic Ascension Official Artwork
+export const PHANTASM_ASCENSION_IMG = '/assets/aistudio/905127461_1143359611401230_4237143131124309682_n_054cdbca.webp';
+export const JOHN_THUNDER_IMG = '/assets/aistudio/905020104_1481740813828831_2778501178794237622_n_be91670e.webp';
+export const SILAS_UNCHAINED_IMG = '/assets/aistudio/904935929_1080645728295501_3200949746795349510_n_f8535300.webp';
+export const OVERLORD_REDEEMED_IMG = '/assets/aistudio/905896371_1342142107924944_2407678333126456020_n_35023ac1.webp';
+
 /**
  * Official App Icon Badge featuring Samantha Crowned and Big Beastie / Peter
  */
@@ -464,6 +474,100 @@ export const DarkHeartIcon: React.FC<{ hpRatio: number, size?: 'sm' | 'md' | 'lg
           </>
         )}
       </svg>
+    </div>
+  );
+};
+
+/**
+ * LOWKEY Portrait (Dexter Vann Likeness Unchanged, Bull Horns with Gold Rays, No Halo, 4 Arms, VannDiamond Bling Wings, Feet of Bronze)
+ */
+export const LowkeyPortrait: React.FC<{
+  size?: 'sm' | 'md' | 'lg' | 'hero' | 'full';
+  aspect?: 'square' | 'portrait';
+  className?: string;
+  onClick?: () => void;
+}> = ({ size = 'md', aspect = 'portrait', className = '', onClick }) => {
+  const dim = size === 'sm' 
+    ? 'w-14 h-16' 
+    : size === 'md' 
+    ? (aspect === 'portrait' ? 'w-32 h-48 sm:w-36 sm:h-56' : 'w-28 h-28 sm:w-36 sm:h-36')
+    : size === 'lg' 
+    ? (aspect === 'portrait' ? 'w-40 h-56 sm:w-44 sm:h-64' : 'w-40 h-40 sm:w-48 sm:h-48')
+    : (aspect === 'portrait' ? 'w-52 h-72 sm:w-60 sm:h-80' : 'w-56 h-56 sm:w-64 sm:h-64');
+
+  return (
+    <div 
+      onClick={onClick}
+      className={`relative inline-flex flex-col items-center select-none ${className} ${onClick ? 'cursor-pointer hover:scale-[1.03] active:scale-95 transition-transform' : ''}`}
+    >
+      <div className="relative">
+        <div className="absolute -inset-1.5 rounded-2xl bg-gradient-to-tr from-red-600/50 via-amber-400/40 to-yellow-500/50 blur-md pointer-events-none animate-pulse" />
+        <div className={`relative ${dim} overflow-hidden rounded-2xl border-2 border-red-500/80 shadow-[0_0_25px_rgba(255,42,42,0.4)] bg-[#05070F] flex items-center justify-center p-1`}>
+          <img
+            src={LOWKEY_NEMESIS_IMG}
+            alt="LOWKEY - Dexter Vann Likeness Unchanged"
+            className="w-full h-full object-contain rounded-xl"
+            loading="eager"
+          />
+        </div>
+      </div>
+      {size !== 'sm' && (
+        <div className="mt-2 text-center">
+          <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider block font-mono">
+            🃏 LOWKEY • +1000 DMG
+          </span>
+          <span className="text-[9px] text-red-300 font-mono block">
+            Dexter Likeness • Feet of Bronze
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * ABADDON Portrait (Andrew Likeness Unchanged, Ultra-Enhanced Firmament Blue Gaze, No Steam/No Fog, 15-Gem VannDiamond Crown, Swarming Locusts, Abba Key)
+ */
+export const AbaddonPortrait: React.FC<{
+  size?: 'sm' | 'md' | 'lg' | 'hero' | 'full';
+  aspect?: 'square' | 'portrait';
+  className?: string;
+  onClick?: () => void;
+}> = ({ size = 'md', aspect = 'portrait', className = '', onClick }) => {
+  const dim = size === 'sm' 
+    ? 'w-14 h-16' 
+    : size === 'md' 
+    ? (aspect === 'portrait' ? 'w-32 h-48 sm:w-36 sm:h-56' : 'w-28 h-28 sm:w-36 sm:h-36')
+    : size === 'lg' 
+    ? (aspect === 'portrait' ? 'w-40 h-56 sm:w-44 sm:h-64' : 'w-40 h-40 sm:w-48 sm:h-48')
+    : (aspect === 'portrait' ? 'w-52 h-72 sm:w-60 sm:h-80' : 'w-56 h-56 sm:w-64 sm:h-64');
+
+  return (
+    <div 
+      onClick={onClick}
+      className={`relative inline-flex flex-col items-center select-none ${className} ${onClick ? 'cursor-pointer hover:scale-[1.03] active:scale-95 transition-transform' : ''}`}
+    >
+      <div className="relative">
+        <div className="absolute -inset-1.5 rounded-2xl bg-gradient-to-tr from-purple-600/50 via-cyan-400/40 to-indigo-500/50 blur-md pointer-events-none animate-pulse" />
+        <div className={`relative ${dim} overflow-hidden rounded-2xl border-2 border-purple-500/80 shadow-[0_0_25px_rgba(168,85,247,0.4)] bg-[#05070F] flex items-center justify-center p-1`}>
+          <img
+            src={ABADDON_NEMESIS_IMG}
+            alt="ABADDON - Andrew Likeness Unchanged"
+            className="w-full h-full object-contain rounded-xl"
+            loading="eager"
+          />
+        </div>
+      </div>
+      {size !== 'sm' && (
+        <div className="mt-2 text-center">
+          <span className="text-[11px] font-black text-purple-300 uppercase tracking-wider block font-mono">
+            👑 ABADDON • +1000 DMG
+          </span>
+          <span className="text-[9px] text-cyan-300 font-mono block">
+            Andrew Likeness • Revelation 9:1-11
+          </span>
+        </div>
+      )}
     </div>
   );
 };
