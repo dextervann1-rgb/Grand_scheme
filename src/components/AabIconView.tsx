@@ -11,7 +11,8 @@ import {
   Code2, 
   ExternalLink,
   Flame,
-  KeyRound
+  KeyRound,
+  Key
 } from 'lucide-react';
 
 interface AabIconViewProps {
@@ -113,23 +114,51 @@ export const AabIconView: React.FC<AabIconViewProps> = () => {
             </div>
 
             {/* Direct Asset Download Buttons */}
-            <div className="grid grid-cols-2 gap-2 pt-2">
+            <div className="space-y-2 pt-2">
               <a
-                href="/assets/ic_launcher.png"
-                download="ic_launcher_1024.png"
-                className="py-2.5 px-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+                href="/assets/christfire-omega-android-project.zip"
+                download="christfire-omega-android-project.zip"
+                className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition cursor-pointer active:scale-95 uppercase tracking-wider"
               >
-                <Download size={14} />
-                <span>1024x1024 MASTER</span>
+                <Download size={15} />
+                <span>DOWNLOAD ANDROID STUDIO PROJECT (.ZIP)</span>
               </a>
-              <a
-                href="/assets/ic_launcher_512.png"
-                download="ic_launcher_512.png"
-                className="py-2.5 px-3 bg-[#1a2340] border border-cyan-400/60 hover:bg-[#223055] text-cyan-300 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
-              >
-                <Download size={14} />
-                <span>512x512 PLAY STORE</span>
-              </a>
+              <div className="grid grid-cols-2 gap-2">
+                <a
+                  href="/assets/ic_launcher.png"
+                  download="ic_launcher_1024.png"
+                  className="py-2.5 px-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+                >
+                  <Download size={14} />
+                  <span>1024x1024 MASTER</span>
+                </a>
+                <a
+                  href="/assets/ic_launcher_512.png"
+                  download="ic_launcher_512.png"
+                  className="py-2.5 px-3 bg-[#1a2340] border border-cyan-400/60 hover:bg-[#223055] text-cyan-300 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+                >
+                  <Download size={14} />
+                  <span>512x512 PLAY STORE</span>
+                </a>
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <a
+                  href="/assets/christfire-release.keystore"
+                  download="christfire-release.keystore"
+                  className="py-2 px-3 bg-[#131d36] border border-emerald-400/60 hover:bg-[#1a284c] text-emerald-300 font-bold rounded-xl text-[11px] flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+                >
+                  <Key size={13} />
+                  <span>KEYSTORE (.KEYSTORE)</span>
+                </a>
+                <a
+                  href="/assets/CREDENTIALS.md"
+                  download="CREDENTIALS.md"
+                  className="py-2 px-3 bg-[#131d36] border border-slate-700 hover:bg-[#1a284c] text-slate-300 font-bold rounded-xl text-[11px] flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+                >
+                  <Download size={13} />
+                  <span>CREDENTIALS (MD)</span>
+                </a>
+              </div>
             </div>
           </div>
 

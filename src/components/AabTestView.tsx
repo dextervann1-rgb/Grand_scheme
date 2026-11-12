@@ -13,7 +13,8 @@ import {
   Send,
   Sparkles,
   Trophy,
-  ArrowRight
+  ArrowRight,
+  Download
 } from 'lucide-react';
 import { soundEngine } from '../sound/audio';
 
@@ -214,6 +215,63 @@ export const AabTestView: React.FC<AabTestViewProps> = ({ onBackToHome, onNaviga
             <b>Listing:</b> 173 countries, Age 13+ Teen, Privacy: <span className="text-cyan-300 font-mono">privacy@christfire.game</span>
           </li>
         </ul>
+
+        {/* Project Download & Command Action */}
+        <div className="pt-2 border-t border-slate-800 space-y-3">
+          <a
+            href="/assets/christfire-omega-android-project.zip"
+            download="christfire-omega-android-project.zip"
+            className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 text-slate-950 font-black rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xl transition cursor-pointer active:scale-95 uppercase tracking-wider"
+          >
+            <Download size={16} />
+            <span>DOWNLOAD COMPLETE ANDROID STUDIO PROJECT (.ZIP - 27MB)</span>
+          </a>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <a
+              href="/assets/christfire-release.keystore"
+              download="christfire-release.keystore"
+              className="py-2.5 px-3 bg-[#0A0F22] border border-emerald-500/50 hover:bg-emerald-950/40 text-emerald-300 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+            >
+              <Key size={13} />
+              <span>KEYSTORE</span>
+            </a>
+            <a
+              href="/assets/ic_launcher.png"
+              download="ic_launcher_1024.png"
+              className="py-2.5 px-3 bg-[#0A0F22] border border-amber-500/50 hover:bg-amber-950/40 text-amber-300 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+            >
+              <Download size={13} />
+              <span>ICON 1024px</span>
+            </a>
+            <a
+              href="/assets/ic_launcher_512.png"
+              download="ic_launcher_512.png"
+              className="py-2.5 px-3 bg-[#0A0F22] border border-cyan-500/50 hover:bg-cyan-950/40 text-cyan-300 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+            >
+              <Download size={13} />
+              <span>ICON 512px</span>
+            </a>
+            <a
+              href="/assets/CREDENTIALS.md"
+              download="CREDENTIALS.md"
+              className="py-2.5 px-3 bg-[#0A0F22] border border-slate-700 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition cursor-pointer"
+            >
+              <Download size={13} />
+              <span>CREDENTIALS</span>
+            </a>
+          </div>
+
+          <div className="p-3 bg-[#0A0F22] border border-emerald-500/40 rounded-xl space-y-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] font-mono text-emerald-400">
+              <span className="font-bold">⚡ 1-COMMAND RELEASE BUILD:</span>
+              <span className="text-slate-400">cd android && ./gradlew bundleRelease</span>
+            </div>
+            <p className="text-[11px] text-slate-400 m-0 leading-relaxed">
+              Produces: <code className="text-amber-300 font-bold">android/app/build/outputs/bundle/release/app-release.aab</code> (signed with <code className="text-emerald-400">christfire-release.keystore</code>, ready for Google Play Console upload).
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Card 3: Interactive 10 Checks */}
