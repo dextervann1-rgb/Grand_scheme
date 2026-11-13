@@ -77,6 +77,8 @@ import { LowkeyAbaddonArtView } from './components/LowkeyAbaddonArtView';
 import { TributeView } from './components/TributeView';
 import { AabTestView } from './components/AabTestView';
 import { AabGuideView } from './components/AabGuideView';
+import { DailyView } from './components/DailyView';
+import { SettingsScreenView } from './components/SettingsScreenView';
 import { 
   Volume2, 
   VolumeX, 
@@ -160,6 +162,17 @@ const DEFAULT_STATE: GameState = {
   tankTurns: 0,
   phantasmUnlocked: false,
   stealthTurns: 0,
+  playerId: 'CF-' + Math.random().toString(36).slice(2, 7).toUpperCase(),
+  devMode: false,
+  haptics: true,
+  wins: 0,
+  bossRushProgress: 0,
+  lastAdAt: 0,
+  tutorialCompleted: false,
+  dailyStreakDay: 1,
+  lightPassActive: false,
+  starterCrownUnlocked: false,
+  savedAt: new Date().toISOString(),
 };
 
 export default function App() {
@@ -179,6 +192,14 @@ export default function App() {
           tankTurns: parsed.tankTurns ?? 0,
           phantasmUnlocked: parsed.phantasmUnlocked ?? false,
           stealthTurns: parsed.stealthTurns ?? 0,
+          playerId: parsed.playerId || DEFAULT_STATE.playerId,
+          devMode: parsed.devMode ?? false,
+          haptics: parsed.haptics ?? true,
+          wins: parsed.wins ?? 0,
+          bossRushProgress: parsed.bossRushProgress ?? 0,
+          lastAdAt: parsed.lastAdAt ?? 0,
+          tutorialCompleted: parsed.tutorialCompleted ?? false,
+          dailyStreakDay: parsed.dailyStreakDay ?? 1,
         };
       }
     } catch {
@@ -188,6 +209,11 @@ export default function App() {
   });
 
   const [packResultText, setPackResultText] = useState<string | null>(null);
+  const [billingMsg, setBillingMsg] = useState<string | null>(null);
+  const [adMsg, setAdMsg] = useState<string | null>(null);
+  const [adCooldownSec, setAdCooldownSec] = useState<number>(0);
+  const [dailyMessage, setDailyMessage] = useState<string | null>(null);
+  const [tutorialMessage, setTutorialMessage] = useState<string | null>(null);
 
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isDodging, setIsDodging] = useState<boolean>(false);
@@ -231,14 +257,29 @@ export default function App() {
   const [showVoiceModal, setShowVoiceModal] = useState<boolean>(false);
   const [narrateVerses, setNarrateVerses] = useState<boolean>(true);
 
-  // Sync state to local storage
+  // Sync state to local storage on every change
   useEffect(() => {
     try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+      localStorage.setItem(
+        LOCAL_STORAGE_KEY,
+        JSON.stringify({ ...state, savedAt: new Date().toISOString() })
+      );
     } catch {
       // ignore
     }
   }, [state]);
+
+  // Rewarded ad 30s cooldown ticker
+  useEffect(() => {
+    const updateCooldown = () => {
+      const elapsed = Math.floor((Date.now() - (state.lastAdAt || 0)) / 1000);
+      const rem = Math.max(0, 30 - elapsed);
+      setAdCooldownSec(rem);
+    };
+    updateCooldown();
+    const timer = setInterval(updateCooldown, 1000);
+    return () => clearInterval(timer);
+  }, [state.lastAdAt]);
 
   // Sync sound engine and voice narrator options
   useEffect(() => {
@@ -247,6 +288,16 @@ export default function App() {
     voiceNarrator.setEnabled(state.sound);
     voiceNarrator.setVolume(state.vol);
   }, [state.sound, state.vol]);
+
+  const triggerHaptic = (ms = 20) => {
+    if (state.haptics !== false && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+      try {
+        navigator.vibrate(ms);
+      } catch {
+        // ignore
+      }
+    }
+  };
 
   const triggerScreenShake = () => {
     setScreenShake(true);
@@ -659,7 +710,8 @@ export default function App() {
 
   const handlePlayCard = () => {
     if (!selectedCardId) {
-      alert('Tap a card from your hand first!');
+      soundEngine.hurt();
+      setState(prev => ({ ...prev, log: '⚠️ Tap a card from your hand first before playing!' }));
       return;
     }
     const card = (state.inventory && state.inventory.find(c => c.id === selectedCardId)) || BATTLE_CARDS.find(c => c.id === selectedCardId);
@@ -667,12 +719,13 @@ export default function App() {
 
     if (state.energy < card.cost) {
       soundEngine.hurt();
-      alert('Not enough Energy! Tap 🛡️ DEFEND to restore energy.');
+      setState(prev => ({ ...prev, log: '⚡ Not enough Energy! Tap 🛡️ DEFEND (+2 ⚡) to restore energy.' }));
       return;
     }
 
     if (card.id === 'crown' && state.crownUsed) {
-      alert('👑 The VannDiamond Crown has already been unleashed this battle!');
+      soundEngine.hurt();
+      setState(prev => ({ ...prev, log: '👑 The VannDiamond Crown has already been unleashed this battle!' }));
       return;
     }
 
@@ -1030,6 +1083,8 @@ export default function App() {
           inventory: updatedInventory,
           overlordUnlocked: isOverlordBeaten,
           phantasmUnlocked: isPhantasmBeaten,
+          wins: (prev.wins || 0) + 1,
+          bossRushProgress: Math.min(3, (prev.bossRushProgress || 0) + 1),
           verses,
           combo,
           log: prev.chapter === 2
@@ -1248,22 +1303,171 @@ export default function App() {
     }));
   };
 
-  // SHOP
+  // SHOP (DEMO)
   const handleShopPurchase = (name: string, fragmentsReward: number) => {
     soundEngine.victory();
+    triggerHaptic(30);
     setState(prev => ({
       ...prev,
       fragments: prev.fragments + fragmentsReward,
-      log: `🛒 ${name} acquired! +${fragmentsReward} Faith Fragments added to inventory.`,
+      log: `🎉 ${name} purchased (Demo)! +${fragmentsReward} Faith Fragments added to inventory.`,
     }));
-    alert(`🎉 ${name} purchased (Demo)! +${fragmentsReward} Faith Fragments added.`);
   };
 
-  // DAILY STREAK CLAIM
+  // v10.6 PLAY BILLING HOOK
+  const handleBuyBilling = (product: 'starter_crown_bundle' | 'fragments_1000' | 'light_pass', price: number) => {
+    soundEngine.victory();
+    triggerHaptic(35);
+    const nativeBridge = (window as unknown as { ChristFireBilling?: { purchase?: (sku: string) => boolean } }).ChristFireBilling;
+    if (nativeBridge && typeof nativeBridge.purchase === 'function') {
+      nativeBridge.purchase(product);
+    }
+
+    if (product === 'fragments_1000') {
+      setState(prev => ({ ...prev, fragments: prev.fragments + 1000, log: '💎 Play Billing: +1,000 Fragments added!' }));
+      setBillingMsg(`🛒 Play Billing Hook (${product} • $${price.toFixed(2)}): +1,000 Fragments added (Preview Sim). In Play AAB: Opens Google Play Billing.`);
+    } else if (product === 'starter_crown_bundle') {
+      setState(prev => ({ ...prev, fragments: prev.fragments + 500, starterCrownUnlocked: true, log: '👑 Starter Crown Bundle unlocked! +500 Fragments!' }));
+      setBillingMsg(`🛒 Play Billing Hook (${product} • $${price.toFixed(2)}): +500 Fragments + Crown Starter perk added (Preview Sim). In Play AAB: Opens Google Play Billing.`);
+    } else {
+      setState(prev => ({ ...prev, fragments: prev.fragments + 250, lightPassActive: true, log: '🎫 Light Pass activated! +250 Fragments bonus!' }));
+      setBillingMsg(`🛒 Play Billing Hook (${product} • $${price.toFixed(2)}/mo): Light Pass activated + 250 Fragments (Preview Sim). In Play AAB: Opens Google Play Billing.`);
+    }
+  };
+
+  // v10.6 REWARDED AD (30s Cooldown)
+  const handleWatchAd = () => {
+    const now = Date.now();
+    const elapsed = Math.floor((now - (state.lastAdAt || 0)) / 1000);
+    if (elapsed < 30) {
+      const rem = 30 - elapsed;
+      soundEngine.hurt();
+      setAdMsg(`⏳ Ad cooldown — wait ${rem}s before watching another rewarded ad.`);
+      return;
+    }
+    const adBridge = (window as unknown as { ChristFireAds?: { showRewardedAd?: () => void } }).ChristFireAds;
+    if (adBridge && typeof adBridge.showRewardedAd === 'function') {
+      adBridge.showRewardedAd();
+    }
+    soundEngine.powerUp();
+    triggerHaptic(25);
+    const nextFrags = state.fragments + 50;
+    setState(prev => ({
+      ...prev,
+      fragments: prev.fragments + 50,
+      lastAdAt: now,
+      log: `📺 Rewarded Ad completed! +50 💎 Fragments! Total: ${nextFrags}`,
+    }));
+    setAdMsg(`📺 Ad watched! +50 💎 Fragments awarded! Total: ${nextFrags}`);
+  };
+
+  // v10.6 BOSS RUSH (Beat 3 Bosses -> +500 + Gold Pack)
+  const handleBossRush = () => {
+    const progress = state.bossRushProgress || 0;
+    if (progress < 3) {
+      soundEngine.click();
+      setState(prev => ({
+        ...prev,
+        log: `🏆 Boss Rush: Beat 3 bosses in a row to claim +500 💎 + Gold Pack! Current progress: ${progress}/3.`,
+      }));
+      return;
+    }
+    soundEngine.crown();
+    triggerScreenFlash();
+    triggerHaptic(40);
+    const goldPool = [
+      SAMANTHA_ASCENSION_CARD,
+      JOHN_THUNDER_ASCENSION_CARD,
+      SILAS_UNCHAINED_ASCENSION_CARD,
+    ];
+    const bonusCard: Card = {
+      ...goldPool[Math.floor(Math.random() * goldPool.length)],
+      id: `rush_gold_${Date.now()}`,
+      equipped: true,
+    };
+    setState(prev => ({
+      ...prev,
+      fragments: prev.fragments + 500,
+      bossRushProgress: 0,
+      inventory: [bonusCard, ...prev.inventory],
+      log: `🏆 BOSS RUSH COMPLETE! +500 💎 Fragments + Gold Pack (${bonusCard.name}) added!`,
+    }));
+  };
+
+  // v10.6 DAILY LOGIN & TUTORIAL
+  const handleClaimDailyTab = () => {
+    const today = new Date().toISOString().split('T')[0];
+    if (state.lastClaimDate === today) {
+      setDailyMessage('✅ Already claimed today! Come back tomorrow to continue your streak.');
+      return;
+    }
+    const amounts = [25, 50, 75, 100, 125, 150, 200];
+    const currentDay = Math.max(1, Math.min(7, state.dailyStreakDay || 1));
+    const reward = amounts[currentDay - 1];
+    const nextDay = currentDay >= 7 ? 1 : currentDay + 1;
+    soundEngine.crown();
+    triggerHaptic(30);
+
+    setState(prev => ({
+      ...prev,
+      fragments: prev.fragments + reward,
+      dailyStreak: prev.dailyStreak + 1,
+      dailyStreakDay: nextDay,
+      lastClaimDate: today,
+      log: `📅 Day ${currentDay} Daily claimed! +${reward} 💎 Fragments! Streak: ${prev.dailyStreak + 1} days.`,
+    }));
+    setDailyMessage(`✅ Day ${currentDay} claimed! +${reward} 💎 Fragments! Streak: ${state.dailyStreak + 1} days.`);
+  };
+
+  const handleFinishTutorial = () => {
+    if (state.tutorialCompleted) {
+      setTutorialMessage('✅ Tutorial reward already claimed (+100 💎).');
+      return;
+    }
+    soundEngine.victory();
+    triggerHaptic(30);
+    setState(prev => ({
+      ...prev,
+      fragments: prev.fragments + 100,
+      tutorialCompleted: true,
+      log: '🎓 Tutorial Completed! +100 💎 Fragments awarded!',
+    }));
+    setTutorialMessage('✅ Tutorial Done! +100 💎 Fragments added! You know Battle, Covenant Packs, and Pray For Prey.');
+  };
+
+  // v10.6 DEX-ONLY DEV MODE TOGGLE
+  const handleToggleDevMode = () => {
+    soundEngine.click();
+    triggerHaptic(15);
+    const devScreens: ScreenType[] = ['oracle', 'workflow', 'aab', 'aabtest', 'aabguide'];
+    setState(prev => {
+      const nextDev = !prev.devMode;
+      const shouldLeaveDevTab = !nextDev && devScreens.includes(prev.screen);
+      return {
+        ...prev,
+        devMode: nextDev,
+        screen: shouldLeaveDevTab ? 'home' : prev.screen,
+      };
+    });
+  };
+
+  const handleToggleHaptics = () => {
+    soundEngine.click();
+    setState(prev => {
+      const next = prev.haptics === false;
+      if (next && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+        try { navigator.vibrate(20); } catch {}
+      }
+      return { ...prev, haptics: next };
+    });
+  };
+
+  // DAILY STREAK CLAIM (Modal compatibility)
   const handleClaimStreak = (day: number, fragments: number, isCrown?: boolean) => {
     const today = new Date().toISOString().split('T')[0];
     setState(prev => {
       const nextStreak = prev.dailyStreak + 1;
+      const nextDay = (prev.dailyStreakDay || 1) >= 7 ? 1 : (prev.dailyStreakDay || 1) + 1;
       const updatedAch = prev.achievements.map(a => {
         if (a.id === 'a4' && nextStreak >= 7) return { ...a, unlocked: true };
         return a;
@@ -1273,6 +1477,7 @@ export default function App() {
         ...prev,
         fragments: prev.fragments + fragments,
         dailyStreak: nextStreak,
+        dailyStreakDay: nextDay,
         lastClaimDate: today,
         achievements: updatedAch,
         log: `📅 Day ${day} Streak Claimed! +${fragments} Fragments ${isCrown ? 'and Crown Shard!' : ''}`,
@@ -1321,10 +1526,14 @@ export default function App() {
   const handleDeleteAllData = () => {
     try {
       localStorage.removeItem(LOCAL_STORAGE_KEY);
+      localStorage.removeItem('christfire_tributes_v10');
     } catch {
       // ignore
     }
-    setState(DEFAULT_STATE);
+    setState({
+      ...DEFAULT_STATE,
+      playerId: 'CF-' + Math.random().toString(36).slice(2, 7).toUpperCase(),
+    });
   };
 
   const currentScore = Math.min(
@@ -1353,7 +1562,7 @@ export default function App() {
                 CHRISTFIRE
               </span>
               <span className="text-[9px] font-mono tracking-widest text-cyan-300 block">
-                OMEGA PROTOCOL v9.1
+                OMEGA GRAND SCHEME v10.6
               </span>
             </div>
           </div>
@@ -1436,7 +1645,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* User Prototype Title Lockup */}
+      {/* User Title Lockup */}
       <div className="max-w-6xl w-full mx-auto px-3 pt-3 pb-1 text-center">
         <h1 className="text-2xl sm:text-3xl font-serif font-black text-amber-400 tracking-wider m-0">
           ✝️ CHRISTFIRE
@@ -1445,7 +1654,7 @@ export default function App() {
           OMEGA GRAND SCHEME - BEASTIE
         </h2>
         <p className="text-xs text-slate-400">
-          v10.5 — CF-005 PHANTASM PLAYABLE ASCENSION ✅ DONE • Dex Yes • IN LUMINE VERITAS • May Jesus Reign
+          v10.6 — PRODUCTION FIXES + UPGRADES • Dev Tabs Gated • Cloud Save Ready • Play Billing Ready • Rewarded Ads Ready • IN LUMINE VERITAS
         </p>
 
         {/* Top Status Pills */}
@@ -1459,68 +1668,49 @@ export default function App() {
           <div className="bg-[#11182E] border border-cyan-400/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md">
             🛡️ SEC: <span className="text-cyan-400 font-black">{state.security}</span>
           </div>
-          <button 
-            onClick={() => goToScreen('oracle')}
-            className="bg-[#11182E] border border-emerald-500/80 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
+          <div className="bg-[#11182E] border border-emerald-500/80 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300">
+            ☁️ SAVE: <b className="text-emerald-400">LOCAL ✓ SAVED</b>
+          </div>
+          <div className={`bg-[#11182E] border rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md ${state.devMode ? 'border-red-500 text-red-300' : 'border-emerald-400/80 text-emerald-300'}`}>
+            📱 MODE: <b>{state.devMode ? 'DEV' : 'PRODUCTION'}</b>
+          </div>
+          {state.devMode && (
+            <>
+              <button 
+                onClick={() => goToScreen('oracle')}
+                className="bg-[#11182E] border border-red-500/80 hover:bg-red-950/50 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
+              >
+                <Bot size={13} className="text-emerald-400" />
+                <span>BFF-DEX-AI [DEV]</span>
+              </button>
+              <button 
+                onClick={() => goToScreen('aab')}
+                className="bg-[#11182E] border border-red-500/80 hover:bg-red-950/50 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
+              >
+                <Smartphone size={13} className="text-emerald-400" />
+                <span>AAB ICON [DEV]</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Dex-Only Dev Mode Bar */}
+        <div className="max-w-4xl mx-auto mb-3 bg-[#7c2d12]/80 border border-amber-400/80 rounded-xl px-3.5 py-2 flex flex-wrap items-center justify-center gap-2.5 text-xs">
+          <span>
+            <b className="text-amber-300">⚠️ DEX ONLY:</b>{' '}
+            <span className="text-slate-200">
+              Dev Mode hides BFF Console / Workflow / AAB Guide from players.
+            </span>
+          </span>
+          <button
+            onClick={handleToggleDevMode}
+            className={`px-3 py-1 rounded-full font-black text-[11px] uppercase tracking-wider cursor-pointer transition shadow ${
+              state.devMode
+                ? 'bg-red-600 text-white border border-red-300'
+                : 'bg-emerald-500 text-slate-950 border border-emerald-300'
+            }`}
           >
-            <Bot size={13} className="text-emerald-400" />
-            <span>CF-008 BFF:</span> <b className="text-emerald-400">✅ CONSOLE LOCKED</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('john')}
-            className="bg-[#11182E] border border-cyan-400/80 hover:bg-cyan-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-cyan-300 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <Zap size={13} className="text-cyan-400" />
-            <span>⚡ NEW:</span> <b className="text-cyan-400">JOHN THUNDER</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('silas')}
-            className="bg-[#11182E] border border-orange-500 hover:bg-orange-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-orange-400 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <span>⛓️ NEW:</span> <b className="text-orange-400">SILAS UNCHAINED</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('overlord')}
-            className="bg-[#11182E] border border-red-500 hover:bg-red-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-red-400 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <span>👹 NEW:</span> <b className="text-red-400">OVERLORD PLAYABLE</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('phantasm')}
-            className="bg-[#11182E] border border-purple-500 hover:bg-purple-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-purple-300 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <span>👻 NEW:</span> <b className="text-purple-300">PHANTASM PLAYABLE</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('tribute')}
-            className="bg-[#11182E] border border-amber-400 hover:bg-amber-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-amber-300 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <span>👑💎 NEW:</span> <b className="text-amber-400">CF-009 TRIBUTE</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('nemesis')}
-            className="bg-[#11182E] border border-amber-400/80 hover:bg-amber-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-amber-300 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <span>🃏👑:</span> <b className="text-amber-300">NEMESIS PAIR</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('aab')}
-            className="bg-[#11182E] border border-emerald-400/80 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <Smartphone size={13} className="text-emerald-400" />
-            <span>CF-006 ICON:</span> <b className="text-emerald-400">✅ DONE (Dex Yes)</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('aabtest')}
-            className="bg-[#11182E] border border-emerald-400 hover:bg-emerald-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-emerald-300 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <span>🧪🏁 FINAL:</span> <b className="text-emerald-400">CF-010 AAB TEST</b>
-          </button>
-          <button 
-            onClick={() => goToScreen('aabguide')}
-            className="bg-[#11182E] border border-cyan-400 hover:bg-cyan-950/60 rounded-full px-3.5 py-1.5 font-bold text-xs shadow-md text-cyan-300 cursor-pointer transition flex items-center gap-1.5"
-          >
-            <span>📖 NEW:</span> <b className="text-cyan-400">AAB UPLOAD GUIDE</b>
+            {state.devMode ? 'DEV MODE — Dev Tabs Visible' : 'PRODUCTION — Dev Tabs Hidden'}
           </button>
         </div>
 
@@ -1529,48 +1719,54 @@ export default function App() {
           {[
             { id: 'home', label: '🏠 HOME' },
             { id: 'asc', label: '🔺 ASCENSION' },
-            { id: 'tribute', label: '👑💎 TRIBUTE (CF-009)' },
-            { id: 'aabtest', label: '🧪🏁 AAB TEST (CF-010)' },
-            { id: 'aabguide', label: '📖 AAB GUIDE' },
-            { id: 'nemesis', label: '🃏👑 NEMESIS (CF-007)' },
+            { id: 'battle', label: '⚔️ BATTLE' },
+            { id: 'market', label: '🛒 MARKETPLACE' },
+            { id: 'pray', label: '🙏 PRAY' },
+            { id: 'daily', label: '📅 DAILY' },
+            { id: 'settings', label: '⚙️ SETTINGS' },
+            { id: 'tribute', label: '👑💎 TRIBUTE' },
+            { id: 'nemesis', label: '🃏👑 NEMESIS' },
             { id: 'samantha', label: '👑 SAMANTHA' },
             { id: 'john', label: '⚡ JOHN' },
             { id: 'silas', label: '⛓️ SILAS' },
             { id: 'overlord', label: '👹 OVERLORD' },
             { id: 'phantasm', label: '👻 PHANTASM' },
-            { id: 'battle', label: '⚔️ BATTLE' },
-            { id: 'market', label: '🛒 MARKETPLACE' },
-            { id: 'pray', label: '🙏 PRAY' },
-            { id: 'oracle', label: '🤖 BFF CONSOLE (CF-008)' },
-            { id: 'workflow', label: '⚙️ WORKFLOW' },
-            { id: 'aab', label: '📦 AAB ICON (CF-006)' },
-          ].map((tab) => {
-            const isActive = 
-              state.screen === tab.id ||
-              (tab.id === 'home' && (state.screen === 'title' || state.screen === 'prologue' || state.screen === 'strategy' || state.screen === 'treasury')) ||
-              (tab.id === 'market' && state.screen === 'shop');
+            { id: 'oracle', label: '🤖 BFF-DEX-AI [DEV]', devOnly: true },
+            { id: 'workflow', label: '⚙️ WORKFLOW [DEV]', devOnly: true },
+            { id: 'aab', label: '📦 AAB ICON [DEV]', devOnly: true },
+            { id: 'aabtest', label: '🧪 AAB TEST [DEV]', devOnly: true },
+            { id: 'aabguide', label: '📖 AAB GUIDE [DEV]', devOnly: true },
+          ]
+            .filter((tab) => !tab.devOnly || Boolean(state.devMode))
+            .map((tab) => {
+              const isActive = 
+                state.screen === tab.id ||
+                (tab.id === 'home' && (state.screen === 'title' || state.screen === 'prologue' || state.screen === 'strategy' || state.screen === 'treasury')) ||
+                (tab.id === 'market' && state.screen === 'shop');
 
-            return (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  soundEngine.click();
-                  if (tab.id === 'battle' && state.bossHp <= 0) {
-                    startBattle(state.chapter || 1);
-                  } else {
-                    goToScreen(tab.id as ScreenType);
-                  }
-                }}
-                className={`px-3.5 py-2 rounded-full font-extrabold text-xs tracking-wider transition-all cursor-pointer shadow-md active:scale-95 ${
-                  isActive
-                    ? 'bg-amber-400 text-slate-950 border border-amber-300 shadow-[0_0_12px_rgba(255,215,0,0.4)] scale-105'
-                    : 'bg-[#11182E] text-slate-200 border border-slate-700 hover:border-amber-400/50 hover:text-white'
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    soundEngine.click();
+                    if (tab.id === 'battle' && state.bossHp <= 0) {
+                      startBattle(state.chapter || 1);
+                    } else {
+                      goToScreen(tab.id as ScreenType);
+                    }
+                  }}
+                  className={`px-3.5 py-2 rounded-full font-extrabold text-xs tracking-wider transition-all cursor-pointer shadow-md active:scale-95 ${
+                    isActive
+                      ? 'bg-amber-400 text-slate-950 border border-amber-300 shadow-[0_0_12px_rgba(255,215,0,0.4)] scale-105'
+                      : tab.devOnly
+                      ? 'bg-[#1a0b12] text-red-200 border border-red-500/80 hover:border-red-400'
+                      : 'bg-[#11182E] text-slate-200 border border-slate-700 hover:border-amber-400/50 hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
         </div>
       </div>
 
@@ -1677,7 +1873,7 @@ export default function App() {
         )}
 
         {/* ========================================================
-            SCREEN: MARKETPLACE & PACKS
+            SCREEN: MARKETPLACE & PACKS (Play Billing + Rewarded Ads)
         ======================================================== */}
         {state.screen === 'market' && (
           <MarketplaceView
@@ -1686,6 +1882,44 @@ export default function App() {
             onBuyPack={handleBuyCovenantPack}
             onToggleEquip={handleToggleEquip}
             packResult={packResultText}
+            onBuyBilling={handleBuyBilling}
+            billingMsg={billingMsg}
+            onWatchAd={handleWatchAd}
+            adMsg={adMsg}
+            adCooldownSec={adCooldownSec}
+            onOpenSettings={() => goToScreen('settings')}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: DAILY LOGIN & TUTORIAL (v10.6)
+        ======================================================== */}
+        {state.screen === 'daily' && (
+          <DailyView
+            streakCount={state.dailyStreak}
+            streakDay={state.dailyStreakDay || 1}
+            lastClaimDate={state.lastClaimDate}
+            tutorialCompleted={Boolean(state.tutorialCompleted)}
+            dailyMessage={dailyMessage}
+            tutorialMessage={tutorialMessage}
+            onClaimDaily={handleClaimDailyTab}
+            onFinishTutorial={handleFinishTutorial}
+            onNavigateToScreen={(scr) => goToScreen(scr)}
+          />
+        )}
+
+        {/* ========================================================
+            SCREEN: SETTINGS & PRIVACY DATA DELETION (v10.6)
+        ======================================================== */}
+        {state.screen === 'settings' && (
+          <SettingsScreenView
+            state={state}
+            onToggleSound={toggleSound}
+            onToggleHaptics={handleToggleHaptics}
+            onToggleDevMode={handleToggleDevMode}
+            onImportState={(newState) => setState(newState)}
+            onDeleteAllData={handleDeleteAllData}
+            onOpenPrivacyModal={() => { setSettingsInitialTab('privacy'); setShowSettings(true); }}
           />
         )}
 
@@ -1866,7 +2100,8 @@ export default function App() {
                 const parsed = JSON.parse(jsonStr);
                 setState(prev => ({ ...prev, ...parsed }));
               } catch {
-                alert('Invalid JSON save string!');
+                soundEngine.hurt();
+                setState(prev => ({ ...prev, log: '❌ Invalid JSON save string!' }));
               }
             }}
             onResetGame={() => {
@@ -2376,13 +2611,19 @@ export default function App() {
         {state.screen === 'battle' && (
           <div className="max-w-5xl mx-auto w-full animate-fadeIn">
             {/* Top Battle Header */}
-            <div className="flex items-center justify-between mb-3 bg-[#0c122c] border border-amber-500/30 rounded-2xl px-4 py-2">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-3 bg-[#0c122c] border border-amber-500/30 rounded-2xl px-4 py-2">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono font-black text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/40">
                   CH {state.chapter}
                 </span>
                 <span className="text-xs font-mono text-slate-300">
                   TURN {state.turn}
+                </span>
+                <span className="text-xs font-mono text-emerald-300 font-bold">
+                  WINS {state.wins || 0}
+                </span>
+                <span className="text-xs font-mono text-purple-300 font-bold">
+                  RUSH {state.bossRushProgress || 0}/3
                 </span>
               </div>
 
@@ -2815,6 +3056,26 @@ export default function App() {
                     >
                       <Shield size={16} />
                       <span>DEFEND (+2 ⚡)</span>
+                    </button>
+                  </div>
+
+                  {/* v10.6 Boss Rush & Rewarded Ad Controls */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                    <button
+                      onClick={handleBossRush}
+                      className="py-2.5 px-3 bg-gradient-to-r from-amber-500/20 to-purple-500/20 hover:from-amber-500/30 hover:to-purple-500/30 border border-amber-400/60 text-amber-300 font-black text-xs rounded-xl transition cursor-pointer"
+                    >
+                      🏆 BOSS RUSH ({state.bossRushProgress || 0}/3) → +500 &amp; GOLD PACK
+                    </button>
+
+                    <button
+                      onClick={handleWatchAd}
+                      disabled={adCooldownSec > 0}
+                      className="py-2.5 px-3 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-slate-950 font-black text-xs rounded-xl transition cursor-pointer"
+                    >
+                      {adCooldownSec > 0
+                        ? `⏳ AD COOLDOWN (${adCooldownSec}s)`
+                        : '📺 WATCH AD → +50 FRAGMENTS'}
                     </button>
                   </div>
                 </div>

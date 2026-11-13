@@ -38,8 +38,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <span className="text-xl">📜</span>
               <h3 className="text-lg font-black tracking-wide text-amber-400 m-0">PROLOGUE</h3>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed mb-3">
-              Illustrious land, gold light. Shockwave strips color — darkness, Phantoms. Beastie pinned by beam. Speaks <span className="text-amber-400 font-bold">Philippians 4:13</span> — Gold flash, beam shatters. Samantha, John, Silas, Overlord beside him. <b>Phantasm</b> — once invisible boss, now redeemed — glides from shadow into light, veil lifted, eyes gold.
+            <p className="text-xs text-slate-300 leading-relaxed mb-2">
+              Illustrious land, gold light. Shockwave strips color — darkness, Phantoms. Beastie pinned by beam. Speaks <span className="text-amber-400 font-bold">Philippians 4:13</span> — Gold flash, beam shatters. Samantha, John, Silas, Overlord, Phantasm beside him. <b>Sam + Big Beastie ORIGINAL — LOCKED, never regenerated.</b>
+            </p>
+            <p className="text-[11px] text-cyan-200/90 leading-relaxed mb-3 bg-[#0A0F22] border border-purple-500/30 rounded-xl p-2.5">
+              <b>Heaven-Light Treatment:</b> White highlights bright as Heaven&apos;s light cutting through gemstones spraying particles. Outfit royal purple + rose gold trimmed in Palladium. Lowlights darkened bold — differential. Applied to John + Phantasm. Silas + Overlord next.
             </p>
 
             {/* Strategy Selection */}
@@ -113,35 +116,33 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
 
           <button
-            onClick={() => onSelectScreen('phantasm')}
-            className="w-full py-3.5 px-4 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-500 hover:to-indigo-600 text-white font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all cursor-pointer"
+            onClick={() => onSelectScreen('battle')}
+            className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-[0.98] transition-all cursor-pointer"
           >
-            <span>👻</span>
-            <span>👻 VIEW PHANTASM PLAYABLE →</span>
+            <span>⚔️</span>
+            <span>PLAY BATTLE →</span>
           </button>
         </div>
 
-        {/* Card 2: CF-005 DONE — Agent Report */}
-        <div className="bg-[#11182E] border-2 border-[#a855f7] rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
+        {/* Card 2: v10.6 — WHAT'S FIXED + NEW */}
+        <div className="bg-[#11182E] border-2 border-emerald-500 rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle2 className="w-5 h-5 text-purple-400" />
-              <h3 className="text-lg font-black tracking-wide text-purple-300 m-0">
-                ✅ CF-005 DONE — Agent Report
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <h3 className="text-lg font-black tracking-wide text-emerald-300 m-0">
+                ✅ v10.6 — WHAT&apos;S FIXED + NEW
               </h3>
             </div>
 
-            <div className="bg-[#0A0F22] border border-purple-500/50 rounded-xl p-3.5 text-xs text-slate-300 font-mono space-y-1.5 leading-relaxed">
-              <p>🤖 <b>BFF-DEX-AI:</b> Assigned CF-005 to Art + Balance + Beulah</p>
-              <p>🎨 <b>Art Agent:</b> Phantasm Redeemed spec locked — Veil lifted, gold eyes, shadow to light</p>
-              <p>⚖️ <b>Balance Agent:</b> +900 DMG, 3 Energy, PHANTASM GLIDE — Stealth + dodge, NOT stronger than LOWKEY+ABADDON</p>
-              <p>👑 <b>Beulah L5:</b> Built card, added to Packs, Inventory, Battle, Ascension, Boss Unlock logic</p>
-              <p>✅ <b>QA:</b> 60 FPS ✅, &lt;50MB ✅, One file ✅, Saves don't break ✅, Unlock only after beating Phantasm ✅</p>
-              <p className="border-t border-slate-800 pt-1 text-emerald-400 font-bold">
-                Status: Dex said YES → MERGED → v10.4 → v10.5
-              </p>
-              <p className="text-amber-300 font-bold">
-                Next: CF-006 AAB Icon
+            <div className="bg-[#0A0F22] border border-emerald-500/40 rounded-xl p-3.5 text-xs text-slate-300 space-y-1.5 leading-relaxed">
+              <p className="m-0"><b className="text-red-400">🔴 FIX 1 — Dev Tabs Gated:</b> BFF Console / Workflow / AAB tabs hidden in Production. Toggle at top = Dex only. Play Store build ships PRODUCTION ON.</p>
+              <p className="m-0"><b className="text-red-400">🔴 FIX 2 — Saves Don&apos;t Vanish:</b> Fragments + Inventory + Unlocks + Wins save on EVERY change. Export / Import JSON in Settings. Firebase hook ready.</p>
+              <p className="m-0"><b className="text-red-400">🔴 FIX 3 — Billing Ready:</b> Starter Crown Bundle + 1000 Fragments + Light Pass wired to Play Billing hook.</p>
+              <p className="m-0"><b className="text-emerald-400">🟢 NEW — Rewarded Ads:</b> Watch Ad → +50 Fragments (30s cooldown). AdMob hook ready.</p>
+              <p className="m-0"><b className="text-emerald-400">🟢 NEW — Daily Login &amp; Tutorial:</b> Day 1–7 streak (+25 to +200) &amp; 3-step onboarding (+100) in Daily tab.</p>
+              <p className="m-0"><b className="text-emerald-400">🟢 NEW — Boss Rush &amp; Settings:</b> Beat 3 bosses in a row → +500 + Gold Pack. Full Sound, Haptics, Privacy &amp; Data Deletion.</p>
+              <p className="m-0 pt-1 border-t border-slate-800 text-amber-300 font-semibold">
+                <b>Art Locked:</b> Sam + Beastie ORIGINAL. John + Phantasm Heaven-Light v2. Silas + Overlord Heaven-Light queued.
               </p>
             </div>
           </div>

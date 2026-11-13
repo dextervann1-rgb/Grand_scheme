@@ -15,7 +15,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenSettings })
         <span className="text-slate-600">|</span>
         <span className="text-cyan-400 font-bold tracking-wider">ChristFire: OMEGA Grand Scheme - Beastie</span>
         <span className="text-slate-600">|</span>
-        <span className="text-amber-300 font-bold">v10.5 CF-010 AAB Test (WORKFLOW COMPLETE) • CF-009 Tribute • CF-008 BFF Console • CF-007 Nemesis Pair • CF-006 AAB Icon</span>
+        <span className="text-amber-300 font-bold">v10.6 Production Fixes • Dev Tabs Gated • Cloud Save Ready • Play Billing &amp; Rewarded Ads Ready</span>
         <span className="text-slate-600">|</span>
         <span className="text-purple-300 font-semibold">BFF-DEX-AI — Beulah L5 — BeeSpeaks-ai</span>
         <span className="text-slate-600">|</span>
@@ -29,7 +29,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenSettings })
           onClick={onOpenPrivacy}
           className="text-cyan-300 hover:text-white underline cursor-pointer transition-colors"
         >
-          Privacy
+          Privacy (privacy@christfire.game)
         </button>
         <span className="text-slate-600">|</span>
         <span className="text-amber-500 font-mono bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-600/30">Age 13+</span>
@@ -45,7 +45,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenPrivacy, onOpenSettings })
         </span>
         <span className="text-slate-600">|</span>
         <span className="text-slate-400 font-mono text-[9px]">
-          Pure HTML/CSS/JS Single File — No Godot — No Unity — No Royalties • Package: com.vannfamilyventures.christfire.omega.grandscheme.beastie
+          Pure HTML/CSS/JS — No Godot — No Unity — No Royalties • Package: com.vannfamilyventures.christfire.omega.grandscheme.beastie • Sam + Big Beastie ORIGINAL — LOCKED, never regenerated.
         </span>
       </div>
     </footer>

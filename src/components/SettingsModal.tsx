@@ -24,6 +24,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [copied, setCopied] = useState<boolean>(false);
   const [importJson, setImportJson] = useState<string>('');
   const [importError, setImportError] = useState<string | null>(null);
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState<boolean>(false);
 
   const handleExport = () => {
@@ -31,7 +32,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `christfire_save_${Date.now()}.json`);
+    downloadAnchor.setAttribute("download", `christfire_save_${state.playerId || Date.now()}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -41,6 +42,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     }
+    setStatusNotice('✅ Save JSON exported cleanly!');
   };
 
   const handleImport = () => {
@@ -56,8 +58,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }
       onImportState(parsed as GameState);
       soundEngine.victory();
-      alert('Save loaded successfully! Fellowship restored.');
-      onClose();
+      setStatusNotice('✅ Save loaded successfully! Fellowship restored.');
+      setTimeout(() => onClose(), 800);
     } catch (err: unknown) {
       setImportError((err as Error).message || 'Failed to parse JSON file');
     }
@@ -67,8 +69,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     soundEngine.shatter();
     onDeleteAllData();
     setShowConfirmDelete(false);
-    alert('All local game data, streaks, and progress have been permanently erased.');
-    onClose();
+    setStatusNotice('🗑️ All local game data, streaks, and progress erased.');
+    setTimeout(() => onClose(), 800);
   };
 
   return (
@@ -80,10 +82,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <Settings className="text-amber-400" size={24} />
             <div>
               <h3 className="text-lg font-black text-amber-300 font-serif tracking-wide">
-                SYSTEM & PRIVACY PROTOCOL
+                SYSTEM &amp; PRIVACY PROTOCOL
               </h3>
               <p className="text-[11px] text-cyan-300 font-mono">
-                Auto-Save: ACTIVE (localStorage) • v9.1 Complete
+                Auto-Save: ACTIVE (localStorage) • Player: {state.playerId || 'CF-OMEGA'} • v10.6
               </p>
             </div>
           </div>
@@ -94,6 +96,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <X size={20} />
           </button>
         </div>
+
+        {statusNotice && (
+          <div className="mb-3 px-3 py-2 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-xs font-bold text-emerald-300">
+            {statusNotice}
+          </div>
+        )}
 
         {/* Tab selector */}
         <div className="flex gap-2 mb-4 bg-slate-950 p-1 rounded-xl border border-slate-800">

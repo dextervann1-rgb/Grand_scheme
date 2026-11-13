@@ -11,8 +11,8 @@ android {
         applicationId "com.vannfamilyventures.christfire.omega.grandscheme.beastie"
         minSdkVersion 24
         targetSdkVersion 36
-        versionCode 105
-        versionName "10.5"
+        versionCode 106
+        versionName "10.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

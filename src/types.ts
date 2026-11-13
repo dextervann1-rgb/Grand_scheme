@@ -10,6 +10,8 @@ export type ScreenType =
   | 'battle'
   | 'market'
   | 'pray'
+  | 'daily'
+  | 'settings'
   | 'oracle'
   | 'workflow'
   | 'aab'
@@ -137,7 +139,7 @@ export interface GameState {
   // Upgrades & Nodes progression
   upgrades: Record<string, number>;
   unlockedNodes: number[];
-  // v10.1 - v10.5 Ascension & Workflow
+  // v10.1 - v10.6 Ascension, Workflow & Production Upgrades
   inventory: Card[];
   workflowTasks: string[];
   phantasmRevealed?: boolean;
@@ -148,4 +150,15 @@ export interface GameState {
   tankTurns?: number;
   phantasmUnlocked?: boolean;
   stealthTurns?: number;
+  playerId?: string;
+  devMode?: boolean;
+  haptics?: boolean;
+  wins?: number;
+  bossRushProgress?: number;
+  lastAdAt?: number;
+  tutorialCompleted?: boolean;
+  dailyStreakDay?: number;
+  lightPassActive?: boolean;
+  starterCrownUnlocked?: boolean;
+  savedAt?: string;
 }
